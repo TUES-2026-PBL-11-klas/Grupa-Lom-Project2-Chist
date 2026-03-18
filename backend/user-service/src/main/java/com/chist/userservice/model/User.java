@@ -3,6 +3,9 @@ package com.chist.userservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.UUID;
@@ -11,6 +14,7 @@ import java.util.UUID;
 @Table(name = "users")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -39,10 +43,11 @@ public class User {
     @Column(nullable = false)
     private int streak;
 
+    @CreatedDate
     @Column(nullable = false,name = "created_at")
     private Date created_at;
 
-
+    @LastModifiedDate
     @Column(nullable = false,name = "updated_at")
     private Date updated_at;
 }
