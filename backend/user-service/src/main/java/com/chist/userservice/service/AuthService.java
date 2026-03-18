@@ -32,9 +32,6 @@ public class AuthService {
                 .email(request.getEmail())
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.Unverified_User)
-                .points(0)
-                .streak(0)
                 .build();
 
         userRepository.save(user);
