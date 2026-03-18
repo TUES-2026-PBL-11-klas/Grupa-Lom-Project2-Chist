@@ -3,6 +3,8 @@ package com.chist.userservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -18,13 +20,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false,unique = true,length = 100)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 100)
     private String username;
 
     @Enumerated(EnumType.STRING)
@@ -36,4 +38,11 @@ public class User {
 
     @Column(nullable = false)
     private int streak;
+
+    @Column(nullable = false,name = "created_at")
+    private Date created_at;
+
+
+    @Column(nullable = false,name = "updated_at")
+    private Date updated_at;
 }
