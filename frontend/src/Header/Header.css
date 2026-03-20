@@ -1,0 +1,120 @@
+/* Header.css */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-height);
+  background: rgba(5, 14, 8, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(74, 222, 128, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+}
+
+/* ── Logo ── */
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header__logo-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4ade80, #16a34a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 0 18px rgba(74, 222, 128, 0.4);
+  flex-shrink: 0;
+}
+.header__logo-wordmark {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--green-bright);
+  letter-spacing: 2px;
+  line-height: 1;
+  text-shadow: 0 0 18px rgba(74, 222, 128, 0.4);
+}
+.header__logo-sub {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  margin-top: 2px;
+}
+
+/* ── Right cluster ── */
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header__user-pts {
+  text-align: right;
+}
+.header__user-pts-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--amber);
+}
+.header__user-pts-streak {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: rgba(245, 197, 24, 0.5);
+}
+.header__bell {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  flex-shrink: 0;
+}
+.header__bell:hover {
+  border-color: var(--green-bright);
+  background: rgba(74, 222, 128, 0.14);
+}
+.header__bell-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--red-alert);
+  border: 1.5px solid var(--bg-void);
+  box-shadow: 0 0 6px var(--red-alert);
+}
+.header__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ade80, #16a34a);
+  border: 2px solid rgba(74, 222, 128, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(74, 222, 128, 0.28);
+  transition: box-shadow 0.2s;
+  flex-shrink: 0;
+}
+.header__avatar:hover {
+  box-shadow: 0 0 22px rgba(74, 222, 128, 0.5);
+}
