@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.chist</groupId>
-    <artifactId>user-service</artifactId>
+    <artifactId>user-module</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>user-service</name>
     <properties>
