@@ -1,64 +1,16 @@
-// src/data/mockData.js  —  All static/mock data for Clean&Win
-// In production these come from the Spring Boot REST API
-
 export const CURRENT_USER = {
-  id:        "usr_002",
-  name:      "GreenSofia",
-  avatar:    "🌿",
-  points:    3670,
-  streak:    7,
-  level:     "МАСТЪР",
-  levelIcon: "💎",
-  nextLevelPts: 5000,
-  verified:  false,
-  cleanings: 31,
-  reports:   18,
-  joined:    "Октомври 2024",
+  id:"usr_002", name:"GreenSofia", avatar:"🌿",
+  points:3670, streak:7, level:"МАСТЪР", levelIcon:"💎",
+  nextLevelPts:5000, verified:false, cleanings:31, reports:18, joined:"Октомври 2024",
 };
 
 export const REPORTS = [
-  {
-    id: 1, title: "Замърсен парк — Борисова", location: "Борисова градина, Вход 3",
-    district: "Оборище", lat: 42.678, lng: 23.357, status: "open", severity: "high",
-    img: "🌳", points: 120, reporter: "EcoHero99", reporterAvatar: "🦅", time: "преди 2ч",
-    description: "Голямо количество отпадъци са изхвърлени близо до детската площадка. Видими са найлонови торби, бутилки и стара мебел.",
-    volunteers: 0, confirmedBy: [], aiVerified: false, gps: { lat: 42.6783, lng: 23.3571 },
-  },
-  {
-    id: 2, title: "Отпадъци до контейнер", location: "ж.к. Люлин 5, бл. 514",
-    district: "Люлин", lat: 42.712, lng: 23.269, status: "in-progress", severity: "medium",
-    img: "🗑️", points: 80, reporter: "GreenSofia", reporterAvatar: "🌿", time: "преди 5ч",
-    description: "Контейнерът е препълнен и отпадъците са разхвърляни около него на радиус 3-4 метра.",
-    volunteers: 1, confirmedBy: [], aiVerified: true, claimedBy: "GreenSofia", gps: { lat: 42.7123, lng: 23.2694 },
-  },
-  {
-    id: 3, title: "Нелегално сметище", location: "бул. Витоша, зад магазините",
-    district: "Триадица", lat: 42.653, lng: 23.321, status: "open", severity: "critical",
-    img: "⚠️", points: 200, reporter: "CleanCity", reporterAvatar: "🏙️", time: "преди 1д",
-    description: "Голямо нелегално сметище с електроуреди, строителни материали и смесени битови отпадъци. Необходими са минимум 4 доброволци.",
-    volunteers: 0, confirmedBy: [], aiVerified: true, gps: { lat: 42.6534, lng: 23.3213 },
-  },
-  {
-    id: 4, title: "Стъкло на тротоара", location: "Студентски град, бл. 12",
-    district: "Студентски", lat: 42.657, lng: 23.395, status: "done", severity: "low",
-    img: "✨", points: 40, reporter: "UniVolunteer", reporterAvatar: "🎓", time: "преди 2д",
-    description: "Счупена бутилка на пешеходната пътека до спирката.",
-    volunteers: 1, confirmedBy: ["EcoHero99","GreenSofia"], aiVerified: true, cleanedBy: "UniVolunteer", gps: { lat: 42.6573, lng: 23.3952 },
-  },
-  {
-    id: 5, title: "Изоставени мебели", location: "ж.к. Надежда, ул. 205",
-    district: "Надежда", lat: 42.735, lng: 23.302, status: "open", severity: "medium",
-    img: "🛋️", points: 100, reporter: "NadezhDA", reporterAvatar: "⭐", time: "преди 3д",
-    description: "Изоставен диван, матрак и маса блокират тротоара в жилищния квартал.",
-    volunteers: 0, confirmedBy: [], aiVerified: false, gps: { lat: 42.7354, lng: 23.3022 },
-  },
-  {
-    id: 6, title: "Фасове около фонтана", location: "пл. България, около фонтана",
-    district: "Красно село", lat: 42.690, lng: 23.319, status: "open", severity: "low",
-    img: "🚬", points: 35, reporter: "SofiaClean", reporterAvatar: "🌟", time: "преди 4ч",
-    description: "Множество фасове и хартиени отпадъци около централния фонтан.",
-    volunteers: 0, confirmedBy: [], aiVerified: false, gps: { lat: 42.6902, lng: 23.3191 },
-  },
+  { id:1, title:"Замърсен парк — Борисова", location:"Борисова градина, Вход 3", district:"Оборище", lat:42.678, lng:23.357, status:"open", severity:"high", img:"🌳", points:120, reporter:"EcoHero99", reporterAvatar:"🦅", time:"преди 2ч", description:"Голямо количество отпадъци са изхвърлени близо до детската площадка. Видими са найлонови торби, бутилки и стара мебел.", volunteers:0, confirmedBy:[], aiVerified:false, gps:{lat:42.6783,lng:23.3571} },
+  { id:2, title:"Отпадъци до контейнер", location:"ж.к. Люлин 5, бл. 514", district:"Люлин", lat:42.712, lng:23.269, status:"in-progress", severity:"medium", img:"🗑️", points:80, reporter:"GreenSofia", reporterAvatar:"🌿", time:"преди 5ч", description:"Контейнерът е препълнен и отпадъците са разхвърляни около него на радиус 3-4 метра.", volunteers:1, confirmedBy:[], aiVerified:true, claimedBy:"GreenSofia", gps:{lat:42.7123,lng:23.2694} },
+  { id:3, title:"Нелегално сметище", location:"бул. Витоша, зад магазините", district:"Триадица", lat:42.653, lng:23.321, status:"open", severity:"critical", img:"⚠️", points:200, reporter:"CleanCity", reporterAvatar:"🏙️", time:"преди 1д", description:"Голямо нелегално сметище с електроуреди, строителни материали и смесени битови отпадъци. Необходими са минимум 4 доброволци.", volunteers:0, confirmedBy:[], aiVerified:true, gps:{lat:42.6534,lng:23.3213} },
+  { id:4, title:"Стъкло на тротоара", location:"Студентски град, бл. 12", district:"Студентски", lat:42.657, lng:23.395, status:"done", severity:"low", img:"✨", points:40, reporter:"UniVolunteer", reporterAvatar:"🎓", time:"преди 2д", description:"Счупена бутилка на пешеходната пътека до спирката.", volunteers:1, confirmedBy:["EcoHero99","GreenSofia"], aiVerified:true, cleanedBy:"UniVolunteer", gps:{lat:42.6573,lng:23.3952} },
+  { id:5, title:"Изоставени мебели", location:"ж.к. Надежда, ул. 205", district:"Надежда", lat:42.735, lng:23.302, status:"open", severity:"medium", img:"🛋️", points:100, reporter:"NadezhDA", reporterAvatar:"⭐", time:"преди 3д", description:"Изоставен диван, матрак и маса блокират тротоара в жилищния квартал.", volunteers:0, confirmedBy:[], aiVerified:false, gps:{lat:42.7354,lng:23.3022} },
+  { id:6, title:"Фасове около фонтана", location:"пл. България, около фонтана", district:"Красно село", lat:42.690, lng:23.319, status:"open", severity:"low", img:"🚬", points:35, reporter:"SofiaClean", reporterAvatar:"🌟", time:"преди 4ч", description:"Множество фасове и хартиени отпадъци около централния фонтан.", volunteers:0, confirmedBy:[], aiVerified:false, gps:{lat:42.6902,lng:23.3191} },
 ];
 
 export const LEADERBOARD = [
@@ -72,12 +24,12 @@ export const LEADERBOARD = [
 ];
 
 export const ACTIVITY_FEED = [
-  { id:1, user:"EcoHero99",    userAvatar:"🦅", action:"почисти",      place:"Борисова градина", pts:"+120", time:"2мин",  type:"clean"   },
-  { id:2, user:"GreenSofia",   userAvatar:"🌿", action:"докладва",     place:"Люлин 5",          pts:"+15",  time:"8мин",  type:"report"  },
-  { id:3, user:"CleanCity",    userAvatar:"🏙️", action:"потвърди",     place:"бул. Витоша",      pts:"+30",  time:"15мин", type:"confirm" },
-  { id:4, user:"UniVolunteer", userAvatar:"🎓", action:"почисти",      place:"Студентски град",  pts:"+40",  time:"1ч",    type:"clean"   },
-  { id:5, user:"NadezhDA",     userAvatar:"⭐", action:"докладва",     place:"ж.к. Надежда",     pts:"+15",  time:"3ч",    type:"report"  },
-  { id:6, user:"EcoHero99",    userAvatar:"🦅", action:"получи значка",place:"10 почиствания",   pts:"+50",  time:"5ч",    type:"badge"   },
+  { id:1, user:"EcoHero99",    userAvatar:"🦅", action:"почисти",       place:"Борисова градина", pts:"+120", time:"2мин",  type:"clean"   },
+  { id:2, user:"GreenSofia",   userAvatar:"🌿", action:"докладва",      place:"Люлин 5",          pts:"+15",  time:"8мин",  type:"report"  },
+  { id:3, user:"CleanCity",    userAvatar:"🏙️", action:"потвърди",      place:"бул. Витоша",      pts:"+30",  time:"15мин", type:"confirm" },
+  { id:4, user:"UniVolunteer", userAvatar:"🎓", action:"почисти",       place:"Студентски град",  pts:"+40",  time:"1ч",    type:"clean"   },
+  { id:5, user:"NadezhDA",     userAvatar:"⭐", action:"докладва",      place:"ж.к. Надежда",     pts:"+15",  time:"3ч",    type:"report"  },
+  { id:6, user:"EcoHero99",    userAvatar:"🦅", action:"получи значка", place:"10 почиствания",   pts:"+50",  time:"5ч",    type:"badge"   },
 ];
 
 export const BADGES = [
@@ -92,40 +44,32 @@ export const BADGES = [
 ];
 
 export const SEVERITY_META = {
-  critical: { label:"Критично", color:"#ff3b3b", bg:"rgba(255,59,59,0.10)",  border:"rgba(255,59,59,0.30)"  },
-  high:     { label:"Сериозно", color:"#ff8c00", bg:"rgba(255,140,0,0.10)",  border:"rgba(255,140,0,0.30)"  },
-  medium:   { label:"Средно",   color:"#f5c518", bg:"rgba(245,197,24,0.10)", border:"rgba(245,197,24,0.30)" },
-  low:      { label:"Леко",     color:"#4ade80", bg:"rgba(74,222,128,0.10)", border:"rgba(74,222,128,0.30)" },
+  critical: { label:"Критично", color:"#f43f5e", bg:"rgba(244,63,94,0.12)",  border:"rgba(244,63,94,0.3)"   },
+  high:     { label:"Сериозно", color:"#fb923c", bg:"rgba(251,146,60,0.12)", border:"rgba(251,146,60,0.3)"  },
+  medium:   { label:"Средно",   color:"#f59e0b", bg:"rgba(245,158,11,0.12)", border:"rgba(245,158,11,0.3)"  },
+  low:      { label:"Леко",     color:"#34d399", bg:"rgba(52,211,153,0.12)", border:"rgba(52,211,153,0.3)"  },
 };
 
 export const STATUS_META = {
-  open:          { label:"Отворен",  color:"#60a5fa", bg:"rgba(96,165,250,0.10)" },
-  "in-progress": { label:"В процес", color:"#f5c518", bg:"rgba(245,197,24,0.10)" },
-  done:          { label:"Завършен", color:"#4ade80", bg:"rgba(74,222,128,0.10)" },
+  open:          { label:"Отворен",  color:"#60a5fa", bg:"rgba(96,165,250,0.12)" },
+  "in-progress": { label:"В процес", color:"#f59e0b", bg:"rgba(245,158,11,0.12)" },
+  done:          { label:"Завършен", color:"#34d399", bg:"rgba(52,211,153,0.12)" },
 };
 
 export const LEVEL_THRESHOLDS = [
-  { level:"НОВИЧ",   icon:"🌱", min:0,    max:499        },
-  { level:"АКТИВЕН", icon:"🥉", min:500,  max:1499       },
-  { level:"ПРО",     icon:"🥈", min:1500, max:2999       },
-  { level:"МАСТЪР",  icon:"💎", min:3000, max:4999       },
-  { level:"ЛЕГЕНДА", icon:"🏆", min:5000, max:Infinity   },
+  { level:"НОВИЧ",   icon:"🌱", min:0,    max:499       },
+  { level:"АКТИВЕН", icon:"🥉", min:500,  max:1499      },
+  { level:"ПРО",     icon:"🥈", min:1500, max:2999      },
+  { level:"МАСТЪР",  icon:"💎", min:3000, max:4999      },
+  { level:"ЛЕГЕНДА", icon:"🏆", min:5000, max:Infinity  },
 ];
 
 export const STATS_GLOBAL = {
-  totalCleaned:     1247,
-  activeVolunteers: 83,
-  pointsAwarded:    98400,
-  districtsActive:  14,
-  kgWasteRemoved:   3820,
-  co2Saved:         94,
+  totalCleaned:1247, activeVolunteers:83, pointsAwarded:98400,
+  districtsActive:14, kgWasteRemoved:3820, co2Saved:94,
 };
 
 export const MAP_PINS = [
-  { id:1, x:62, y:44 },
-  { id:2, x:28, y:30 },
-  { id:3, x:51, y:68 },
-  { id:4, x:74, y:58 },
-  { id:5, x:36, y:19 },
-  { id:6, x:50, y:48 },
+  {id:1,x:62,y:44},{id:2,x:28,y:30},{id:3,x:51,y:68},
+  {id:4,x:74,y:58},{id:5,x:36,y:19},{id:6,x:50,y:48},
 ];

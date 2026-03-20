@@ -5,7 +5,7 @@ import Toast from "./components/Toast/Toast.jsx";
 import HomeView from "./components/HomeView/HomeView.jsx";
 import MapPageView from "./components/MapPageView/MapPageView.jsx";
 import ReportsView from "./components/ReportViews/ReportsView.jsx";
-import LeaderboardView from "./components/LeaderboardView.jsx";
+import LeaderboardView from "./components/LeardboardView/LeaderboardView.jsx";
 import ProfileView from "./components/ProfileView/ProfileView.jsx";
 import RewardsView from "./components/ReportViews/RewardsView.jsx";
 import ReportModal from "./components/Reports/ReportModal.jsx";
@@ -24,16 +24,16 @@ export default function Main() {
   const [showModal, setShowModal] = useState(false);
   const [showNotifs, setShowNotifs] = useState(false);
 
+  const isHome = tab === "home";
+
   const renderPage = () => {
     switch (tab) {
       case "home":
         return (
-          <Page k="home">
-            <HomeView
-              onNewReport={() => setShowModal(true)}
-              onNavigate={setTab}
-            />
-          </Page>
+          <HomeView
+            onNewReport={() => setShowModal(true)}
+            onNavigate={setTab}
+          />
         );
       case "map":
         return (
@@ -74,7 +74,7 @@ export default function Main() {
     <div
       style={{
         minHeight: "100vh",
-        background: "var(--bg-void)",
+        background: "var(--bg-base)",
         position: "relative",
       }}
     >
@@ -83,28 +83,30 @@ export default function Main() {
 
       <Header onNotifications={() => setShowNotifs(true)} />
 
-      <main className="page-content" aria-label="Основно съдържание">
-        {renderPage()}
-      </main>
+      {isHome ? (
+        renderPage()
+      ) : (
+        <main className="page-content">{renderPage()}</main>
+      )}
 
       <Toast />
       <BottomNav active={tab} onChange={setTab} />
 
-      {tab !== "home" && (
+      {!isHome && (
         <button
           className="btn-primary"
           onClick={() => setShowModal(true)}
           aria-label="Нов сигнал"
           style={{
             position: "fixed",
-            bottom: "calc(var(--nav-height) + 14px)",
+            bottom: "calc(var(--nav-h) + 14px)",
             right: 18,
-            width: 52,
-            height: 52,
+            width: 50,
+            height: 50,
             borderRadius: "50%",
-            fontSize: 22,
+            fontSize: 20,
             padding: 0,
-            boxShadow: "0 0 24px rgba(74,222,128,0.5)",
+            boxShadow: "0 0 24px var(--primary-glow)",
             zIndex: 50,
           }}
         >

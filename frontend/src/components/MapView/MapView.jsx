@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./MapView.css";
-import { SEVERITY_META, STATUS_META } from "../data/mockData.js";
-import { useApp } from "../context/AppContext.jsx";
+import { SEVERITY_META, STATUS_META } from "../../data/mockData.js";
+import { useApp } from "../../context/AppContext.jsx";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 

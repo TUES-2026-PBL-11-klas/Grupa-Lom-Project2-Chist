@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./LeaderboardView.css";
-import { LEADERBOARD } from "../data/mockData.js";
-import { useApp } from "../context/AppContext.jsx";
+import { LEADERBOARD } from "../../data/mockData.js";
+import { useApp } from "../../context/AppContext.jsx";
 
 const RANK_COLORS = ["#f5c518", "#94a3b8", "#cd7f32"];
 const PERIODS = [
