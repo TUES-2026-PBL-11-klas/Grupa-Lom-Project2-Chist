@@ -4,7 +4,6 @@ package com.chist.userservice.service;
 import com.chist.userservice.dto.AuthRequest;
 import com.chist.userservice.dto.AuthResponse;
 import com.chist.userservice.dto.RegisterRequest;
-import com.chist.userservice.model.Role;
 import com.chist.userservice.model.User;
 import com.chist.userservice.repository.UserRepository;
 import com.chist.userservice.security.JwtService;
