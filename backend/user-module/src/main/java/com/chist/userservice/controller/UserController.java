@@ -6,6 +6,7 @@ import com.chist.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -25,8 +26,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable UUID id){
-        return userRepository.findById(id).map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
+        return ResponseEntity.ok(mapToDTO(user));
     }
 
 
