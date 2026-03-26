@@ -21,7 +21,7 @@ public class Admin extends User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("Admin"));
+        return List.of(new SimpleGrantedAuthority("ADMIN"));
     }
 
     public void banUser(User user) {

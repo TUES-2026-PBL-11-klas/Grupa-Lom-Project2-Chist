@@ -18,8 +18,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Getter @Setter
+@DiscriminatorValue("USER")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @EntityListeners(AuditingEntityListener.class)
 @DiscriminatorColumn(name = "role",discriminatorType = DiscriminatorType.STRING)
@@ -57,7 +57,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
-        return List.of(new SimpleGrantedAuthority("Role_User"));
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
