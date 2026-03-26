@@ -30,7 +30,18 @@ public class UserController {
     }
 
 
-    private UserResponse mapToDTO(User user){}
+    private UserResponse mapToDTO(User user){
+        return UserResponse.builder()
+                .id(user.getUuid())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .points(user.getPoints())
+                .streak(user.getStreak())
+                .role(user.getClass().getSimpleName())
+                .createdAt(user.getCreated_at())
+                .updatedAt(user.getUpdated_at())
+                .build();
+    }
 
 
 
