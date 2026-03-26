@@ -1,6 +1,6 @@
 package com.chist.userservice.controller;
 
-
+import com.chist.userservice.dto.UserResponse;
 import com.chist.userservice.model.User;
 import com.chist.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal User user){
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(mapToDTO(user));
     }
 
     @GetMapping("/{id}")
@@ -28,6 +28,11 @@ public class UserController {
         return userRepository.findById(id).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+
+    private UserResponse mapToDTO(User user){}
+
+
 
 
 }
