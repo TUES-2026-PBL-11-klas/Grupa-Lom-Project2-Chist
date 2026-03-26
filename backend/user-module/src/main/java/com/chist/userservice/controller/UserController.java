@@ -6,6 +6,7 @@ import com.chist.userservice.repository.UserRepository;
 import com.chist.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,17 @@ public class UserController {
                     .stream()
                     .map(this::mapToDTO)
                     .collect(Collectors.toList())
+        );
+    }
+
+    @GetMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserResponse>> getAllUsers(){
+        return ResponseEntity.ok(
+                userService.getAllUsers()
+                        .stream()
+                        .map(this::mapToDTO)
+                        .collect(Collectors.toList())
         );
     }
 
