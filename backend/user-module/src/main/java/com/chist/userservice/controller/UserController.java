@@ -7,7 +7,6 @@ import com.chist.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserRepository userRepository;
     private final UserService userService;
 
 
@@ -30,15 +28,14 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable UUID id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
-        return ResponseEntity.ok(mapToDTO(user));
+        return ResponseEntity.ok(mapToDTO(userService.getUserById(id)));
     }
 
     @GetMapping("/leaderboard")
     public ResponseEntity<List<UserResponse>> getLeaderboard(){
+        int limit = 50;
         return ResponseEntity.ok(
-            userService.getTopUsers(10)
+            userService.getTopUsers(limit)
                     .stream()
                     .map(this::mapToDTO)
                     .collect(Collectors.toList())
