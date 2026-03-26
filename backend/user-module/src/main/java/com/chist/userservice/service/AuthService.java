@@ -4,7 +4,6 @@ package com.chist.userservice.service;
 import com.chist.userservice.dto.AuthRequest;
 import com.chist.userservice.dto.AuthResponse;
 import com.chist.userservice.dto.RegisterRequest;
-import com.chist.userservice.model.Role;
 import com.chist.userservice.model.User;
 import com.chist.userservice.repository.UserRepository;
 import com.chist.userservice.security.JwtService;
@@ -26,7 +25,7 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request){
         if(userRepository.existsByEmail(request.getEmail())){
-            throw new RuntimeException("User or Password not correct.");
+            throw new RuntimeException("Email or Password not correct.");
         }
         User user = User.builder()
                 .email(request.getEmail())

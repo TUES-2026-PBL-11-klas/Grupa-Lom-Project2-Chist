@@ -25,7 +25,7 @@ public class VerifiedUser extends User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("Role_Verified_User"));
+        return List.of(new SimpleGrantedAuthority("Verified_User"));
     }
 
     public float getBonus() {
