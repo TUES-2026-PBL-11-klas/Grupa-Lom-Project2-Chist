@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/backend/user-service/pom.xml" />
         <option value="$PROJECT_DIR$/backend/user-module/pom.xml" />
         <option value="$PROJECT_DIR$/report-module/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/report-module/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
