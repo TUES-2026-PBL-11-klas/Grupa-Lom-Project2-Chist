@@ -3,6 +3,7 @@ package com.chist.reportmodule.service;
 
 import com.chist.reportmodule.dto.CreateReportRequest;
 import com.chist.reportmodule.dto.ReportResponse;
+import com.chist.reportmodule.exception.ReportNotFoundException;
 import com.chist.reportmodule.model.Report;
 import com.chist.reportmodule.model.ReportStatus;
 import com.chist.reportmodule.repository.ReportRepository;
@@ -34,7 +35,7 @@ public class ReportService {
 
     public ReportResponse getReportById(UUID  reportId){
         return mapToDTO(reportRepository.findById(reportId)
-                .orElseThrow(() -> new /*Custom report*/));
+                .orElseThrow(() -> new ReportNotFoundException("Report Not Found."));
     }
 
     public List<ReportResponse> getReportsByUserId(UUID userId){
@@ -60,14 +61,14 @@ public class ReportService {
 
     public ReportResponse updateStatus(UUID reportId, ReportStatus status){
         Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new /*Custom exception*/);
+                .orElseThrow(() -> new ReportNotFoundException("Report Not Found."));
         report.setStatus(status);
         return mapToDTO(reportRepository.save(report));
     }
 
     public void deleteReport(UUID reportId){
         if(!reportRepository.existsById(reportId)){
-            throw new /*Custom exception*/
+            throw new ReportNotFoundException("Report Not Found.");
         }
         reportRepository.deleteById(reportId);
     }
