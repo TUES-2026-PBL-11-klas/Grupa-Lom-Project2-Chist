@@ -34,10 +34,21 @@ public class CleaningTaskService {
                 .verified(false)
                 .build();
 
-        return //Dto map
+        return mapToDTO(cleaningTaskRepository.save(cleaningTask));
     }
 
-
+    private CleaningTaskResponse mapToDTO(CleaningTask cleaningTask){
+        return CleaningTaskResponse.builder()
+                .id(cleaningTask.getId())
+                .cleanerId(cleaningTask.getCleanerId())
+                .beforePhoto(cleaningTask.getBeforePhoto())
+                .afterPhoto(cleaningTask.getAfterPhoto())
+                .verified(cleaningTask.isVerified())
+                .status(cleaningTask.getStatus())
+                .createdAt(cleaningTask.getCreatedAt())
+                .updatedAt(cleaningTask.getUpdatedAt())
+                .build();
+    }
 
 
 }
