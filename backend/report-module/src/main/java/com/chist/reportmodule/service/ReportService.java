@@ -35,7 +35,7 @@ public class ReportService {
 
     public ReportResponse getReportById(UUID  reportId){
         return mapToDTO(reportRepository.findById(reportId)
-                .orElseThrow(() -> new ReportNotFoundException("Report Not Found."));
+                .orElseThrow(() -> new ReportNotFoundException("Report Not Found.")));
     }
 
     public List<ReportResponse> getReportsByUserId(UUID userId){
