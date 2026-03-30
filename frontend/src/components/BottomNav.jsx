@@ -2,7 +2,6 @@ import "../styles/BottomNav.css";
 
 const TABS = [
   { id: "home", icon: "🏠", label: "Начало" },
-  { id: "map", icon: "🗺️", label: "Карта" },
   { id: "reports", icon: "📍", label: "Сигнали" },
   { id: "board", icon: "🏆", label: "Класация" },
   { id: "rewards", icon: "🎁", label: "Награди" },

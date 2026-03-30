@@ -3,7 +3,6 @@ import Header from "./components/Header.jsx";
 import BottomNav from "./components/BottomNav.jsx";
 import Toast from "./components/Toast.jsx";
 import HomeView from "./pages/HomeView.jsx";
-import MapPageView from "./pages/MapPageView.jsx";
 import ReportsView from "./pages/ReportsView.jsx";
 import LeaderboardView from "./pages/LeaderboardView.jsx";
 import ProfileView from "./pages/ProfileView.jsx";
@@ -34,12 +33,6 @@ export default function Main() {
             onNewReport={() => setShowModal(true)}
             onNavigate={setTab}
           />
-        );
-      case "map":
-        return (
-          <Page k="map">
-            <MapPageView onNewReport={() => setShowModal(true)} />
-          </Page>
         );
       case "reports":
         return (

@@ -205,3 +205,35 @@
   color: var(--text-muted);
   margin-top: 2px;
 }
+
+/* Badges preview in row */
+.leaderboard__badges-preview {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.leaderboard__badges-preview > span {
+  font-size: 14px;
+  opacity: 0.8;
+  transition: all 0.2s;
+}
+
+.leaderboard__badges-preview > span:hover {
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.leaderboard__more-badges {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
