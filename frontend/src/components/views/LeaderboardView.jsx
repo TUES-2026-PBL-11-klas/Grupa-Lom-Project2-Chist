@@ -1,14 +1,31 @@
 import { useState } from "react";
 import "./LeaderboardView.css";
-import { LEADERBOARD } from "../../data/mockData.js";
+import { LEADERBOARD, BADGES } from "../../data/mockData.js";
 import { useApp } from "../../context/AppContext.jsx";
 
 const RANK_COLORS = ["#f5c518", "#94a3b8", "#cd7f32"];
 const PERIODS = [
-  { id: "week", label: "СЕДМИЦА" },
-  { id: "month", label: "МЕСЕЦ" },
-  { id: "all", label: "ОБЩО" },
+  { id: "awards", label: "НАГРАДИ" },
+  { id: "cleanings", label: "ПОЧИСТВАНИЯ" },
+  { id: "points", label: "ТОЧКИ" },
 ];
+
+// Map user data with earned badges count
+const usersWithAwards = LEADERBOARD.map((user) => {
+  const earnedBadges = BADGES.filter((badge) => {
+    // Calculate earned badges based on user stats
+    if (badge.id === "first_report" && user.cleanings > 0) return true;
+    if (badge.id === "first_clean" && user.cleanings > 0) return true;
+    if (badge.id === "streak_7" && user.streak >= 7) return true;
+    if (badge.id === "clean_10" && user.cleanings >= 10) return true;
+    if (badge.id === "verified" && user.verified) return true;
+    if (badge.id === "eco_legend" && user.points >= 5000) return true;
+    if (badge.id === "district_hero" && user.cleanings >= 5) return true;
+    if (badge.id === "team_player" && user.cleanings >= 20) return true;
+    return false;
+  });
+  return { ...user, awards: earnedBadges.length, earnedBadges };
+});
 
 function Podium({ top3 }) {
   const order = [top3[1], top3[0], top3[2]];
@@ -59,7 +76,7 @@ function Podium({ top3 }) {
               className="leaderboard__podium-pts"
               style={{ color: `${RANK_COLORS[i]}aa` }}
             >
-              {user.points.toLocaleString()}
+              {user.awards} 🏆
             </div>
             <div className="leaderboard__podium-icon">{user.levelIcon}</div>
           </div>
@@ -69,8 +86,21 @@ function Podium({ top3 }) {
   );
 }
 
-function LeaderRow({ user, isMe, index }) {
+function LeaderRow({ user, isMe, index, sortBy }) {
   const rankColor = index < 3 ? RANK_COLORS[index] : null;
+
+  const getValue = () => {
+    if (sortBy === "awards") return user.awards;
+    if (sortBy === "cleanings") return user.cleanings;
+    return user.points;
+  };
+
+  const getLabel = () => {
+    if (sortBy === "awards") return "🏆 НАГРАДИ";
+    if (sortBy === "cleanings") return "🧹 ПОЧИСТВАНИЯ";
+    return "⭐ ТОЧКИ";
+  };
+
   return (
     <div
       className={`leaderboard__row ${
@@ -88,7 +118,7 @@ function LeaderRow({ user, isMe, index }) {
           color: rankColor || "var(--text-muted)",
         }}
       >
-        #{user.rank}
+        #{index + 1}
       </div>
       <span className="leaderboard__row-avatar">{user.avatar}</span>
       <div className="leaderboard__row-info">
@@ -100,7 +130,7 @@ function LeaderRow({ user, isMe, index }) {
         >
           {user.name}
           {user.verified && (
-            <span className="leaderboard__verified-badge">✓ VRF</span>
+            <span className="leaderboard__verified-badge">✓</span>
           )}
           {isMe && <span className="leaderboard__me-badge">ТИ</span>}
         </div>
@@ -117,15 +147,29 @@ function LeaderRow({ user, isMe, index }) {
             · 🧹 {user.cleanings}
           </span>
         </div>
+        {sortBy === "awards" && user.earnedBadges.length > 0 && (
+          <div className="leaderboard__badges-preview">
+            {user.earnedBadges.slice(0, 3).map((badge) => (
+              <span key={badge.id} title={badge.name}>
+                {badge.icon}
+              </span>
+            ))}
+            {user.earnedBadges.length > 3 && (
+              <span className="leaderboard__more-badges">
+                +{user.earnedBadges.length - 3}
+              </span>
+            )}
+          </div>
+        )}
       </div>
       <div className="leaderboard__row-pts-col">
         <div
           className="leaderboard__row-pts"
           style={{ color: rankColor || "var(--green-bright)" }}
         >
-          {user.points.toLocaleString()}
+          {getValue().toLocaleString()}
         </div>
-        <div className="leaderboard__row-pts-label">ТОЧКИ</div>
+        <div className="leaderboard__row-pts-label">{getLabel()}</div>
       </div>
     </div>
   );
@@ -133,19 +177,18 @@ function LeaderRow({ user, isMe, index }) {
 
 export default function LeaderboardView() {
   const { user } = useApp();
-  const [period, setPeriod] = useState("week");
+  const [sortBy, setSortBy] = useState("awards");
 
-  const multipliers = { week: 0.08, month: 0.35, all: 1 };
-  const boardData = LEADERBOARD.map((u, i) => ({
-    ...u,
-    points: Math.floor(
-      u.points * multipliers[period] + i * (period === "all" ? 0 : 5),
-    ),
-  }))
-    .sort((a, b) => b.points - a.points)
+  const sortedData = [...usersWithAwards]
+    .sort((a, b) => {
+      if (sortBy === "awards") return b.awards - a.awards;
+      if (sortBy === "cleanings") return b.cleanings - a.cleanings;
+      return b.points - a.points;
+    })
     .map((u, i) => ({ ...u, rank: i + 1 }));
 
-  const myEntry = boardData.find((u) => u.name === user.name);
+  const myEntry = sortedData.find((u) => u.name === user.name);
+  const top3 = sortedData.slice(0, 3);
 
   return (
     <div className="leaderboard">
@@ -156,35 +199,41 @@ export default function LeaderboardView() {
           <button
             key={p.id}
             className={`leaderboard__tab ${
-              period === p.id
+              sortBy === p.id
                 ? "leaderboard__tab--active"
                 : "leaderboard__tab--inactive"
             }`}
-            onClick={() => setPeriod(p.id)}
+            onClick={() => setSortBy(p.id)}
           >
             {p.label}
           </button>
         ))}
       </div>
 
-      <Podium top3={boardData.slice(0, 3)} />
+      <Podium top3={top3} />
 
       {myEntry && (
         <div className="leaderboard__my-rank">
           <span className="leaderboard__my-rank-label">Твоята позиция:</span>
           <span className="leaderboard__my-rank-val">
-            #{myEntry.rank} · {myEntry.points.toLocaleString()} точки
+            #{myEntry.rank} ·{" "}
+            {sortBy === "awards"
+              ? myEntry.awards + " 🏆"
+              : sortBy === "cleanings"
+                ? myEntry.cleanings + " 🧹"
+                : myEntry.points.toLocaleString() + " ⭐"}
           </span>
         </div>
       )}
 
       <div className="leaderboard__list">
-        {boardData.map((u, i) => (
+        {sortedData.map((u, i) => (
           <LeaderRow
             key={u.id}
             user={u}
             isMe={u.name === user.name}
             index={i}
+            sortBy={sortBy}
           />
         ))}
       </div>

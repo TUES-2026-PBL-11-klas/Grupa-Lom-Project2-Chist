@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./MapPageView.css";
 import { SEVERITY_META, STATUS_META } from "../../data/mockData.js";
 import { useApp } from "../../context/AppContext.jsx";
-import MapView from "../MapView/MapView.jsx";
+import MapView from "./MapView.jsx";
 import ReportCard from "../Reports/ReportCard.jsx";
 
 export default function MapPageView({ onNewReport }) {

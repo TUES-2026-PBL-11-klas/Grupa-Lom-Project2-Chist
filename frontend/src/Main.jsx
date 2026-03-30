@@ -2,12 +2,11 @@ import { useState } from "react";
 import Header from "./Header/Header.jsx";
 import BottomNav from "./components/BottomNav/BottomNav.jsx";
 import Toast from "./components/Toast/Toast.jsx";
-import HomeView from "./components/HomeView/HomeView.jsx";
-import MapPageView from "./components/MapPageView/MapPageView.jsx";
-import ReportsView from "./components/ReportViews/ReportsView.jsx";
-import LeaderboardView from "./components/LeardboardView/LeaderboardView.jsx";
-import ProfileView from "./components/ProfileView/ProfileView.jsx";
-import RewardsView from "./components/ReportViews/RewardsView.jsx";
+import HomeView from "./components/views/HomeView.jsx";
+import ReportsView from "./components/views/ReportsView.jsx";
+import LeaderboardView from "./components/views/LeaderboardView.jsx";
+import ProfileView from "./components/views/ProfileView.jsx";
+import RewardsView from "./components/views/RewardsView.jsx";
 import ReportModal from "./components/Reports/ReportModal.jsx";
 import NotificationsPanel from "./components/NotificationPanel/NotificationsPanel.jsx";
 
@@ -34,12 +33,6 @@ export default function Main() {
             onNewReport={() => setShowModal(true)}
             onNavigate={setTab}
           />
-        );
-      case "map":
-        return (
-          <Page k="map">
-            <MapPageView onNewReport={() => setShowModal(true)} />
-          </Page>
         );
       case "reports":
         return (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AppProvider } from "./context/AppContext.jsx";
-import AuthView from "./components/AuthView/AuthView.jsx";
+import AuthView from "./components/views/AuthView.jsx";
 import Main from "./Main.jsx";
 
 export default function App() {
