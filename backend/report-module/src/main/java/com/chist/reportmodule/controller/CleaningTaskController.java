@@ -17,7 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CleaningTaskController {
 
-    private CleaningTaskService cleaningTaskService;
+    private final CleaningTaskService cleaningTaskService;
 
     @PostMapping
     public ResponseEntity<CleaningTaskResponse> createTask(
