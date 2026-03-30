@@ -1,4 +1,4 @@
-import "./BottomNav.css";
+import "../styles/BottomNav.css";
 
 const TABS = [
   { id: "home", icon: "🏠", label: "Начало" },

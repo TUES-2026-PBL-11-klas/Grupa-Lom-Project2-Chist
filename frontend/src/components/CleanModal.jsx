@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
-import "./CleanModal.css";
-import { SEVERITY_META } from "../../data/mockData.js";
-import { useApp } from "../../context/AppContext.jsx";
+import "../styles/CleanModal.css";
+import { SEVERITY_META } from "../data/mockData.js";
+import { useApp } from "../context/AppContext.jsx";
 
 export default function CleanModal({ report, onClose }) {
   const { completeReport } = useApp();
@@ -136,7 +136,7 @@ export default function CleanModal({ report, onClose }) {
                 <span
                   className="clean-modal__step-badge"
                   style={{
-                    color: gpsOk ? "var(--green-bright)" : "var(--text-muted)",
+                    color: gpsOk ? "var(--text-1)" : "var(--text-3)",
                   }}
                 >
                   {gpsOk ? "✓ OK" : "⏳"}
@@ -191,10 +191,10 @@ export default function CleanModal({ report, onClose }) {
                       style={{
                         color:
                           aiResult === "pass"
-                            ? "var(--green-bright)"
+                            ? "var(--text-1)"
                             : aiResult === "fail"
-                              ? "var(--red-alert)"
-                              : "var(--amber)",
+                              ? "var(--red)"
+                              : "var(--text-2)",
                       }}
                     >
                       Azure Computer Vision
@@ -210,7 +210,7 @@ export default function CleanModal({ report, onClose }) {
                   {aiResult === "pending" && (
                     <span
                       className="spinner"
-                      style={{ fontSize: 18, color: "var(--amber)" }}
+                      style={{ fontSize: 18, color: "var(--text-2)" }}
                     >
                       ⟳
                     </span>

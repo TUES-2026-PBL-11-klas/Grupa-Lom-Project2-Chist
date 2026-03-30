@@ -1,15 +1,15 @@
 import { useState } from "react";
-import Header from "./Header/Header.jsx";
-import BottomNav from "./components/BottomNav/BottomNav.jsx";
-import Toast from "./components/Toast/Toast.jsx";
-import HomeView from "./components/HomeView/HomeView.jsx";
-import MapPageView from "./components/MapPageView/MapPageView.jsx";
-import ReportsView from "./components/ReportViews/ReportsView.jsx";
-import LeaderboardView from "./components/LeardboardView/LeaderboardView.jsx";
-import ProfileView from "./components/ProfileView/ProfileView.jsx";
-import RewardsView from "./components/ReportViews/RewardsView.jsx";
-import ReportModal from "./components/Reports/ReportModal.jsx";
-import NotificationsPanel from "./components/NotificationPanel/NotificationsPanel.jsx";
+import Header from "./components/Header.jsx";
+import BottomNav from "./components/BottomNav.jsx";
+import Toast from "./components/Toast.jsx";
+import HomeView from "./pages/HomeView.jsx";
+import MapPageView from "./pages/MapPageView.jsx";
+import ReportsView from "./pages/ReportsView.jsx";
+import LeaderboardView from "./pages/LeaderboardView.jsx";
+import ProfileView from "./pages/ProfileView.jsx";
+import RewardsView from "./pages/RewardsView.jsx";
+import ReportModal from "./components/ReportModal.jsx";
+import NotificationsPanel from "./components/NotificationsPanel.jsx";
 
 function Page({ children, k }) {
   return (

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./AuthView.css";
+import "../styles/AuthView.css";
 
 function Field({ label, type = "text", value, onChange, placeholder, icon }) {
   const [focused, setFocused] = useState(false);
@@ -14,7 +14,7 @@ function Field({ label, type = "text", value, onChange, placeholder, icon }) {
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           className={`input-field ${icon ? "auth__field-input" : ""}`}
-          style={{ borderColor: focused ? "var(--green-bright)" : undefined }}
+          style={{ borderColor: focused ? "var(--primary)" : undefined }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
         />
@@ -180,7 +180,7 @@ export default function AuthView({ onAuthenticated }) {
       <div className="auth__card">
         <div className="auth__logo">
           <div className="auth__logo-icon anim-float">🌿</div>
-          <div className="auth__logo-wordmark">CLEAN&WIN</div>
+          <div className="auth__logo-wordmark">CHIST</div>
           <div className="auth__logo-sub">SOFIA · ПО-ЧИСТ ГРАД</div>
         </div>
 
@@ -233,7 +233,7 @@ export default function AuthView({ onAuthenticated }) {
       </div>
 
       <div className="auth__footer">
-        © 2025 CLEAN&WIN · GROUP LOM · SOFIA, BG
+        © 2025 CHIST · GROUP LOM · SOFIA, BG
       </div>
     </div>
   );

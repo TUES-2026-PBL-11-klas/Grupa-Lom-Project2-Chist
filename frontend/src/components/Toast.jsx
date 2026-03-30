@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import "./Toast.css";
-import { useApp } from "../../context/AppContext.jsx";
+import "../styles/Toast.css";
+import { useApp } from "../context/AppContext.jsx";
 
 function SingleToast({ notif }) {
   const { dismissNotification } = useApp();

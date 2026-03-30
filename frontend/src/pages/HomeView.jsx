@@ -1,13 +1,13 @@
 import { useState } from "react";
-import "./HomeView.css";
-import { SEVERITY_META, STATS_GLOBAL } from "../../data/mockData.js";
-import { useApp } from "../../context/AppContext.jsx";
-import MapView from "../MapView/MapView.jsx";
+import "../styles/HomeView.css";
+import { SEVERITY_META, STATS_GLOBAL } from "../data/mockData.js";
+import { useApp } from "../context/AppContext.jsx";
+import MapView from "../components/MapView.jsx";
 
 const FILTERS = [
   { id: "all", label: "Всички", color: null },
-  { id: "critical", label: "🚨 Критични", color: "#f43f5e" },
-  { id: "high", label: "⚠️ Сериозни", color: "#fb923c" },
+  { id: "critical", label: "🚨 Критични", color: "#ffffff" },
+  { id: "high", label: "⚠️ Сериозни", color: "#d0d0d0" },
   { id: "open", label: "Отворени", color: null },
   { id: "done", label: "✅ Завършени", color: null },
 ];
@@ -35,7 +35,6 @@ export default function HomeView({ onNewReport, onNavigate }) {
     <div className="home-map-page">
       <MapView reports={filtered} height="100%" showControls />
 
-      {/* Search + Report button */}
       <div className="home-top-bar">
         <button
           className="home-search-pill"
@@ -49,7 +48,6 @@ export default function HomeView({ onNewReport, onNavigate }) {
         </button>
       </div>
 
-      {/* Filter chips */}
       <div className="home-filter-row">
         {FILTERS.map((f) => (
           <button
@@ -59,11 +57,6 @@ export default function HomeView({ onNewReport, onNavigate }) {
                 ? "home-filter-chip--active"
                 : "home-filter-chip--inactive"
             }`}
-            style={
-              activeFilter === f.id && f.color
-                ? { background: f.color, boxShadow: `0 0 12px ${f.color}66` }
-                : {}
-            }
             onClick={() => setFilter(f.id)}
           >
             {f.label}
@@ -71,37 +64,27 @@ export default function HomeView({ onNewReport, onNavigate }) {
         ))}
       </div>
 
-      {/* Stats bar at bottom */}
       <div className="home-bottom-bar">
         <div className="home-stat-pill">
-          <div className="home-stat-pill__val" style={{ color: "var(--red)" }}>
+          <div className="home-stat-pill__val" style={{ color: "var(--text-1)" }}>
             {critCount}
           </div>
           <div className="home-stat-pill__key">КРИТИЧНИ</div>
         </div>
         <div className="home-stat-pill">
-          <div
-            className="home-stat-pill__val"
-            style={{ color: "var(--primary)" }}
-          >
+          <div className="home-stat-pill__val" style={{ color: "var(--primary)" }}>
             {openCount}
           </div>
           <div className="home-stat-pill__key">ОТВОРЕНИ</div>
         </div>
         <div className="home-stat-pill">
-          <div
-            className="home-stat-pill__val"
-            style={{ color: "var(--green-ok)" }}
-          >
+          <div className="home-stat-pill__val" style={{ color: "var(--text-2)" }}>
             {doneCount}
           </div>
           <div className="home-stat-pill__key">ЗАВЪРШЕНИ</div>
         </div>
         <div className="home-stat-pill">
-          <div
-            className="home-stat-pill__val"
-            style={{ color: "var(--secondary)" }}
-          >
+          <div className="home-stat-pill__val" style={{ color: "var(--text-2)" }}>
             {STATS_GLOBAL.totalCleaned.toLocaleString()}
           </div>
           <div className="home-stat-pill__key">ОБЩО</div>

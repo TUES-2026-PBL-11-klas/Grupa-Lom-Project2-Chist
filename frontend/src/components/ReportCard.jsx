@@ -1,6 +1,6 @@
-import "./ReportCard.css";
-import { SEVERITY_META, STATUS_META } from "../../data/mockData.js";
-import { useApp } from "../../context/AppContext.jsx";
+import "../styles/ReportCard.css";
+import { SEVERITY_META, STATUS_META } from "../data/mockData.js";
+import { useApp } from "../context/AppContext.jsx";
 
 export default function ReportCard({ report, expanded = false, onClick }) {
   const { claimReport, completeReport, user } = useApp();
@@ -94,7 +94,6 @@ export default function ReportCard({ report, expanded = false, onClick }) {
           {report.status === "in-progress" && isOwn && (
             <button
               className="btn-primary report-card__action-btn"
-              style={{ background: "linear-gradient(135deg,#f5c518,#d97706)" }}
               onClick={(e) => {
                 e.stopPropagation();
                 completeReport(report.id);
