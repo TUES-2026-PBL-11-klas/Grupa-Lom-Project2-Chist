@@ -72,8 +72,9 @@ public class CleaningTaskService {
 
     private CleaningTaskResponse mapToDTO(CleaningTask cleaningTask){
         return CleaningTaskResponse.builder()
-                .id(cleaningTask.getId())
+                .task_id(cleaningTask.getId())
                 .cleanerId(cleaningTask.getCleanerId())
+                .reportId(cleaningTask.getReport().getId())
                 .beforePhoto(cleaningTask.getBeforePhoto())
                 .afterPhoto(cleaningTask.getAfterPhoto())
                 .verified(cleaningTask.isVerified())
