@@ -1,9 +1,9 @@
 import { useState } from "react";
-import "./MapPageView.css";
-import { SEVERITY_META, STATUS_META } from "../../data/mockData.js";
-import { useApp } from "../../context/AppContext.jsx";
-import MapView from "./MapView.jsx";
-import ReportCard from "../Reports/ReportCard.jsx";
+import "../styles/MapPageView.css";
+import { SEVERITY_META, STATUS_META } from "../data/mockData.js";
+import { useApp } from "../context/AppContext.jsx";
+import MapView from "../components/MapView.jsx";
+import ReportCard from "../components/ReportCard.jsx";
 
 export default function MapPageView({ onNewReport }) {
   const { reports } = useApp();
@@ -28,11 +28,9 @@ export default function MapPageView({ onNewReport }) {
           <button
             className="map-page__pill"
             style={{
-              border: `1px solid ${
-                !sevFilter ? "var(--green-bright)" : "rgba(74,222,128,0.18)"
-              }`,
-              background: !sevFilter ? "rgba(74,222,128,0.14)" : "transparent",
-              color: !sevFilter ? "var(--green-bright)" : "var(--text-muted)",
+              border: `1px solid ${!sevFilter ? "var(--primary)" : "var(--border)"}`,
+              background: !sevFilter ? "var(--primary-dim)" : "transparent",
+              color: !sevFilter ? "var(--primary)" : "var(--text-3)",
               fontWeight: !sevFilter ? 700 : 400,
             }}
             onClick={() => setSevFilter(null)}
@@ -54,9 +52,9 @@ export default function MapPageView({ onNewReport }) {
                         fontWeight: 700,
                       }
                     : {
-                        border: "1px solid rgba(74,222,128,0.18)",
+                        border: "1px solid var(--border)",
                         background: "transparent",
-                        color: "var(--text-muted)",
+                        color: "var(--text-3)",
                       }
                 }
                 onClick={() => setSevFilter(active ? null : k)}
@@ -80,11 +78,9 @@ export default function MapPageView({ onNewReport }) {
               key={k}
               className="map-page__status-pill"
               style={{
-                border: `1px solid ${
-                  active ? v.color : "rgba(74,222,128,0.15)"
-                }`,
+                border: `1px solid ${active ? v.color : "var(--border)"}`,
                 background: active ? v.bg : "transparent",
-                color: active ? v.color : "var(--text-muted)",
+                color: active ? v.color : "var(--text-3)",
                 fontWeight: active ? 700 : 400,
               }}
               onClick={() => setStFilter(active ? null : k)}

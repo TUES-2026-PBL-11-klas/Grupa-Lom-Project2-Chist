@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./NotificationsPanel.css";
+import "../styles/NotificationsPanel.css";
 
 const INITIAL = [
   {
@@ -59,11 +59,11 @@ const INITIAL = [
 ];
 
 const TYPE_COLORS = {
-  points: { color: "var(--amber)", bg: "rgba(245,197,24,0.12)" },
-  badge: { color: "var(--purple)", bg: "rgba(192,132,252,0.12)" },
-  report: { color: "var(--blue-info)", bg: "rgba(96,165,250,0.12)" },
-  confirm: { color: "var(--green-bright)", bg: "rgba(74,222,128,0.12)" },
-  streak: { color: "#ff8c00", bg: "rgba(255,140,0,0.12)" },
+  points: { color: "var(--text-1)", bg: "rgba(255,255,255,0.06)" },
+  badge: { color: "var(--text-2)", bg: "rgba(255,255,255,0.04)" },
+  report: { color: "var(--text-2)", bg: "rgba(255,255,255,0.04)" },
+  confirm: { color: "var(--text-1)", bg: "rgba(255,255,255,0.06)" },
+  streak: { color: "var(--text-2)", bg: "rgba(255,255,255,0.04)" },
 };
 
 export default function NotificationsPanel({ onClose }) {
@@ -125,7 +125,7 @@ export default function NotificationsPanel({ onClose }) {
                 {!n.read && <div className="notif-item__unread-dot" />}
                 <div
                   className="notif-item__icon-box"
-                  style={{ background: c.bg, border: `1px solid ${c.color}33` }}
+                  style={{ background: c.bg, border: `1px solid rgba(255,255,255,0.12)` }}
                 >
                   {n.icon}
                 </div>
@@ -134,8 +134,8 @@ export default function NotificationsPanel({ onClose }) {
                     className="notif-item__title"
                     style={{
                       color: n.read
-                        ? "var(--text-secondary)"
-                        : "var(--text-primary)",
+                        ? "var(--text-2)"
+                        : "var(--text-1)",
                     }}
                   >
                     {n.title}

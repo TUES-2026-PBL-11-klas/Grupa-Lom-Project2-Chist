@@ -1,9 +1,9 @@
 import { useState } from "react";
-import "./LeaderboardView.css";
-import { LEADERBOARD, BADGES } from "../../data/mockData.js";
-import { useApp } from "../../context/AppContext.jsx";
+import "../styles/LeaderboardView.css";
+import { LEADERBOARD, BADGES } from "../data/mockData.js";
+import { useApp } from "../context/AppContext.jsx";
 
-const RANK_COLORS = ["#f5c518", "#94a3b8", "#cd7f32"];
+const RANK_COLORS = ["#ffffff", "#aaaaaa", "#777777"];
 const PERIODS = [
   { id: "awards", label: "НАГРАДИ" },
   { id: "cleanings", label: "ПОЧИСТВАНИЯ" },
@@ -49,8 +49,7 @@ function Podium({ top3 }) {
           <div
             className="leaderboard__podium-name"
             style={{
-              color:
-                positions[i] === 1 ? RANK_COLORS[0] : "var(--text-secondary)",
+              color: positions[i] === 1 ? "var(--text-1)" : "var(--text-2)",
             }}
           >
             {user.name}
@@ -60,10 +59,8 @@ function Podium({ top3 }) {
             style={{
               width: positions[i] === 1 ? 84 : 70,
               height: heights[i],
-              background: `linear-gradient(180deg,${RANK_COLORS[i]}22,${RANK_COLORS[i]}08)`,
-              border: `1px solid ${RANK_COLORS[i]}44`,
-              boxShadow:
-                positions[i] === 1 ? `0 0 20px ${RANK_COLORS[0]}22` : "none",
+              background: `rgba(255,255,255,${positions[i] === 1 ? 0.07 : 0.03})`,
+              border: `1px solid rgba(255,255,255,${positions[i] === 1 ? 0.2 : 0.1})`,
             }}
           >
             <div
@@ -74,7 +71,7 @@ function Podium({ top3 }) {
             </div>
             <div
               className="leaderboard__podium-pts"
-              style={{ color: `${RANK_COLORS[i]}aa` }}
+              style={{ color: "var(--text-3)" }}
             >
               {user.awards} 🏆
             </div>
@@ -111,11 +108,9 @@ function LeaderRow({ user, isMe, index, sortBy }) {
       <div
         className="leaderboard__rank-badge"
         style={{
-          background: rankColor ? `${rankColor}22` : "rgba(74,222,128,0.06)",
-          border: rankColor
-            ? `1px solid ${rankColor}44`
-            : "1px solid transparent",
-          color: rankColor || "var(--text-muted)",
+          background: rankColor ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
+          border: rankColor ? `1px solid rgba(255,255,255,0.2)` : "1px solid transparent",
+          color: rankColor || "var(--text-3)",
         }}
       >
         #{index + 1}
@@ -125,7 +120,7 @@ function LeaderRow({ user, isMe, index, sortBy }) {
         <div
           className="leaderboard__row-name"
           style={{
-            color: isMe ? "var(--green-bright)" : "var(--text-primary)",
+            color: isMe ? "var(--text-1)" : "var(--text-1)",
           }}
         >
           {user.name}
@@ -135,17 +130,11 @@ function LeaderRow({ user, isMe, index, sortBy }) {
           {isMe && <span className="leaderboard__me-badge">ТИ</span>}
         </div>
         <div className="leaderboard__row-meta">
-          <span>
-            {user.levelIcon} {user.level}
-          </span>
+          <span>{user.levelIcon} {user.level}</span>
           {user.streak > 0 && (
-            <span style={{ color: "rgba(245,197,24,0.65)" }}>
-              · 🔥 {user.streak}
-            </span>
+            <span style={{ color: "var(--text-3)" }}>· 🔥 {user.streak}</span>
           )}
-          <span style={{ color: "rgba(74,222,128,0.3)" }}>
-            · 🧹 {user.cleanings}
-          </span>
+          <span style={{ color: "var(--text-3)" }}>· 🧹 {user.cleanings}</span>
         </div>
         {sortBy === "awards" && user.earnedBadges.length > 0 && (
           <div className="leaderboard__badges-preview">
@@ -165,7 +154,7 @@ function LeaderRow({ user, isMe, index, sortBy }) {
       <div className="leaderboard__row-pts-col">
         <div
           className="leaderboard__row-pts"
-          style={{ color: rankColor || "var(--green-bright)" }}
+          style={{ color: rankColor || "var(--text-1)" }}
         >
           {getValue().toLocaleString()}
         </div>

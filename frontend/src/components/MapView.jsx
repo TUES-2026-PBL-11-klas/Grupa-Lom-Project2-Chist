@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import "./MapView.css";
-import { SEVERITY_META, STATUS_META } from "../../data/mockData.js";
-import { useApp } from "../../context/AppContext.jsx";
+import "../styles/MapView.css";
+import { SEVERITY_META, STATUS_META } from "../data/mockData.js";
+import { useApp } from "../context/AppContext.jsx";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -15,17 +15,17 @@ L.Icon.Default.mergeOptions({
 
 function makeIcon(report) {
   const meta = SEVERITY_META[report.severity];
-  const color = report.status === "done" ? "#4ade80" : meta.color;
+  const color = report.status === "done" ? "#888888" : meta.color;
   const emoji = report.status === "done" ? "✅" : report.img;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="44" viewBox="0 0 36 44">
     <defs>
       <filter id="glow">
-        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="${color}" flood-opacity="0.7"/>
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="${color}" flood-opacity="0.5"/>
       </filter>
     </defs>
     <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 26 18 26s18-12.5 18-26C36 8.06 27.94 0 18 0z"
           fill="${color}" filter="url(#glow)" opacity="0.92"/>
-    <circle cx="18" cy="18" r="11" fill="rgba(0,0,0,0.28)"/>
+    <circle cx="18" cy="18" r="11" fill="rgba(0,0,0,0.4)"/>
     <text x="18" y="23" text-anchor="middle" font-size="12" dominant-baseline="auto">${emoji}</text>
   </svg>`;
   return L.divIcon({
@@ -40,7 +40,7 @@ function makeIcon(report) {
 function buildPopup(report) {
   const meta = SEVERITY_META[report.severity];
   const sMeta = STATUS_META[report.status];
-  const color = report.status === "done" ? "#4ade80" : meta.color;
+  const color = report.status === "done" ? "#888888" : meta.color;
   const btn =
     report.status === "open"
       ? `<button class="btn-primary map-popup-btn" data-claim="${report.id}">🧹 ПОЕМИ ЗАДАЧАТА</button>`

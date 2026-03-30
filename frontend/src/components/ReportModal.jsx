@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
-import "./ReportModal.css";
-import { SEVERITY_META } from "../../data/mockData.js";
-import { useApp } from "../../context/AppContext.jsx";
+import "../styles/ReportModal.css";
+import { SEVERITY_META } from "../data/mockData.js";
+import { useApp } from "../context/AppContext.jsx";
 
 function StepBar({ current, total }) {
   return (

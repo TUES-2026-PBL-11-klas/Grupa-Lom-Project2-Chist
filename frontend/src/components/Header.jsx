@@ -1,4 +1,4 @@
-import "./Header.css";
+import "../styles/Header.css";
 import { useApp } from "../context/AppContext.jsx";
 
 export default function Header({ onNotifications }) {
@@ -8,7 +8,7 @@ export default function Header({ onNotifications }) {
       <div className="header__logo">
         <div className="header__logo-icon">🌿</div>
         <div>
-          <div className="header__logo-wordmark">CLEAN&WIN</div>
+          <div className="header__logo-wordmark">CHIST</div>
           <div className="header__logo-sub">SOFIA · BETA</div>
         </div>
       </div>

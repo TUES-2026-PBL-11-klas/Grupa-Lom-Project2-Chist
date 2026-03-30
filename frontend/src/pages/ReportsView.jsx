@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
-import "./ReportsView.css";
-import { useApp } from "../../context/AppContext.jsx";
-import ReportCard from "../Reports/ReportCard.jsx";
+import "../styles/ReportsView.css";
+import { useApp } from "../context/AppContext.jsx";
+import ReportCard from "../components/ReportCard.jsx";
 
 const FILTERS = [
   { id: "all", label: "Всички" },

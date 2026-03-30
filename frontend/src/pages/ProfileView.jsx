@@ -1,7 +1,7 @@
 import { useState } from "react";
-import "./ProfileView.css";
-import { BADGES, LEVEL_THRESHOLDS } from "../../data/mockData.js";
-import { useApp } from "../../context/AppContext.jsx";
+import "../styles/ProfileView.css";
+import { BADGES, LEVEL_THRESHOLDS } from "../data/mockData.js";
+import { useApp } from "../context/AppContext.jsx";
 
 const WEEK_DATA = [
   [2, 5, 1, 3, 6, 4, 2],
@@ -64,28 +64,28 @@ export default function ProfileView() {
       icon: "⭐",
       key: "Общо точки",
       val: user.points.toLocaleString(),
-      color: "var(--amber)",
+      color: "var(--text-1)",
       pct: user.points / 5000,
     },
     {
       icon: "🧹",
       key: "Почиствания",
       val: user.cleanings,
-      color: "var(--green-bright)",
+      color: "var(--text-2)",
       pct: user.cleanings / 50,
     },
     {
       icon: "📍",
       key: "Подадени сигнали",
       val: user.reports,
-      color: "var(--blue-info)",
+      color: "var(--text-2)",
       pct: user.reports / 30,
     },
     {
       icon: "🔥",
       key: "Стрийк рекорд",
       val: `${user.streak} дни`,
-      color: "#ff8c00",
+      color: "var(--text-3)",
       pct: user.streak / 30,
     },
   ];
@@ -130,24 +130,9 @@ export default function ProfileView() {
 
         <div className="profile__stats">
           {[
-            {
-              icon: "⭐",
-              val: user.points.toLocaleString(),
-              label: "ТОЧКИ",
-              color: "var(--amber)",
-            },
-            {
-              icon: "🧹",
-              val: user.cleanings,
-              label: "ПОЧИСТВАНИЯ",
-              color: "var(--green-bright)",
-            },
-            {
-              icon: "📍",
-              val: user.reports,
-              label: "СИГНАЛИ",
-              color: "var(--blue-info)",
-            },
+            { icon: "⭐", val: user.points.toLocaleString(), label: "ТОЧКИ", color: "var(--text-1)" },
+            { icon: "🧹", val: user.cleanings, label: "ПОЧИСТВАНИЯ", color: "var(--text-2)" },
+            { icon: "📍", val: user.reports, label: "СИГНАЛИ", color: "var(--text-2)" },
           ].map((s) => (
             <div key={s.label} className="profile__stat">
               <div className="profile__stat-icon">{s.icon}</div>
@@ -165,9 +150,7 @@ export default function ProfileView() {
           <button
             key={t.id}
             className={`profile__tab ${
-              activeTab === t.id
-                ? "profile__tab--active"
-                : "profile__tab--inactive"
+              activeTab === t.id ? "profile__tab--active" : "profile__tab--inactive"
             }`}
             onClick={() => setTab(t.id)}
           >
@@ -181,13 +164,8 @@ export default function ProfileView() {
           {statBars.map((s) => (
             <div key={s.key} className="card profile__stat-bar-card">
               <div className="profile__stat-bar-header">
-                <span className="profile__stat-bar-key">
-                  {s.icon} {s.key}
-                </span>
-                <span
-                  className="profile__stat-bar-val"
-                  style={{ color: s.color }}
-                >
+                <span className="profile__stat-bar-key">{s.icon} {s.key}</span>
+                <span className="profile__stat-bar-val" style={{ color: s.color }}>
                   {s.val}
                 </span>
               </div>
@@ -196,7 +174,7 @@ export default function ProfileView() {
                   className="profile__stat-bar-fill"
                   style={{
                     width: `${Math.min(s.pct * 100, 100)}%`,
-                    background: `linear-gradient(90deg,${s.color},${s.color}aa)`,
+                    background: `linear-gradient(90deg,${s.color},${s.color}88)`,
                   }}
                 />
               </div>
@@ -216,15 +194,13 @@ export default function ProfileView() {
                 key={b.id}
                 title={b.desc}
                 className={`profile__badge-item ${
-                  b.earned
-                    ? "profile__badge-item--earned"
-                    : "profile__badge-item--locked"
+                  b.earned ? "profile__badge-item--earned" : "profile__badge-item--locked"
                 }`}
               >
                 <div className="profile__badge-icon">{b.icon}</div>
                 <div
                   className="profile__badge-name"
-                  style={{ color: b.earned ? "var(--text-primary)" : "#666" }}
+                  style={{ color: b.earned ? "var(--text-1)" : "var(--text-3)" }}
                 >
                   {b.name}
                 </div>
@@ -249,12 +225,8 @@ export default function ProfileView() {
                       className="profile__chart-bar"
                       style={{
                         height: Math.max(4, (val / CHART_MAX) * 44),
-                        background: `rgba(74,222,128,${
-                          val > 0 ? 0.2 + (val / CHART_MAX) * 0.7 : 0.06
-                        })`,
-                        border: `1px solid rgba(74,222,128,${
-                          val > 0 ? 0.3 : 0.1
-                        })`,
+                        background: `rgba(255,255,255,${val > 0 ? 0.1 + (val / CHART_MAX) * 0.5 : 0.04})`,
+                        border: `1px solid rgba(255,255,255,${val > 0 ? 0.2 : 0.07})`,
                       }}
                     />
                     {wi === 3 && (
@@ -271,30 +243,10 @@ export default function ProfileView() {
       {activeTab === "settings" && (
         <div className="anim-fade-up">
           <div className="card profile__settings-card">
-            <Toggle
-              label="Push известия"
-              desc="Нови сигнали в твоя район"
-              value={notifs}
-              onToggle={() => setNotifs((v) => !v)}
-            />
-            <Toggle
-              label="GPS локация"
-              desc="Автоматично запазване"
-              value={gps}
-              onToggle={() => setGps((v) => !v)}
-            />
-            <Toggle
-              label="Тъмен режим"
-              desc="Eco тема (препоръчано)"
-              value={dark}
-              onToggle={() => setDark((v) => !v)}
-            />
-            <Toggle
-              label="Email известия"
-              desc="Седмичен дайджест"
-              value={emails}
-              onToggle={() => setEmails((v) => !v)}
-            />
+            <Toggle label="Push известия" desc="Нови сигнали в твоя район" value={notifs} onToggle={() => setNotifs((v) => !v)} />
+            <Toggle label="GPS локация" desc="Автоматично запазване" value={gps} onToggle={() => setGps((v) => !v)} />
+            <Toggle label="Тъмен режим" desc="Eco тема (препоръчано)" value={dark} onToggle={() => setDark((v) => !v)} />
+            <Toggle label="Email известия" desc="Седмичен дайджест" value={emails} onToggle={() => setEmails((v) => !v)} />
           </div>
           <button className="btn-danger profile__logout">
             ИЗХОД ОТ ПРОФИЛА
