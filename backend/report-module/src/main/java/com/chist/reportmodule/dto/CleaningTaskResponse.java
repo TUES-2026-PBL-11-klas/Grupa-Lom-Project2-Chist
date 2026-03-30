@@ -10,7 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class CleaningTaskResponse {
-    private UUID id;
+    private UUID task_id;
     private UUID reportId;
     private UUID cleanerId;
     private String beforePhoto;
