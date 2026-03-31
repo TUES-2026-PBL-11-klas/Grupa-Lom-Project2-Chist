@@ -1,0 +1,120 @@
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: inreach-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: localpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── User Module — port 8080 ─────────────────────────────────
+  user-module:
+    build:
+      context: ./backend/user-module
+      dockerfile: Dockerfile
+    container_name: inreach-user
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_PORT_USER: 8080
+      DB_URL: jdbc:postgresql://db:5432/appdb
+      DB_USERNAME: appuser
+      DB_PASSWORD: localpassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: dev
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ── Report Module — port 8081 ───────────────────────────────
+  report-module:
+    build:
+      context: ./backend/report-module
+      dockerfile: Dockerfile
+    container_name: inreach-report
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      SERVER_PORT_REPORT: 8081
+      DB_URL: jdbc:postgresql://db:5432/appdb
+      DB_USERNAME: appuser
+      DB_PASSWORD: localpassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: dev
+      USER_SERVICE_URL: http://user-module:8080
+    depends_on:
+      db:
+        condition: service_healthy
+      user-module:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ── Notification Module — port 8082 ─────────────────────────
+  notification-module:
+    build:
+      context: ./backend/notification-module
+      dockerfile: Dockerfile
+    container_name: inreach-notification
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      SERVER_PORT_NOTIFICATION: 8082
+      DB_URL: jdbc:postgresql://db:5432/appdb
+      DB_USERNAME: appuser
+      DB_PASSWORD: localpassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: dev
+      GOOGLE_MAPS_API_KEY: local-fake-maps-key
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8082/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ── React Frontend — port 3000 ──────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: inreach-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - user-module
+      - report-module
+      - notification-module
+
+volumes:
+  postgres_data:
+    driver: local
