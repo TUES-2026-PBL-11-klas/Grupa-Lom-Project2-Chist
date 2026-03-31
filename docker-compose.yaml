@@ -1,10 +1,8 @@
 services:
 
-  # ── PostgreSQL ──────────────────────────────────────────────
   db:
     image: postgres:16-alpine
-    container_name: inreach-db
-    restart: unless-stopped
+    container_name: chist-db
     environment:
       POSTGRES_DB: appdb
       POSTGRES_USER: appuser
@@ -13,19 +11,19 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  # ── User Module — port 8080 ─────────────────────────────────
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: chist-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
   user-module:
     build:
       context: ./backend/user-module
       dockerfile: Dockerfile
-    container_name: inreach-user
-    restart: unless-stopped
+    container_name: chist-user
     ports:
       - "8080:8080"
     environment:
@@ -35,23 +33,14 @@ services:
       DB_PASSWORD: localpassword
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_PROFILES_ACTIVE: dev
-    depends_on:
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+      JWT_SECRET: local-dev-secret-key-minimum-32-chars-long
+      JWT_EXPIRATION: 86400000
 
-  # ── Report Module — port 8081 ───────────────────────────────
   report-module:
     build:
       context: ./backend/report-module
       dockerfile: Dockerfile
-    container_name: inreach-report
-    restart: unless-stopped
+    container_name: chist-report
     ports:
       - "8081:8081"
     environment:
@@ -62,25 +51,12 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_PROFILES_ACTIVE: dev
       USER_SERVICE_URL: http://user-module:8080
-    depends_on:
-      db:
-        condition: service_healthy
-      user-module:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
 
-  # ── Notification Module — port 8082 ─────────────────────────
   notification-module:
     build:
       context: ./backend/notification-module
       dockerfile: Dockerfile
-    container_name: inreach-notification
-    restart: unless-stopped
+    container_name: chist-notification
     ports:
       - "8082:8082"
     environment:
@@ -91,23 +67,18 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_PROFILES_ACTIVE: dev
       GOOGLE_MAPS_API_KEY: local-fake-maps-key
-    depends_on:
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8082/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: 1025
+      SPRING_MAIL_USERNAME: dev@local.com
+      SPRING_MAIL_PASSWORD: unused
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: false
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: false
 
-  # ── React Frontend — port 3000 ──────────────────────────────
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: inreach-frontend
-    restart: unless-stopped
+    container_name: chist-frontend
     ports:
       - "3000:80"
     depends_on:
@@ -117,4 +88,3 @@ services:
 
 volumes:
   postgres_data:
-    driver: local
