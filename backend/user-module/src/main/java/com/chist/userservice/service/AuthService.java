@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final RestTemplate restTemplate;
 
 
     public AuthResponse register(RegisterRequest request){
@@ -34,6 +36,15 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+
+        restTemplate.postForObject(
+                "http://localhost:8083/api/notifications/registration?to=" +
+                        user.getEmail() + "&username=" + user.getUsername(),
+                null,String.class
+        );
+
+
+
         String token = jwtService.generateToken(user.getEmail());
         return new AuthResponse(token);
     }

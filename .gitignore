@@ -1,6 +1,6 @@
 terraform.tfvars
 *.tfvars
-!*.tfvars.example
+*.tfvars.example
 
 # Terraform internals
 .terraform/

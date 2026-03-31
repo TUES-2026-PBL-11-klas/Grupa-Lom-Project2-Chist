@@ -27,7 +27,7 @@ public class EmailService {
         EmailNotification notification = EmailNotification.builder()
                 .to(to)
                 .subject("Welcome to Chist!")
-                .body("Welcome" + username + ",\n\nYou've successfully signed into Chist! " +
+                .body("Welcome " + username + ",\n\nYou've successfully signed into Chist! " +
                         "You can start cleaning and winning points!\n\n-TheChist Team")
                 .build();
         sendEmail(notification);
