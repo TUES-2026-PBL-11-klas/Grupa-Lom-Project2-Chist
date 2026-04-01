@@ -2,7 +2,20 @@ import { useState } from "react";
 import "../styles/RewardsView.css";
 import { useApp } from "../context/AppContext.jsx";
 
-const REWARDS = [
+interface Reward {
+  id: number;
+  emoji: string;
+  name: string;
+  desc: string;
+  partner: string;
+  cost: number;
+  category: string;
+  featured?: boolean;
+  hot?: boolean;
+  newBadge?: boolean;
+}
+
+const REWARDS: Reward[] = [
   { id: 1, emoji: "☕", name: "Безплатно кафе", desc: "Една безплатна напитка в партньорски кафенета в Sofia.", partner: "COSTA COFFEE · STARBUCKS", cost: 500, category: "food", featured: true, hot: true },
   { id: 2, emoji: "🌳", name: "Засади дърво", desc: "Организираме засаждане на дърво в твое име в парк в Sofia.", partner: "SOFIA GREEN INITIATIVE", cost: 800, category: "eco" },
   { id: 3, emoji: "🎟️", name: "Безплатен транспорт", desc: "Карта за градски транспорт за 1 месец.", partner: "ЦЕНТЪРА ЗА ГРАДСКА МОБИЛНОСТ", cost: 1200, category: "transport", newBadge: true },
@@ -23,9 +36,9 @@ const HISTORY = [
 
 const CATS = ["all", "food", "eco", "transport", "experience", "status"];
 
-function ClaimConfirm({ reward, onConfirm, onCancel }) {
+function ClaimConfirm({ reward, onConfirm, onCancel }: { reward: Reward; onConfirm: () => void; onCancel: () => void }) {
   return (
-    <div className="rewards__claim-confirm" onClick={(e) => e.target === e.currentTarget && onCancel()}>
+    <div className="rewards__claim-confirm" onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}>
       <div className="rewards__claim-card">
         <span className="rewards__claim-emoji">{reward.emoji}</span>
         <div className="rewards__claim-title">ПОТВЪРДИ РАЗМЯНА</div>
@@ -44,7 +57,7 @@ function ClaimConfirm({ reward, onConfirm, onCancel }) {
   );
 }
 
-function RewardCard({ reward, userPoints, claimed, onClaim }) {
+function RewardCard({ reward, userPoints, claimed, onClaim }: { reward: Reward; userPoints: number; claimed: boolean; onClaim: (r: Reward) => void }) {
   const canAfford = userPoints >= reward.cost;
   const isLocked = !canAfford && !claimed;
   const progress = Math.min((userPoints / reward.cost) * 100, 100);
@@ -94,14 +107,14 @@ export default function RewardsView() {
   const { user, dispatch } = useApp();
   const [cat, setCat] = useState("all");
   const [tab, setTab] = useState("shop");
-  const [claimed, setClaimed] = useState(new Set());
-  const [pending, setPending] = useState(null);
+  const [claimed, setClaimed] = useState<Set<number>>(new Set());
+  const [pending, setPending] = useState<Reward | null>(null);
 
   const filtered = REWARDS.filter((r) => cat === "all" || r.category === cat);
   const featured = filtered.find((r) => r.featured);
   const rest = filtered.filter((r) => !r.featured);
 
-  const handleClaim = (reward) => {
+  const handleClaim = (reward: Reward) => {
     if (user.points < reward.cost || claimed.has(reward.id)) return;
     setPending(reward);
   };

@@ -1,9 +1,10 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { createRoot } from "react-dom/client";
 import MarkerPopup from "./MarkerPopup.tsx";
-import type { T } from "../i18n.ts";
+import type { T, Lang } from "../i18n.ts";
+import "../styles/MapDashboard.css";
 
 interface Report {
   id: number;
@@ -29,6 +30,7 @@ interface MapContainerProps {
   onClaim: (id: number) => void;
   onComplete: (id: number) => void;
   i: T;
+  lang: Lang;
 }
 
 /* Vibrant marker colors per severity + status */
@@ -52,7 +54,7 @@ function createMarkerElement(color: string, glow: string): HTMLDivElement {
   el.style.width = "44px";
   el.style.height = "56px";
   el.style.filter = `drop-shadow(0 0 12px ${glow})`;
-  el.style.transition = "transform 0.25s cubic-bezier(0.34,1.56,0.64,1), filter 0.25s ease";
+  el.style.transition = "filter 0.25s ease";
 
   el.innerHTML = `
     <svg width="44" height="56" viewBox="0 0 44 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -79,12 +81,10 @@ function createMarkerElement(color: string, glow: string): HTMLDivElement {
   `;
 
   el.addEventListener("mouseenter", () => {
-    el.style.transform = "scale(1.25) translateY(-5px)";
     el.style.filter = `drop-shadow(0 0 22px ${glow})`;
     el.style.zIndex = "10";
   });
   el.addEventListener("mouseleave", () => {
-    el.style.transform = "scale(1) translateY(0)";
     el.style.filter = `drop-shadow(0 0 12px ${glow})`;
     el.style.zIndex = "auto";
   });
@@ -99,11 +99,16 @@ export default function MapContainer({
   onClaim,
   onComplete,
   i,
+  lang,
 }: MapContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<Map<number, maplibregl.Marker>>(new Map());
   const popupRef = useRef<maplibregl.Popup | null>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
+
+  /* Keep a ref to the latest openPopup so marker click handlers never go stale */
+  const openPopupRef = useRef<(report: Report) => void>(() => {});
 
   /* Initialize map */
   useEffect(() => {
@@ -129,6 +134,8 @@ export default function MapContainer({
 
     mapRef.current = map;
 
+    map.on("load", () => setMapLoaded(true));
+
     return () => {
       map.remove();
       mapRef.current = null;
@@ -146,7 +153,7 @@ export default function MapContainer({
       const popupNode = document.createElement("div");
       const root = createRoot(popupNode);
       root.render(
-        <MarkerPopup report={report} onClaim={onClaim} onComplete={onComplete} i={i} />
+        <MarkerPopup report={report} onClaim={onClaim} onComplete={onComplete} i={i} lang={lang} />
       );
 
       const popup = new maplibregl.Popup({
@@ -166,13 +173,15 @@ export default function MapContainer({
 
       popupRef.current = popup;
     },
-    [onClaim, onComplete, i]
+    [onClaim, onComplete, i, lang]
   );
+
+  openPopupRef.current = openPopup;
 
   /* Sync markers with reports */
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    if (!map || !mapLoaded) return;
 
     const currentIds = new Set(reports.map((r) => r.id));
 
@@ -197,7 +206,7 @@ export default function MapContainer({
         el.addEventListener("click", (e) => {
           e.stopPropagation();
           onSelectReport(report.id);
-          openPopup(report);
+          openPopupRef.current(report);
         });
 
         const marker = new maplibregl.Marker({ element: el, anchor: "bottom" })
@@ -207,7 +216,7 @@ export default function MapContainer({
         markersRef.current.set(report.id, marker);
       }
     });
-  }, [reports, onSelectReport, openPopup]);
+  }, [reports, onSelectReport, mapLoaded]);
 
   /* Fly to selected report */
   useEffect(() => {
@@ -228,7 +237,7 @@ export default function MapContainer({
 
   return (
     <>
-      <div ref={containerRef} className="w-full h-full" />
+      <div ref={containerRef} className="map-container" />
 
       {/* Custom popup & control styling */}
       <style>{`

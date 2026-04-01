@@ -1,4 +1,6 @@
-import type { T } from "../i18n.ts";
+import type { T, Lang } from "../i18n.ts";
+import { translateReport } from "../i18n.ts";
+import "../styles/SignalCard.css";
 
 interface Report {
   id: number;
@@ -16,6 +18,7 @@ interface SignalCardProps {
   isSelected: boolean;
   onClick: () => void;
   i: T;
+  lang: Lang;
 }
 
 const SEV_COLORS: Record<string, string> = {
@@ -31,9 +34,10 @@ const STATUS_COLORS: Record<string, string> = {
   done: "#34d399",
 };
 
-export default function SignalCard({ report, isSelected, onClick, i }: SignalCardProps) {
+export default function SignalCard({ report, isSelected, onClick, i, lang }: SignalCardProps) {
   const sevColor = SEV_COLORS[report.severity] ?? "#888";
   const statColor = STATUS_COLORS[report.status] ?? "#888";
+  const tr = translateReport(lang, report);
 
   const sevLabels: Record<string, string> = {
     critical: i.sevCritical,
@@ -50,40 +54,20 @@ export default function SignalCard({ report, isSelected, onClick, i }: SignalCar
   return (
     <button
       onClick={onClick}
-      className={`
-        w-full text-left p-4 rounded-2xl border transition-all duration-200 cursor-pointer
-        group relative overflow-hidden
-        ${isSelected
-          ? "bg-pink-primary/10 border-pink-primary/40 shadow-[0_0_24px_rgba(255,77,148,0.15)]"
-          : "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.12]"
-        }
-      `}
+      className={`signal-card ${isSelected ? "signal-card--selected" : ""}`}
     >
-      {/* Left accent bar */}
-      <div
-        className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
-        style={{ backgroundColor: sevColor }}
-      />
+      <div className="signal-card__accent" style={{ backgroundColor: sevColor }} />
 
-      <div className="flex gap-4 pl-3">
-        {/* Icon */}
-        <div className="w-12 h-12 rounded-xl bg-white/[0.06] flex items-center justify-center text-2xl shrink-0">
-          {report.img}
-        </div>
+      <div className="signal-card__body">
+        <div className="signal-card__icon">{report.img}</div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <h4 className="font-[DM_Sans,sans-serif] text-[15px] font-bold text-white truncate leading-tight">
-            {report.title}
-          </h4>
-          <p className="font-[DM_Sans,sans-serif] text-[12px] text-white/40 truncate mt-1">
-            {report.location}
-          </p>
+        <div className="signal-card__content">
+          <h4 className="signal-card__title">{tr.title}</h4>
+          <p className="signal-card__location">{tr.location}</p>
 
-          {/* Tags row */}
-          <div className="flex items-center gap-2.5 mt-2.5">
+          <div className="signal-card__tags">
             <span
-              className="font-[DM_Sans,sans-serif] text-[10px] font-semibold tracking-wide px-3 py-[5px] rounded-full uppercase leading-none"
+              className="signal-card__tag"
               style={{
                 color: sevColor,
                 backgroundColor: sevColor + "18",
@@ -93,7 +77,7 @@ export default function SignalCard({ report, isSelected, onClick, i }: SignalCar
               {sevLabels[report.severity] ?? report.severity}
             </span>
             <span
-              className="font-[DM_Sans,sans-serif] text-[10px] font-semibold tracking-wide px-3 py-[5px] rounded-full uppercase leading-none"
+              className="signal-card__tag"
               style={{
                 color: statColor,
                 backgroundColor: statColor + "18",
@@ -102,9 +86,7 @@ export default function SignalCard({ report, isSelected, onClick, i }: SignalCar
             >
               {statLabels[report.status] ?? report.status}
             </span>
-            <span className="font-[DM_Sans,sans-serif] text-[10px] text-white/25 ml-auto">
-              {report.time}
-            </span>
+            <span className="signal-card__time">{report.time}</span>
           </div>
         </div>
       </div>

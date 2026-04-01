@@ -12,15 +12,19 @@ const FILTERS = [
   { id: "high", label: "⚠️ Сериозни" },
 ];
 
-export default function ReportsView({ onNewReport }) {
+interface ReportsViewProps {
+  onNewReport: () => void;
+}
+
+export default function ReportsView({ onNewReport }: ReportsViewProps) {
   const { reports } = useApp();
   const [search, setSearch] = useState("");
   const [activeFilter, setFilter] = useState("all");
-  const [expandedId, setExpanded] = useState(null);
+  const [expandedId, setExpanded] = useState<number | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    return reports.filter((r) => {
+    return reports.filter((r: any) => {
       const matchSearch =
         !q ||
         r.title.toLowerCase().includes(q) ||
@@ -35,9 +39,9 @@ export default function ReportsView({ onNewReport }) {
     });
   }, [reports, search, activeFilter]);
 
-  const openCount = reports.filter((r) => r.status === "open").length;
+  const openCount = reports.filter((r: any) => r.status === "open").length;
   const criticalCount = reports.filter(
-    (r) => r.severity === "critical" && r.status === "open",
+    (r: any) => r.severity === "critical" && r.status === "open",
   ).length;
 
   return (
@@ -65,7 +69,6 @@ export default function ReportsView({ onNewReport }) {
       </div>
 
       <div className="reports-view__search-wrap">
-        <span className="reports-view__search-icon">🔍</span>
         <input
           className="input-field reports-view__search"
           value={search}
@@ -124,7 +127,7 @@ export default function ReportsView({ onNewReport }) {
             )}
           </div>
         ) : (
-          filtered.map((r) => (
+          filtered.map((r: any) => (
             <ReportCard
               key={r.id}
               report={r}

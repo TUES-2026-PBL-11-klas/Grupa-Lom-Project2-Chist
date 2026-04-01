@@ -5,8 +5,14 @@ import Sidebar from "./Sidebar.tsx";
 import MapContainer from "./MapContainer.tsx";
 import { t } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";
+import "../styles/MapDashboard.css";
 
-export default function MapDashboard() {
+interface MapDashboardProps {
+  onNavigate: (tab: string) => void;
+  currentTab: string;
+}
+
+export default function MapDashboard({ onNavigate, currentTab }: MapDashboardProps) {
   const { reports, claimReport, completeReport, selectedReportId, selectReport } = useApp();
 
   const [activeFilter, setActiveFilter] = useState("all");
@@ -61,8 +67,8 @@ export default function MapDashboard() {
   );
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-bg-base">
-      <Navbar lang={lang} onToggleLang={toggleLang} />
+    <div className="map-dashboard">
+      <Navbar lang={lang} onToggleLang={toggleLang} currentTab={currentTab} onNavigate={onNavigate} />
 
       <Sidebar
         reports={filteredReports}
@@ -76,10 +82,10 @@ export default function MapDashboard() {
         mobileOpen={mobileOpen}
         onMobileClose={() => setMobileOpen(false)}
         i={i}
+        lang={lang}
       />
 
-      {/* Map area — offset by sidebar on desktop */}
-      <main className="fixed top-16 bottom-0 right-0 left-0 md:left-[380px]">
+      <main className="map-dashboard__main">
         <MapContainer
           reports={filteredReports}
           selectedId={selectedReportId}
@@ -87,33 +93,22 @@ export default function MapDashboard() {
           onClaim={claimReport}
           onComplete={completeReport}
           i={i}
+          lang={lang}
         />
       </main>
 
-      {/* Mobile sidebar toggle */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed bottom-6 left-4 z-50 md:hidden w-12 h-12 rounded-full bg-gradient-to-r from-pink-primary to-magenta shadow-[0_4px_24px_rgba(255,77,148,0.4)] flex items-center justify-center text-white text-xl border-none cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+        className="map-dashboard__mobile-toggle"
         aria-label="Отвори сигнали"
       >
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
         </svg>
       </button>
 
-      {/* Ambient glow effects */}
-      <div
-        className="fixed top-16 right-0 w-[400px] h-[400px] pointer-events-none z-[1] opacity-30 md:left-[380px]"
-        style={{
-          background: "radial-gradient(circle at top right, rgba(192,38,211,0.15) 0%, transparent 60%)",
-        }}
-      />
-      <div
-        className="fixed bottom-0 left-0 w-[500px] h-[500px] pointer-events-none z-[1]"
-        style={{
-          background: "radial-gradient(circle at bottom left, rgba(255,77,148,0.08) 0%, transparent 60%)",
-        }}
-      />
+      <div className="map-dashboard__glow-tr" />
+      <div className="map-dashboard__glow-bl" />
     </div>
   );
 }
