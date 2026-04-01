@@ -1,7 +1,7 @@
 variable "location" {
   description = "Azure region"
   type        = string
-  default     = "West Europe"
+  default     = "germanywestcentral"
 }
 
 variable "environment" {
@@ -61,7 +61,7 @@ variable "db_username" {
 variable "aks_node_vm_size" {
   description = "VM size for AKS nodes"
   type        = string
-  default     = "Standard_B2s"
+  default     = "Standard_D2ps_v6"
 }
 
 variable "argocd_hostname" {
@@ -99,6 +99,17 @@ variable "db_password" {
 
 variable "jwt_secret" {
   description = "JWT signing secret for user-module (base64, min 32 chars). Set as sensitive in HCP Terraform workspace."
+  type        = string
+  sensitive   = true
+}
+
+variable "computer_vision_endpoint" {
+  description = "Azure Computer Vision endpoint URL"
+  type        = string
+}
+
+variable "computer_vision_key" {
+  description = "Azure Computer Vision API key"
   type        = string
   sensitive   = true
 }

@@ -1,7 +1,5 @@
 # ── HCP Vault Cluster ─────────────────────────────────────────
 # Authenticate to HCP using env vars:
-#   export HCP_CLIENT_ID=...
-#   export HCP_CLIENT_SECRET=...
 
 # HCP Virtual Network (required for Vault cluster)
 resource "hcp_hvn" "main" {

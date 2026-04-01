@@ -123,9 +123,9 @@ resource "kubernetes_secret" "backend_secret" {
 
     # ── Inter-service URLs ───────────────────────────────────
     USER_SERVICE_URL = "http://user-module:8080"
+    COMPUTER_VISION_ENDPOINT = var.computer_vision_endpoint
+    COMPUTER_VISION_KEY      = var.computer_vision_key
 
-    # ── External APIs ────────────────────────────────────────
-    GOOGLE_MAPS_API_KEY = var.google_maps_api_key
   }
 
   depends_on = [kubernetes_namespace.chist]

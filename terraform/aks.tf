@@ -3,19 +3,16 @@ resource "azurerm_kubernetes_cluster" "aks" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   dns_prefix          = "${var.project_name}-${var.environment}"
-  kubernetes_version  = "1.30"
+  kubernetes_version  = "1.32"
 
-  # Free tier - no cost for control plane
   sku_tier = "Free"
 
   default_node_pool {
-    name           = "default"
-    node_count     = 1
-    vm_size        = var.aks_node_vm_size
-    vnet_subnet_id = azurerm_subnet.aks.id
-
-    # FIX: enable_auto_scaling is deprecated in azurerm ~>3.x; correct arg is auto_scaling_enabled
-    auto_scaling_enabled = false
+    name                 = "default"
+    node_count           = 1
+    vm_size              = var.aks_node_vm_size
+    vnet_subnet_id       = azurerm_subnet.aks.id
+    orchestrator_version = "1.32"
   }
 
   identity {
@@ -23,8 +20,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   network_profile {
-    network_plugin    = "azure"
-    load_balancer_sku = "standard"
+    network_plugin     = "azure"
+    load_balancer_sku  = "standard"
+    service_cidr       = "172.16.0.0/16"
+    dns_service_ip     = "172.16.0.10"
   }
 
   tags = {
@@ -33,7 +32,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 }
 
-# Allow AKS to pull images from ACR
 resource "azurerm_role_assignment" "aks_acr_pull" {
   principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
   role_definition_name             = "AcrPull"

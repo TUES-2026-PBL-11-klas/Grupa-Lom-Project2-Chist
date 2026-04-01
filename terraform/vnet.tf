@@ -87,3 +87,8 @@ resource "azurerm_subnet_network_security_group_association" "public" {
   subnet_id                 = azurerm_subnet.public.id
   network_security_group_id = azurerm_network_security_group.public.id
 }
+
+#import {
+#  to = azurerm_virtual_network.main
+#  id = "/subscriptions/bf606b72-98ef-41a9-b412-4f95aea302d6/resourceGroups/rg-chist-dev/providers/Microsoft.Network/virtualNetworks/vnet-chist-dev"
+#}

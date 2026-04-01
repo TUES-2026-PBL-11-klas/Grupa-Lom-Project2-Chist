@@ -19,8 +19,6 @@ provider "kubernetes" {
 }
 
 # Authenticate to HCP using env vars:
-#   export HCP_CLIENT_ID=...
-#   export HCP_CLIENT_SECRET=...
 provider "hcp" {}
 
 # Vault provider points at the HCP Vault cluster created in main.tf
