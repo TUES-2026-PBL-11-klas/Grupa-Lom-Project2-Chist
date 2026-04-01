@@ -2,7 +2,7 @@ import { useState } from "react";
 import Header from "./components/Header.jsx";
 import BottomNav from "./components/BottomNav.jsx";
 import Toast from "./components/Toast.jsx";
-import HomeView from "./pages/HomeView.jsx";
+import MapDashboard from "./components/MapDashboard.tsx";
 import ReportsView from "./pages/ReportsView.jsx";
 import LeaderboardView from "./pages/LeaderboardView.jsx";
 import ProfileView from "./pages/ProfileView.jsx";
@@ -28,12 +28,7 @@ export default function Main() {
   const renderPage = () => {
     switch (tab) {
       case "home":
-        return (
-          <HomeView
-            onNewReport={() => setShowModal(true)}
-            onNavigate={setTab}
-          />
-        );
+        return <MapDashboard />;
       case "reports":
         return (
           <Page k="rp">
@@ -71,10 +66,17 @@ export default function Main() {
         position: "relative",
       }}
     >
-      <div className="ambient-orb-tl" aria-hidden="true" />
-      <div className="ambient-orb-br" aria-hidden="true" />
+      {!isHome && (
+        <>
+          <div className="ambient-orb-tl" aria-hidden="true" />
+          <div className="ambient-orb-br" aria-hidden="true" />
+        </>
+      )}
 
-      <Header onNotifications={() => setShowNotifs(true)} />
+      {/* Hide old header on home — Navbar is built into MapDashboard */}
+      {!isHome && (
+        <Header onNotifications={() => setShowNotifs(true)} />
+      )}
 
       {isHome ? (
         renderPage()
@@ -83,7 +85,7 @@ export default function Main() {
       )}
 
       <Toast />
-      <BottomNav active={tab} onChange={setTab} />
+      {!isHome && <BottomNav active={tab} onChange={setTab} />}
 
       {!isHome && (
         <button

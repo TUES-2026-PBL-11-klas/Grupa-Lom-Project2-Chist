@@ -1,3 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-base: #0F172A;
+  --color-bg-surface: #1E293B;
+  --color-bg-card: rgba(30, 41, 59, 0.7);
+  --color-pink-primary: #FF4D94;
+  --color-magenta: #C026D3;
+  --color-pink-light: #F472B6;
+  --color-pink-glow: rgba(255, 77, 148, 0.3);
+  --color-severity-critical: #EF4444;
+  --color-severity-high: #F97316;
+  --color-severity-medium: #EAB308;
+  --color-severity-low: #22C55E;
+  --color-status-open: #60A5FA;
+  --color-status-done: #22C55E;
+}
+
 *,
 *::before,
 *::after {
