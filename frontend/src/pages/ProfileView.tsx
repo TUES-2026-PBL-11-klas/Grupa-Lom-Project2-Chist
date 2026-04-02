@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../styles/ProfileView.css";
 import { BADGES, LEVEL_THRESHOLDS } from "../data/mockData.js";
 import { useApp } from "../context/AppContext.jsx";
+import { t } from "../i18n.ts";
+import type { Lang } from "../i18n.ts";
 
 const WEEK_DATA = [
   [2, 5, 1, 3, 6, 4, 2],
@@ -9,7 +11,8 @@ const WEEK_DATA = [
   [1, 6, 3, 5, 2, 4, 7],
   [5, 3, 6, 4, 7, 2, 5],
 ];
-const DAYS = ["П", "В", "С", "Ч", "П", "С", "Н"];
+const DAYS_BG = ["П", "В", "С", "Ч", "П", "С", "Н"];
+const DAYS_EN = ["M", "T", "W", "T", "F", "S", "S"];
 const CHART_MAX = Math.max(...WEEK_DATA.flat());
 
 function Toggle({ label, desc, value, onToggle }: { label: string; desc: string; value: boolean; onToggle: () => void }) {
@@ -30,20 +33,27 @@ function Toggle({ label, desc, value, onToggle }: { label: string; desc: string;
   );
 }
 
-const TABS = [
-  { id: "stats", label: "Статистики" },
-  { id: "badges", label: "Значки" },
-  { id: "activity", label: "Активност" },
-  { id: "settings", label: "Настройки" },
-];
+interface ProfileViewProps {
+  lang: Lang;
+}
 
-export default function ProfileView() {
+export default function ProfileView({ lang }: ProfileViewProps) {
   const { user } = useApp();
+  const i = t(lang);
   const [activeTab, setTab] = useState("stats");
   const [notifs, setNotifs] = useState(true);
   const [gps, setGps] = useState(true);
   const [dark, setDark] = useState(true);
   const [emails, setEmails] = useState(false);
+
+  const DAYS = lang === "en" ? DAYS_EN : DAYS_BG;
+
+  const tabs = [
+    { id: "stats", label: i.profileStats },
+    { id: "badges", label: i.profileBadges },
+    { id: "activity", label: i.profileActivity },
+    { id: "settings", label: i.profileSettings },
+  ];
 
   const currentLevel = LEVEL_THRESHOLDS.find(
     (l: any) => user.points >= l.min && user.points <= l.max,
@@ -51,81 +61,81 @@ export default function ProfileView() {
   const nextLevel = LEVEL_THRESHOLDS.find((l: any) => l.min > user.points);
   const xpPct = nextLevel ? Math.min((user.points / nextLevel.min) * 100, 100) : 100;
 
-  const statBars = [
-    { icon: "⭐", key: "Общо точки", val: user.points.toLocaleString(), color: "var(--text-1)", pct: user.points / 5000 },
-    { icon: "🧹", key: "Почиствания", val: user.cleanings, color: "var(--text-2)", pct: user.cleanings / 50 },
-    { icon: "📍", key: "Подадени сигнали", val: user.reports, color: "var(--text-2)", pct: user.reports / 30 },
-    { icon: "🔥", key: "Стрийк рекорд", val: `${user.streak} дни`, color: "var(--text-3)", pct: user.streak / 30 },
-  ];
-
   return (
     <div className="profile">
-      <div className="card profile__hero">
-        <div className="profile__hero-glow" />
-        <div className="profile__top">
-          <div className="profile__avatar">{user.avatar}</div>
-          <div>
-            <div className="profile__name">
-              {user.name}
-              {user.verified && <span className="profile__verified">✓ VERIFIED</span>}
-            </div>
-            <div className="profile__level">{currentLevel?.icon} {currentLevel?.level}</div>
-            <div className="profile__meta">
-              {user.streak > 0 && <span>🔥 {user.streak} дни стрийк</span>}
-              <span>📅 {user.joined}</span>
-            </div>
-          </div>
-        </div>
+      <div className="profile__hero-glow" />
 
-        <div className="profile__xp">
-          <div className="profile__xp-header">
-            <span className="profile__xp-label">КЪМ {nextLevel?.level || "MAX"}</span>
-            <span className="profile__xp-val">
-              {user.points.toLocaleString()} / {nextLevel?.min?.toLocaleString() || "∞"}
-            </span>
+      {/* Avatar + info */}
+      <div className="profile__hero-layout">
+        <div className="profile__avatar">{user.avatar}</div>
+        <div className="profile__hero-info">
+          <div className="profile__name">
+            {user.name}
+            {user.verified && <span className="profile__verified">✓ VERIFIED</span>}
           </div>
-          <div className="profile__xp-track">
-            <div className="profile__xp-fill" style={{ width: `${xpPct}%` }} />
+          <div className="profile__level-badge">
+            {currentLevel?.icon} {currentLevel?.level}
           </div>
-        </div>
-
-        <div className="profile__stats">
-          {[
-            { icon: "⭐", val: user.points.toLocaleString(), label: "ТОЧКИ", color: "var(--text-1)" },
-            { icon: "🧹", val: user.cleanings, label: "ПОЧИСТВАНИЯ", color: "var(--text-2)" },
-            { icon: "📍", val: user.reports, label: "СИГНАЛИ", color: "var(--text-2)" },
-          ].map((s) => (
-            <div key={s.label} className="profile__stat">
-              <div className="profile__stat-icon">{s.icon}</div>
-              <div className="profile__stat-val" style={{ color: s.color }}>{s.val}</div>
-              <div className="profile__stat-label">{s.label}</div>
-            </div>
-          ))}
         </div>
       </div>
 
+      {/* Tabs */}
       <div className="profile__tabs">
-        {TABS.map((t) => (
+        {tabs.map((tab) => (
           <button
-            key={t.id}
-            className={`profile__tab ${activeTab === t.id ? "profile__tab--active" : "profile__tab--inactive"}`}
-            onClick={() => setTab(t.id)}
+            key={tab.id}
+            className={`profile__tab ${activeTab === tab.id ? "profile__tab--active" : "profile__tab--inactive"}`}
+            onClick={() => setTab(tab.id)}
           >
-            {t.label.toUpperCase()}
+            {tab.label.toUpperCase()}
           </button>
         ))}
       </div>
 
+      {/* XP bar */}
+      <div className="profile__xp">
+        <div className="profile__xp-header">
+          <span className="profile__xp-label">{i.profileTowards} {nextLevel?.level || "MAX"}</span>
+          <span className="profile__xp-val">
+            {user.points.toLocaleString()} / {nextLevel?.min?.toLocaleString() || "∞"}
+          </span>
+        </div>
+        <div className="profile__xp-track">
+          <div className="profile__xp-fill" style={{ width: `${xpPct}%` }} />
+        </div>
+      </div>
+
+      {/* Stat cards */}
+      <div className="profile__stats">
+        {[
+          { icon: "⭐", val: user.points.toLocaleString(), label: i.profilePoints },
+          { icon: "🧹", val: user.cleanings, label: i.profileCleanings },
+          { icon: "📍", val: user.reports, label: i.profileSignals },
+        ].map((s) => (
+          <div key={s.label} className="profile__stat">
+            <div className="profile__stat-icon">{s.icon}</div>
+            <div className="profile__stat-val">{s.val}</div>
+            <div className="profile__stat-label">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Tab content ── */}
       {activeTab === "stats" && (
         <div className="profile__stat-bars anim-fade-up">
-          {statBars.map((s) => (
-            <div key={s.key} className="card profile__stat-bar-card">
+          {[
+            { icon: "⭐", key: i.profileTotalPoints, val: user.points.toLocaleString(), pct: user.points / 5000 },
+            { icon: "🧹", key: i.profileCleaningsLabel, val: user.cleanings, pct: user.cleanings / 50 },
+            { icon: "📍", key: i.profileReportsLabel, val: user.reports, pct: user.reports / 30 },
+            { icon: "🔥", key: i.profileStreakRecord, val: `${user.streak} ${i.profileDays}`, pct: user.streak / 30 },
+          ].map((s) => (
+            <div key={s.key} className="profile__stat-bar-card">
               <div className="profile__stat-bar-header">
                 <span className="profile__stat-bar-key">{s.icon} {s.key}</span>
-                <span className="profile__stat-bar-val" style={{ color: s.color }}>{s.val}</span>
+                <span className="profile__stat-bar-val">{s.val}</span>
               </div>
               <div className="profile__stat-bar-track">
-                <div className="profile__stat-bar-fill" style={{ width: `${Math.min(s.pct * 100, 100)}%`, background: `linear-gradient(90deg,${s.color},${s.color}88)` }} />
+                <div className="profile__stat-bar-fill" style={{ width: `${Math.min(s.pct * 100, 100)}%` }} />
               </div>
             </div>
           ))}
@@ -135,7 +145,7 @@ export default function ProfileView() {
       {activeTab === "badges" && (
         <div className="anim-fade-up">
           <div className="profile__badge-intro">
-            {BADGES.filter((b: any) => b.earned).length} / {BADGES.length} отключени
+            {BADGES.filter((b: any) => b.earned).length} / {BADGES.length} {i.profileUnlocked}
           </div>
           <div className="profile__badge-grid">
             {BADGES.map((b: any) => (
@@ -150,8 +160,8 @@ export default function ProfileView() {
       )}
 
       {activeTab === "activity" && (
-        <div className="card profile__activity-card anim-fade-up">
-          <div className="label-caps profile__chart-label">Активност последни 4 седмици</div>
+        <div className="profile__activity-section anim-fade-up">
+          <div className="label-caps profile__chart-label">{i.profileActivityLabel}</div>
           <div className="profile__chart">
             {WEEK_DATA.map((week, wi) => (
               <div key={wi} className="profile__chart-week">
@@ -172,14 +182,12 @@ export default function ProfileView() {
       )}
 
       {activeTab === "settings" && (
-        <div className="anim-fade-up">
-          <div className="card profile__settings-card">
-            <Toggle label="Push известия" desc="Нови сигнали в твоя район" value={notifs} onToggle={() => setNotifs((v) => !v)} />
-            <Toggle label="GPS локация" desc="Автоматично запазване" value={gps} onToggle={() => setGps((v) => !v)} />
-            <Toggle label="Тъмен режим" desc="Eco тема (препоръчано)" value={dark} onToggle={() => setDark((v) => !v)} />
-            <Toggle label="Email известия" desc="Седмичен дайджест" value={emails} onToggle={() => setEmails((v) => !v)} />
-          </div>
-          <button className="btn-danger profile__logout">ИЗХОД ОТ ПРОФИЛА</button>
+        <div className="profile__settings-section anim-fade-up">
+          <Toggle label={i.profilePushNotifs} desc={i.profilePushDesc} value={notifs} onToggle={() => setNotifs((v) => !v)} />
+          <Toggle label={i.profileGps} desc={i.profileGpsDesc} value={gps} onToggle={() => setGps((v) => !v)} />
+          <Toggle label={i.profileDarkMode} desc={i.profileDarkDesc} value={dark} onToggle={() => setDark((v) => !v)} />
+          <Toggle label={i.profileEmails} desc={i.profileEmailsDesc} value={emails} onToggle={() => setEmails((v) => !v)} />
+          <button className="btn-danger profile__logout">{i.profileLogout}</button>
         </div>
       )}
     </div>

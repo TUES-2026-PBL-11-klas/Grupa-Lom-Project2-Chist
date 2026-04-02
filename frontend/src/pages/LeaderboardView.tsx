@@ -2,13 +2,10 @@ import { useState } from "react";
 import "../styles/LeaderboardView.css";
 import { LEADERBOARD, BADGES } from "../data/mockData.js";
 import { useApp } from "../context/AppContext.jsx";
+import { t } from "../i18n.ts";
+import type { Lang } from "../i18n.ts";
 
 const RANK_COLORS = ["#ffffff", "#aaaaaa", "#777777"];
-const PERIODS = [
-  { id: "awards", label: "НАГРАДИ" },
-  { id: "cleanings", label: "ПОЧИСТВАНИЯ" },
-  { id: "points", label: "ТОЧКИ" },
-];
 
 interface UserEntry {
   id: string;
@@ -88,7 +85,7 @@ function Podium({ top3 }: { top3: UserEntry[] }) {
   );
 }
 
-function LeaderRow({ user, isMe, index, sortBy }: { user: UserEntry; isMe: boolean; index: number; sortBy: string }) {
+function LeaderRow({ user, isMe, index, sortBy, i: i18n }: { user: UserEntry; isMe: boolean; index: number; sortBy: string; i: ReturnType<typeof t> }) {
   const rankColor = index < 3 ? RANK_COLORS[index] : null;
 
   const getValue = () => {
@@ -98,9 +95,9 @@ function LeaderRow({ user, isMe, index, sortBy }: { user: UserEntry; isMe: boole
   };
 
   const getLabel = () => {
-    if (sortBy === "awards") return "🏆 НАГРАДИ";
-    if (sortBy === "cleanings") return "🧹 ПОЧИСТВАНИЯ";
-    return "⭐ ТОЧКИ";
+    if (sortBy === "awards") return i18n.leaderboardAwardsLabel;
+    if (sortBy === "cleanings") return i18n.leaderboardCleaningsLabel;
+    return i18n.leaderboardPointsLabel;
   };
 
   return (
@@ -123,7 +120,7 @@ function LeaderRow({ user, isMe, index, sortBy }: { user: UserEntry; isMe: boole
         <div className="leaderboard__row-name" style={{ color: "var(--text-1)" }}>
           {user.name}
           {user.verified && <span className="leaderboard__verified-badge">✓</span>}
-          {isMe && <span className="leaderboard__me-badge">ТИ</span>}
+          {isMe && <span className="leaderboard__me-badge">{i18n.leaderboardYou}</span>}
         </div>
         <div className="leaderboard__row-meta">
           <span>{user.levelIcon} {user.level}</span>
@@ -151,9 +148,20 @@ function LeaderRow({ user, isMe, index, sortBy }: { user: UserEntry; isMe: boole
   );
 }
 
-export default function LeaderboardView() {
+interface LeaderboardViewProps {
+  lang: Lang;
+}
+
+export default function LeaderboardView({ lang }: LeaderboardViewProps) {
   const { user } = useApp();
+  const i = t(lang);
   const [sortBy, setSortBy] = useState("awards");
+
+  const periods = [
+    { id: "awards", label: i.leaderboardAwards },
+    { id: "cleanings", label: i.leaderboardCleanings },
+    { id: "points", label: i.leaderboardPoints },
+  ];
 
   const sortedData = [...usersWithAwards]
     .sort((a: any, b: any) => {
@@ -161,17 +169,17 @@ export default function LeaderboardView() {
       if (sortBy === "cleanings") return b.cleanings - a.cleanings;
       return b.points - a.points;
     })
-    .map((u: any, i: number) => ({ ...u, rank: i + 1 }));
+    .map((u: any, idx: number) => ({ ...u, rank: idx + 1 }));
 
   const myEntry = sortedData.find((u: any) => u.name === user.name);
   const top3 = sortedData.slice(0, 3);
 
   return (
     <div className="leaderboard">
-      <div className="label-caps">Класация · Топ доброволци</div>
+      <div className="label-caps">{i.leaderboardTitle}</div>
 
       <div className="leaderboard__tabs">
-        {PERIODS.map((p) => (
+        {periods.map((p) => (
           <button
             key={p.id}
             className={`leaderboard__tab ${sortBy === p.id ? "leaderboard__tab--active" : "leaderboard__tab--inactive"}`}
@@ -186,7 +194,7 @@ export default function LeaderboardView() {
 
       {myEntry && (
         <div className="leaderboard__my-rank">
-          <span className="leaderboard__my-rank-label">Твоята позиция:</span>
+          <span className="leaderboard__my-rank-label">{i.leaderboardYourPos}</span>
           <span className="leaderboard__my-rank-val">
             #{myEntry.rank} ·{" "}
             {sortBy === "awards"
@@ -199,8 +207,8 @@ export default function LeaderboardView() {
       )}
 
       <div className="leaderboard__list">
-        {sortedData.map((u: any, i: number) => (
-          <LeaderRow key={u.id} user={u} isMe={u.name === user.name} index={i} sortBy={sortBy} />
+        {sortedData.map((u: any, idx: number) => (
+          <LeaderRow key={u.id} user={u} isMe={u.name === user.name} index={idx} sortBy={sortBy} i={i} />
         ))}
       </div>
     </div>

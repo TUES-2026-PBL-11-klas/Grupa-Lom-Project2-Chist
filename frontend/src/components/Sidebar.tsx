@@ -135,6 +135,7 @@ export default function Sidebar({
             <div className="sidebar__empty">{i.noResults}</div>
           )}
         </div>
+
       </aside>
     </>
   );

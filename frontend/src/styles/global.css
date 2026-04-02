@@ -31,6 +31,11 @@
   --green-dim: rgba(255, 255, 255, 0.06);
   --orange: #cccccc;
 
+  --accent-pink: #FF4D94;
+  --accent-pink-dim: rgba(255, 77, 148, 0.12);
+  --accent-pink-border: rgba(255, 77, 148, 0.35);
+  --accent-pink-glow: rgba(255, 77, 148, 0.4);
+
   --bg-base: #000000;
   --bg-surface: #0f0f0f;
   --bg-card: rgba(255, 255, 255, 0.04);
@@ -59,11 +64,11 @@
   --max-w: 480px;
 
   /* Legacy aliases */
-  --green-bright: var(--primary);
+  --green-bright: var(--pink-primary);
   --green-mid: #aaaaaa;
   --green-deep: #666666;
-  --green-border: var(--border-md);
-  --green-glow: var(--primary-glow);
+  --green-border: var(--accent-pink-border);
+  --green-glow: var(--accent-pink-glow);
   --amber: var(--secondary);
   --amber-dim: var(--secondary-dim);
   --red-alert: var(--red);
@@ -261,6 +266,19 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
   z-index: 1;
 }
 
+@media (min-width: 768px) {
+  .page-content {
+    max-width: 960px;
+    padding: 32px 32px 48px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .page-content {
+    max-width: 1100px;
+  }
+}
+
 .ambient-orb-tl {
   position: fixed;
   top: -300px;
@@ -319,12 +337,28 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
   overflow-y: auto;
   animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+@media (min-width: 768px) {
+  .modal-backdrop {
+    align-items: center;
+  }
+  .modal-sheet {
+    border-radius: 22px;
+    max-width: 520px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
 .modal-handle {
   width: 36px;
   height: 4px;
   border-radius: 2px;
   background: var(--border-md);
   margin: 0 auto 22px;
+}
+@media (min-width: 768px) {
+  .modal-handle {
+    display: none;
+  }
 }
 .modal-header {
   display: flex;

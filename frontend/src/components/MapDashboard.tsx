@@ -10,21 +10,18 @@ import "../styles/MapDashboard.css";
 interface MapDashboardProps {
   onNavigate: (tab: string) => void;
   currentTab: string;
+  lang: Lang;
+  onToggleLang: () => void;
 }
 
-export default function MapDashboard({ onNavigate, currentTab }: MapDashboardProps) {
+export default function MapDashboard({ onNavigate, currentTab, lang, onToggleLang }: MapDashboardProps) {
   const { reports, claimReport, completeReport, selectedReportId, selectReport } = useApp();
 
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [lang, setLang] = useState<Lang>("bg");
 
   const i = t(lang);
-
-  const toggleLang = useCallback(() => {
-    setLang((prev) => (prev === "bg" ? "en" : "bg"));
-  }, []);
 
   /* Filter reports by active filter + search query */
   const filteredReports = useMemo(() => {
@@ -68,7 +65,7 @@ export default function MapDashboard({ onNavigate, currentTab }: MapDashboardPro
 
   return (
     <div className="map-dashboard">
-      <Navbar lang={lang} onToggleLang={toggleLang} currentTab={currentTab} onNavigate={onNavigate} />
+      <Navbar lang={lang} onToggleLang={onToggleLang} currentTab={currentTab} onNavigate={onNavigate} />
 
       <Sidebar
         reports={filteredReports}

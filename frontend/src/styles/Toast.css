@@ -25,25 +25,25 @@
 }
 
 .toast--success {
-  background: rgba(5, 14, 8, 0.97);
+  background: rgba(10, 10, 20, 0.97);
   border: 1px solid var(--green-bright);
   color: var(--green-bright);
-  box-shadow: 0 0 28px rgba(74, 222, 128, 0.25);
+  box-shadow: 0 0 28px rgba(255, 77, 148, 0.25);
 }
 .toast--info {
-  background: rgba(5, 14, 8, 0.97);
+  background: rgba(10, 10, 20, 0.97);
   border: 1px solid var(--blue-info);
   color: var(--blue-info);
   box-shadow: 0 0 28px rgba(96, 165, 250, 0.25);
 }
 .toast--error {
-  background: rgba(5, 14, 8, 0.97);
+  background: rgba(10, 10, 20, 0.97);
   border: 1px solid var(--red-alert);
   color: var(--red-alert);
   box-shadow: 0 0 28px rgba(255, 59, 59, 0.25);
 }
 .toast--warning {
-  background: rgba(5, 14, 8, 0.97);
+  background: rgba(10, 10, 20, 0.97);
   border: 1px solid var(--amber);
   color: var(--amber);
   box-shadow: 0 0 28px rgba(245, 197, 24, 0.25);

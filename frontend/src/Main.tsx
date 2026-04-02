@@ -8,7 +8,6 @@ import ProfileView from "./pages/ProfileView.tsx";
 import RewardsView from "./pages/RewardsView.tsx";
 import ReportModal from "./components/ReportModal.jsx";
 import NotificationsPanel from "./components/NotificationsPanel.jsx";
-import { t } from "./i18n.ts";
 import type { Lang } from "./i18n.ts";
 
 export default function Main() {
@@ -26,15 +25,15 @@ export default function Main() {
   const renderPage = () => {
     switch (tab) {
       case "home":
-        return <MapDashboard onNavigate={setTab} currentTab={tab} />;
+        return <MapDashboard onNavigate={setTab} currentTab={tab} lang={lang} onToggleLang={toggleLang} />;
       case "reports":
-        return <ReportsView onNewReport={() => setShowModal(true)} />;
+        return <ReportsView onNewReport={() => setShowModal(true)} lang={lang} />;
       case "board":
-        return <LeaderboardView />;
+        return <LeaderboardView lang={lang} />;
       case "rewards":
-        return <RewardsView />;
+        return <RewardsView lang={lang} />;
       case "profile":
-        return <ProfileView />;
+        return <ProfileView lang={lang} />;
       default:
         return null;
     }
