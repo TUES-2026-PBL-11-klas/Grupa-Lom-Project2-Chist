@@ -28,7 +28,7 @@
 }
 
 .map-navbar__subtitle {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   letter-spacing: 2px;
   color: rgba(255, 255, 255, 0.3);
@@ -63,7 +63,7 @@
 }
 
 .map-navbar__stat-val {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 700;
   color: #fff;
@@ -83,7 +83,7 @@
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
 

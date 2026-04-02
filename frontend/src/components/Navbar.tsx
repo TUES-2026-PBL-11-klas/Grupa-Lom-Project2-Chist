@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useApp } from "../context/AppContext.jsx";
+import { useApp } from "../context/AppContext.tsx";
 import type { Lang } from "../i18n.ts";
 import { t } from "../i18n.ts";
 import "../styles/MapNavbar.css";

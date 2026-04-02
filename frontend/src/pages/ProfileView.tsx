@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/ProfileView.css";
-import { BADGES, LEVEL_THRESHOLDS } from "../data/mockData.js";
-import { useApp } from "../context/AppContext.jsx";
+import { BADGES, LEVEL_THRESHOLDS } from "../data/mockData.ts";
+import { useApp } from "../context/AppContext.tsx";
 import { t } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";
 

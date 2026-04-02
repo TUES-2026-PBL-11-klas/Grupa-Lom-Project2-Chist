@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "../styles/LeaderboardView.css";
-import { LEADERBOARD, BADGES } from "../data/mockData.js";
-import { useApp } from "../context/AppContext.jsx";
-import { t } from "../i18n.ts";
+import { LEADERBOARD, BADGES } from "../data/mockData.ts";
+import { useApp } from "../context/AppContext.tsx";
+import { t, translateLevel } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";
 
 const RANK_COLORS = ["#ffffff", "#aaaaaa", "#777777"];
@@ -85,7 +85,7 @@ function Podium({ top3 }: { top3: UserEntry[] }) {
   );
 }
 
-function LeaderRow({ user, isMe, index, sortBy, i: i18n }: { user: UserEntry; isMe: boolean; index: number; sortBy: string; i: ReturnType<typeof t> }) {
+function LeaderRow({ user, isMe, index, sortBy, i: i18n, lang }: { user: UserEntry; isMe: boolean; index: number; sortBy: string; i: ReturnType<typeof t>; lang: Lang }) {
   const rankColor = index < 3 ? RANK_COLORS[index] : null;
 
   const getValue = () => {
@@ -123,7 +123,7 @@ function LeaderRow({ user, isMe, index, sortBy, i: i18n }: { user: UserEntry; is
           {isMe && <span className="leaderboard__me-badge">{i18n.leaderboardYou}</span>}
         </div>
         <div className="leaderboard__row-meta">
-          <span>{user.levelIcon} {user.level}</span>
+          <span>{user.levelIcon} {translateLevel(lang, user.level)}</span>
           {user.streak > 0 && <span style={{ color: "var(--text-3)" }}>· 🔥 {user.streak}</span>}
           <span style={{ color: "var(--text-3)" }}>· 🧹 {user.cleanings}</span>
         </div>
@@ -208,7 +208,7 @@ export default function LeaderboardView({ lang }: LeaderboardViewProps) {
 
       <div className="leaderboard__list">
         {sortedData.map((u: any, idx: number) => (
-          <LeaderRow key={u.id} user={u} isMe={u.name === user.name} index={idx} sortBy={sortBy} i={i} />
+          <LeaderRow key={u.id} user={u} isMe={u.name === user.name} index={idx} sortBy={sortBy} i={i} lang={lang} />
         ))}
       </div>
     </div>

@@ -9,7 +9,7 @@
   padding: 8px 4px;
   border-radius: 10px;
   background: transparent;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   cursor: pointer;
   transition: all 0.15s;
@@ -29,12 +29,12 @@
   align-items: center;
 }
 .report-modal__gps-coords {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--green-bright);
 }
 .report-modal__gps-accuracy {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 2px;
@@ -62,7 +62,7 @@
   display: flex;
   gap: 10px;
   font-size: 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   align-items: flex-start;
 }
 .report-modal__preview-key {
@@ -85,20 +85,20 @@
   margin-bottom: 18px;
 }
 .report-modal__ai-title {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--green-bright);
   font-weight: 700;
 }
 .report-modal__ai-status {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 2px;
 }
 .report-modal__ai-score {
   margin-left: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--green-bright);
   background: rgba(255, 77, 148, 0.1);

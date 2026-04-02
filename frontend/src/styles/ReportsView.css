@@ -12,7 +12,7 @@
   align-items: center;
 }
 .reports-view__header-meta {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--text-muted);
   margin-top: 4px;
@@ -75,7 +75,7 @@
 .reports-view__filter-pill {
   padding: 6px 14px;
   border-radius: 20px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   cursor: pointer;
   white-space: nowrap;
@@ -106,7 +106,7 @@
   align-items: center;
 }
 .reports-view__count {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--text-muted);
 }
@@ -114,7 +114,7 @@
   color: var(--pink-primary);
 }
 .reports-view__sort-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   color: rgba(255, 77, 148, 0.35);
 }
@@ -130,7 +130,7 @@
 .reports-view__empty {
   text-align: center;
   padding: 48px 20px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   color: var(--text-muted);
 }
 .reports-view__empty-icon {

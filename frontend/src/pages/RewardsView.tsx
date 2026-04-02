@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../styles/RewardsView.css";
-import { useApp } from "../context/AppContext.jsx";
+import { useApp } from "../context/AppContext.tsx";
 import { t, translateReward, translateRewardHistory } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";
 

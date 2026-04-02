@@ -29,7 +29,7 @@
   position: absolute;
   top: 10px;
   right: 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 9px;
   color: var(--green-bright);
   background: rgba(255, 77, 148, 0.1);
@@ -59,7 +59,7 @@
   min-width: 0;
 }
 .report-card__title {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 13px;
   color: var(--text-primary);
@@ -112,11 +112,11 @@
   border-radius: 50%;
 }
 .report-card__status-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
 }
 .report-card__time {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   color: rgba(255, 77, 148, 0.28);
 }
@@ -126,7 +126,7 @@
   align-items: center;
 }
 .report-card__pts {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 13px;
   color: var(--amber);
@@ -137,7 +137,7 @@
   letter-spacing: 1px;
 }
 .report-card__done-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   color: var(--green-bright);
 }
@@ -151,7 +151,7 @@
   gap: 6px;
   font-size: 10px;
   color: var(--text-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
 }
 .report-card__footer-sep {
   color: rgba(255, 77, 148, 0.2);

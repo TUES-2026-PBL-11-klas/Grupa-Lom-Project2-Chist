@@ -11,20 +11,20 @@
   font-size: 28px;
 }
 .clean-modal__task-title {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);
 }
 .clean-modal__task-loc {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--text-muted);
   margin-top: 2px;
 }
 .clean-modal__task-sev {
   margin-left: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   border-radius: 20px;
   padding: 2px 10px;
@@ -61,19 +61,19 @@
   flex: 1;
 }
 .clean-modal__step-title {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-primary);
   font-weight: 700;
 }
 .clean-modal__step-detail {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 2px;
 }
 .clean-modal__step-badge {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
 }
@@ -107,19 +107,19 @@
   font-size: 22px;
 }
 .clean-modal__ai-title {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 700;
   margin-bottom: 2px;
 }
 .clean-modal__ai-desc {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   color: var(--text-muted);
 }
 .clean-modal__ai-score {
   margin-left: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--green-bright);
   background: rgba(255, 77, 148, 0.1);

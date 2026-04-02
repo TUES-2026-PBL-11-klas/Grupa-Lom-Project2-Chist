@@ -1,13 +1,13 @@
 import { useState, useCallback } from "react";
-import Toast from "./components/Toast.jsx";
+import Toast from "./components/Toast.tsx";
 import MapDashboard from "./components/MapDashboard.tsx";
 import Navbar from "./components/Navbar.tsx";
 import ReportsView from "./pages/ReportsView.tsx";
 import LeaderboardView from "./pages/LeaderboardView.tsx";
 import ProfileView from "./pages/ProfileView.tsx";
 import RewardsView from "./pages/RewardsView.tsx";
-import ReportModal from "./components/ReportModal.jsx";
-import NotificationsPanel from "./components/NotificationsPanel.jsx";
+import ReportModal from "./components/ReportModal.tsx";
+import NotificationsPanel from "./components/NotificationsPanel.tsx";
 import type { Lang } from "./i18n.ts";
 
 export default function Main() {

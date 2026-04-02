@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { useApp } from "../context/AppContext.jsx";
+import { useApp } from "../context/AppContext.tsx";
 import Navbar from "./Navbar.tsx";
 import Sidebar from "./Sidebar.tsx";
 import MapContainer from "./MapContainer.tsx";

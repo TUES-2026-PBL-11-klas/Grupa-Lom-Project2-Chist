@@ -29,6 +29,13 @@ const translations = {
     completeTask: "✅ Завърши",
     completed: "Завършено",
 
+    // Levels
+    levelNovice: "НОВИЧ",
+    levelActive: "АКТИВЕН",
+    levelPro: "ПРО",
+    levelMaster: "МАСТЪР",
+    levelLegend: "ЛЕГЕНДА",
+
     // Profile
     profileStats: "Статистики",
     profileBadges: "Значки",
@@ -130,6 +137,13 @@ const translations = {
     claimTask: "🧹 Claim task",
     completeTask: "✅ Complete",
     completed: "Completed",
+
+    // Levels
+    levelNovice: "NOVICE",
+    levelActive: "ACTIVE",
+    levelPro: "PRO",
+    levelMaster: "MASTER",
+    levelLegend: "LEGEND",
 
     // Profile
     profileStats: "Statistics",
@@ -245,6 +259,20 @@ export type T = Record<keyof (typeof translations)["bg"], string>;
 
 export function t(lang: Lang): T {
   return translations[lang];
+}
+
+const LEVEL_MAP: Record<string, keyof T> = {
+  "НОВИЧ": "levelNovice",
+  "АКТИВЕН": "levelActive",
+  "ПРО": "levelPro",
+  "МАСТЪР": "levelMaster",
+  "ЛЕГЕНДА": "levelLegend",
+};
+
+export function translateLevel(lang: Lang, level: string): string {
+  const key = LEVEL_MAP[level];
+  if (!key) return level;
+  return translations[lang][key];
 }
 
 export function translateReport(lang: Lang, report: { id: number; title: string; location: string; description?: string }) {

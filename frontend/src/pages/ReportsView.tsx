@@ -1,26 +1,30 @@
 import { useState, useMemo } from "react";
 import "../styles/ReportsView.css";
-import { useApp } from "../context/AppContext.jsx";
-import ReportCard from "../components/ReportCard.jsx";
-
-const FILTERS = [
-  { id: "all", label: "Всички" },
-  { id: "open", label: "Отворени" },
-  { id: "in-progress", label: "В процес" },
-  { id: "done", label: "Завършени" },
-  { id: "critical", label: "🚨 Критични" },
-  { id: "high", label: "⚠️ Сериозни" },
-];
+import { useApp } from "../context/AppContext.tsx";
+import ReportCard from "../components/ReportCard.tsx";
+import { t } from "../i18n.ts";
+import type { Lang } from "../i18n.ts";
 
 interface ReportsViewProps {
   onNewReport: () => void;
+  lang: Lang;
 }
 
-export default function ReportsView({ onNewReport }: ReportsViewProps) {
+export default function ReportsView({ onNewReport, lang }: ReportsViewProps) {
+  const i = t(lang);
   const { reports } = useApp();
   const [search, setSearch] = useState("");
   const [activeFilter, setFilter] = useState("all");
   const [expandedId, setExpanded] = useState<number | null>(null);
+
+  const FILTERS = [
+    { id: "all", label: i.reportsFilterAll },
+    { id: "open", label: i.reportsFilterOpen },
+    { id: "in-progress", label: i.reportsFilterInProgress },
+    { id: "done", label: i.reportsFilterDone },
+    { id: "critical", label: i.reportsFilterCritical },
+    { id: "high", label: i.reportsFilterHigh },
+  ];
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -48,14 +52,14 @@ export default function ReportsView({ onNewReport }: ReportsViewProps) {
     <div className="reports-view">
       <div className="reports-view__header">
         <div>
-          <div className="label-caps">Активни сигнали</div>
+          <div className="label-caps">{i.reportsActive}</div>
           <div className="reports-view__header-meta">
             <span className="reports-view__header-meta--open">
-              {openCount} отворени
+              {openCount} {i.reportsOpen}
             </span>
             {criticalCount > 0 && (
               <span className="reports-view__header-meta--critical">
-                · 🚨 {criticalCount} критични
+                · 🚨 {criticalCount} {i.reportsCritical}
               </span>
             )}
           </div>
@@ -64,7 +68,7 @@ export default function ReportsView({ onNewReport }: ReportsViewProps) {
           className="btn-primary reports-view__new-btn"
           onClick={onNewReport}
         >
-          + НОВ
+          {i.reportsNew}
         </button>
       </div>
 
@@ -73,7 +77,7 @@ export default function ReportsView({ onNewReport }: ReportsViewProps) {
           className="input-field reports-view__search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Търси по район, описание, потребител…"
+          placeholder={i.reportsSearchPlaceholder}
         />
         {search && (
           <button
@@ -103,9 +107,9 @@ export default function ReportsView({ onNewReport }: ReportsViewProps) {
 
       <div className="reports-view__sort-bar">
         <span className="reports-view__count">
-          <span>{filtered.length}</span> резултата
+          <span>{filtered.length}</span> {i.reportsResults}
         </span>
-        <span className="reports-view__sort-label">↓ по дата</span>
+        <span className="reports-view__sort-label">{i.reportsByDate}</span>
       </div>
 
       <div className="reports-view__list">
@@ -115,14 +119,14 @@ export default function ReportsView({ onNewReport }: ReportsViewProps) {
               {search ? "🔍" : "🌿"}
             </div>
             <div className="reports-view__empty-text">
-              {search ? `Няма резултати за „${search}"` : "Няма сигнали"}
+              {search ? `${i.reportsNoResults} „${search}"` : i.reportsNoSignals}
             </div>
             {search && (
               <button
                 className="btn-ghost reports-view__empty-clear"
                 onClick={() => setSearch("")}
               >
-                Изчисти търсенето
+                {i.reportsClearSearch}
               </button>
             )}
           </div>
@@ -133,6 +137,7 @@ export default function ReportsView({ onNewReport }: ReportsViewProps) {
               report={r}
               expanded={expandedId === r.id}
               onClick={() => setExpanded(expandedId === r.id ? null : r.id)}
+              lang={lang}
             />
           ))
         )}
