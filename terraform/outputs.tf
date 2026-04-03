@@ -1,46 +1,66 @@
 output "resource_group_name" {
-  value = azurerm_resource_group.main.name
+  value = module.network.resource_group_name
 }
 
 output "vnet_id" {
-  value = azurerm_virtual_network.main.id
+  value = module.network.vnet_id
 }
 
 output "acr_login_server" {
-  value = azurerm_container_registry.acr.login_server
+  value = module.acr.acr_login_server
 }
 
 output "acr_name" {
-  value = azurerm_container_registry.acr.name
+  value = module.acr.acr_name
 }
 
 output "aks_cluster_name" {
-  value = azurerm_kubernetes_cluster.aks.name
-}
-
-output "aks_cluster_endpoint" {
-  value = azurerm_kubernetes_cluster.aks.kube_config[0].host
-   sensitive = true
+  value = module.aks.aks_cluster_name
 }
 
 output "aks_kube_config" {
-  value     = azurerm_kubernetes_cluster.aks.kube_config_raw
+  value     = module.aks.kube_config_raw
   sensitive = true
 }
 
-# FIX: removed postgres_fqdn and postgres_connection_string — they referenced
-# azurerm_postgresql_flexible_server.db which no longer exists (replaced by CNPG).
-# CNPG is accessed in-cluster at cnpg-cluster-rw.db.svc.cluster.local.
-
 output "cnpg_connection_host" {
-  description = "In-cluster hostname for the CNPG read-write service"
-  value       = "cnpg-cluster-rw.db.svc.cluster.local"
+  value = "cnpg-cluster-rw.db.svc.cluster.local"
 }
 
 output "vault_public_url" {
-  value = hcp_vault_cluster.main.vault_public_endpoint_url
+  value = module.hcp.vault_public_url
 }
 
 output "vault_cluster_id" {
-  value = hcp_vault_cluster.main.cluster_id
+  value = module.hcp.vault_cluster_id
+}
+
+output "github_actions_role_id" {
+  value     = module.vault.github_actions_role_id
+  sensitive = true
+}
+
+output "github_actions_secret_id" {
+  value     = module.vault.github_actions_secret_id
+  sensitive = true
+}
+
+output "backend_role_id" {
+  value     = module.vault.backend_role_id
+  sensitive = true
+}
+
+output "backend_secret_id" {
+  value     = module.vault.backend_secret_id
+  sensitive = true
+}
+
+output "developer_role_id" {
+  value     = module.vault.developer_role_id
+  sensitive = true
+}
+
+output "developer_secret_id" {
+  value     = module.vault.developer_secret_id
+  sensitive = true
 }
