@@ -58,10 +58,16 @@ variable "db_username" {
   default     = "dbadmin"
 }
 
+variable "db_password" {
+  description = "Database password"
+  type        = string
+  sensitive   = true
+}
+
 variable "aks_node_vm_size" {
   description = "VM size for AKS nodes"
   type        = string
-  default     = "Standard_D2ps_v6"
+  default     = "Standard_B2s"
 }
 
 variable "argocd_hostname" {
@@ -70,35 +76,8 @@ variable "argocd_hostname" {
   default     = "argocd.chist.dev"
 }
 
-variable "acr_registry" {
-  description = "Azure Container Registry URL e.g. myregistry.azurecr.io"
-  type        = string
-}
-
-variable "acr_username" {
-  description = "ACR admin username"
-  type        = string
-}
-
-variable "acr_password" {
-  description = "ACR admin password"
-  type        = string
-  sensitive   = true
-}
-
-variable "db_url" {
-  description = "Database connection URL"
-  type        = string
-}
-
-variable "db_password" {
-  description = "Database password"
-  type        = string
-  sensitive   = true
-}
-
 variable "jwt_secret" {
-  description = "JWT signing secret for user-module (base64, min 32 chars). Set as sensitive in HCP Terraform workspace."
+  description = "JWT signing secret"
   type        = string
   sensitive   = true
 }
@@ -106,10 +85,12 @@ variable "jwt_secret" {
 variable "computer_vision_endpoint" {
   description = "Azure Computer Vision endpoint URL"
   type        = string
+  default     = ""
 }
 
 variable "computer_vision_key" {
   description = "Azure Computer Vision API key"
   type        = string
   sensitive   = true
+  default     = ""
 }

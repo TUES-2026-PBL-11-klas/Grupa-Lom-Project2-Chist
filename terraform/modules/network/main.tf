@@ -1,28 +1,17 @@
-# Resource Group
 resource "azurerm_resource_group" "main" {
   name     = "rg-${var.project_name}-${var.environment}"
   location = var.location
-
-  tags = {
-    Environment = var.environment
-    Project     = var.project_name
-  }
+  tags     = local.tags
 }
 
-# Virtual Network
 resource "azurerm_virtual_network" "main" {
   name                = "vnet-${var.project_name}-${var.environment}"
   address_space       = [var.vnet_cidr]
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-
-  tags = {
-    Environment = var.environment
-    Project     = var.project_name
-  }
+  tags                = local.tags
 }
 
-# Public Subnet
 resource "azurerm_subnet" "public" {
   name                 = "subnet-public-${var.environment}"
   resource_group_name  = azurerm_resource_group.main.name
@@ -30,7 +19,6 @@ resource "azurerm_subnet" "public" {
   address_prefixes     = [var.public_subnet_cidr]
 }
 
-# AKS Subnet
 resource "azurerm_subnet" "aks" {
   name                 = "subnet-aks-${var.environment}"
   resource_group_name  = azurerm_resource_group.main.name
@@ -38,8 +26,6 @@ resource "azurerm_subnet" "aks" {
   address_prefixes     = [var.aks_subnet_cidr]
 }
 
-# DB Subnet - FIX: removed PostgreSQL Flexible Server delegation;
-# database is now CNPG running inside AKS, no Azure DB service needed.
 resource "azurerm_subnet" "db" {
   name                 = "subnet-db-${var.environment}"
   resource_group_name  = azurerm_resource_group.main.name
@@ -47,11 +33,11 @@ resource "azurerm_subnet" "db" {
   address_prefixes     = [var.db_subnet_cidr]
 }
 
-# NSG for public subnet
 resource "azurerm_network_security_group" "public" {
   name                = "nsg-public-${var.environment}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
+  tags                = local.tags
 
   security_rule {
     name                       = "allow-http"
@@ -76,11 +62,6 @@ resource "azurerm_network_security_group" "public" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-
-  tags = {
-    Environment = var.environment
-    Project     = var.project_name
-  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "public" {
@@ -88,7 +69,9 @@ resource "azurerm_subnet_network_security_group_association" "public" {
   network_security_group_id = azurerm_network_security_group.public.id
 }
 
-#import {
-#  to = azurerm_virtual_network.main
-#  id = "/subscriptions/bf606b72-98ef-41a9-b412-4f95aea302d6/resourceGroups/rg-chist-dev/providers/Microsoft.Network/virtualNetworks/vnet-chist-dev"
-#}
+locals {
+  tags = {
+    Environment = var.environment
+    Project     = var.project_name
+  }
+}

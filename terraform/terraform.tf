@@ -1,7 +1,6 @@
 terraform {
   required_version = ">= 1.6"
 
-  # Single backend — pick ONE org/workspace and stick to it
   cloud {
     organization = "chist"
     workspaces {

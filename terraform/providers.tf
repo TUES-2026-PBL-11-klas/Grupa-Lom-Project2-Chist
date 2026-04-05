@@ -1,29 +1,31 @@
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
 provider "helm" {
   kubernetes {
-    host                   = azurerm_kubernetes_cluster.aks.kube_config[0].host
-    client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].client_certificate)
-    client_key             = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].client_key)
-    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].cluster_ca_certificate)
+    host                   = module.aks.kube_host
+    client_certificate     = base64decode(module.aks.kube_client_certificate)
+    client_key             = base64decode(module.aks.kube_client_key)
+    cluster_ca_certificate = base64decode(module.aks.kube_ca_certificate)
   }
 }
 
 provider "kubernetes" {
-  host                   = azurerm_kubernetes_cluster.aks.kube_config[0].host
-  client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].client_certificate)
-  client_key             = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].client_key)
-  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_config[0].cluster_ca_certificate)
+  host                   = module.aks.kube_host
+  client_certificate     = base64decode(module.aks.kube_client_certificate)
+  client_key             = base64decode(module.aks.kube_client_key)
+  cluster_ca_certificate = base64decode(module.aks.kube_ca_certificate)
 }
 
-# Authenticate to HCP using env vars:
 provider "hcp" {}
 
-# Vault provider points at the HCP Vault cluster created in main.tf
 provider "vault" {
-  address   = hcp_vault_cluster.main.vault_public_endpoint_url
+  address   = module.hcp.vault_public_url
   namespace = "admin"
-  token     = hcp_vault_cluster_admin_token.main.token
+  token     = module.hcp.vault_admin_token
 }

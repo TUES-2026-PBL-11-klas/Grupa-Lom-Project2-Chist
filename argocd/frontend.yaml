@@ -16,7 +16,7 @@ spec:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: inreach
+    namespace: chist
   syncPolicy:
     automated:
       prune: true
