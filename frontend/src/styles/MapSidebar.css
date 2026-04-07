@@ -10,7 +10,7 @@
   position: fixed;
   top: 64px;
   left: 0;
-  bottom: 0;
+  bottom: 20px;
   width: 380px;
   z-index: 40;
   background: rgba(0, 0, 0, 0.95);

@@ -38,7 +38,7 @@ function LoginForm({ onSuccess, onSwitch }) {
     setLoading(true);
     setError("");
     try {
-      // Hardcoded test account for development
+      // Dev shortcut — remove before production
       if (email === "test@chist.bg" && password === "test1234") {
         localStorage.setItem("cw_token", "dev-test-token");
         onSuccess();
@@ -241,11 +241,6 @@ export default function AuthView({ onAuthenticated }) {
           ))}
         </div>
 
-        <div className="auth__guest-wrap">
-          <button className="auth__guest-btn" onClick={onAuthenticated}>
-            Продължи като гост →
-          </button>
-        </div>
       </div>
 
       <div className="auth__footer">

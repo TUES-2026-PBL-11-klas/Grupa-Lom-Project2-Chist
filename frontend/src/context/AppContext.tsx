@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback } from "react";
+import { createContext, useContext, useReducer, useCallback, useMemo, useRef, } from "react";
 import { CURRENT_USER, REPORTS, ACTIVITY_FEED } from "../data/mockData.ts";
 
 const initialState = {
@@ -9,7 +9,7 @@ const initialState = {
   selectedReportId: null,
 };
 
-function reducer(state, action) {
+function reducer(state: any, action: any) {
   switch (action.type) {
     case "ADD_REPORT": {
       const r = {
@@ -48,7 +48,7 @@ function reducer(state, action) {
     case "CLAIM_REPORT":
       return {
         ...state,
-        reports: state.reports.map((r) =>
+        reports: state.reports.map((r: any) =>
           r.id === action.payload
             ? {
                 ...r,
@@ -61,7 +61,7 @@ function reducer(state, action) {
       };
 
     case "COMPLETE_REPORT": {
-      const rep = state.reports.find((r) => r.id === action.payload);
+      const rep = state.reports.find((r: any) => r.id === action.payload);
       const pts = rep?.points ?? 0;
       const feed = {
         id: Date.now(),
@@ -75,7 +75,7 @@ function reducer(state, action) {
       };
       return {
         ...state,
-        reports: state.reports.map((r) =>
+        reports: state.reports.map((r: any) =>
           r.id === action.payload
             ? { ...r, status: "done", cleanedBy: state.user.name }
             : r,
@@ -114,7 +114,7 @@ function reducer(state, action) {
       return {
         ...state,
         notifications: state.notifications.filter(
-          (n) => n.id !== action.payload,
+          (n: any) => n.id !== action.payload,
         ),
       };
 
@@ -125,10 +125,14 @@ function reducer(state, action) {
 
 const AppContext = createContext(null);
 
-export function AppProvider({ children, onLogout }) {
+export function AppProvider({ children, onLogout }: { children: any; onLogout: any }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const addReport = useCallback((data) => {
+  // Keep a ref so callbacks don't need state in their dependency arrays
+  const reportsRef = useRef(state.reports);
+  reportsRef.current = state.reports;
+
+  const addReport = useCallback((data: any) => {
     dispatch({ type: "ADD_REPORT", payload: data });
     dispatch({
       type: "ADD_NOTIFICATION",
@@ -140,7 +144,7 @@ export function AppProvider({ children, onLogout }) {
     });
   }, []);
 
-  const claimReport = useCallback((id) => {
+  const claimReport = useCallback((id: any) => {
     dispatch({ type: "CLAIM_REPORT", payload: id });
     dispatch({
       type: "ADD_NOTIFICATION",
@@ -152,44 +156,45 @@ export function AppProvider({ children, onLogout }) {
     });
   }, []);
 
-  const completeReport = useCallback(
-    (id) => {
-      const rep = state.reports.find((r) => r.id === id);
-      dispatch({ type: "COMPLETE_REPORT", payload: id });
-      dispatch({
-        type: "ADD_NOTIFICATION",
-        payload: {
-          type: "success",
-          message: `🎉 Почистено! +${rep?.points ?? 0} точки`,
-          duration: 4000,
-        },
-      });
-    },
-    [state.reports],
-  );
+  const completeReport = useCallback((id: any) => {
+    const rep = reportsRef.current.find((r: any) => r.id === id);
+    dispatch({ type: "COMPLETE_REPORT", payload: id });
+    dispatch({
+      type: "ADD_NOTIFICATION",
+      payload: {
+        type: "success",
+        message: `🎉 Почистено! +${rep?.points ?? 0} точки`,
+        duration: 4000,
+      },
+    });
+  }, []);
 
   const selectReport = useCallback(
-    (id) => dispatch({ type: "SELECT_REPORT", payload: id }),
+    (id: any) => dispatch({ type: "SELECT_REPORT", payload: id }),
     [],
   );
   const dismissNotification = useCallback(
-    (id) => dispatch({ type: "DISMISS_NOTIFICATION", payload: id }),
+    (id: any) => dispatch({ type: "DISMISS_NOTIFICATION", payload: id }),
     [],
   );
 
+  const contextValue = useMemo(
+    () => ({
+      ...state,
+      addReport,
+      claimReport,
+      completeReport,
+      selectReport,
+      dismissNotification,
+      logout: onLogout,
+      dispatch,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state, addReport, claimReport, completeReport, selectReport, dismissNotification, onLogout],
+  );
+
   return (
-    <AppContext.Provider
-      value={{
-        ...state,
-        addReport,
-        claimReport,
-        completeReport,
-        selectReport,
-        dismissNotification,
-        logout: onLogout,
-        dispatch,
-      }}
-    >
+    <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>
   );
