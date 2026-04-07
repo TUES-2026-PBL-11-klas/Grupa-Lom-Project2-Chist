@@ -38,7 +38,7 @@ interface ProfileViewProps {
 }
 
 export default function ProfileView({ lang }: ProfileViewProps) {
-  const { user } = useApp();
+  const { user, logout } = useApp();
   const i = t(lang);
   const [activeTab, setTab] = useState("stats");
   const [notifs, setNotifs] = useState(true);
@@ -187,7 +187,7 @@ export default function ProfileView({ lang }: ProfileViewProps) {
           <Toggle label={i.profileGps} desc={i.profileGpsDesc} value={gps} onToggle={() => setGps((v) => !v)} />
           <Toggle label={i.profileDarkMode} desc={i.profileDarkDesc} value={dark} onToggle={() => setDark((v) => !v)} />
           <Toggle label={i.profileEmails} desc={i.profileEmailsDesc} value={emails} onToggle={() => setEmails((v) => !v)} />
-          <button className="btn-danger profile__logout">{i.profileLogout}</button>
+          <button className="btn-danger profile__logout" onClick={logout}>{i.profileLogout}</button>
         </div>
       )}
     </div>

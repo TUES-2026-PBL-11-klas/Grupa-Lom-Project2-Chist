@@ -13,7 +13,7 @@ async function request(path, options = {}) {
       ...options.headers,
     },
   });
-  if (res.status === 401) { localStorage.removeItem("cw_token"); window.location.href = "/"; return; }
+  if (res.status === 401) { localStorage.removeItem("cw_token"); window.location.reload(); return; }
   if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message ?? `HTTP ${res.status}`); }
   if (res.status === 204) return null;
   return res.json();

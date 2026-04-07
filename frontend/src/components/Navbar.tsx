@@ -20,7 +20,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Navbar({ lang, onToggleLang, currentTab, onNavigate }: NavbarProps) {
-  const { user } = useApp();
+  const { user, logout } = useApp();
   const i = t(lang);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -79,6 +79,14 @@ export default function Navbar({ lang, onToggleLang, currentTab, onNavigate }: N
                   {lang === "en" ? item.labelEn : item.labelBg}
                 </button>
               ))}
+              <div className="map-navbar__dropdown-divider" />
+              <button
+                className="map-navbar__dropdown-item map-navbar__dropdown-item--logout"
+                onClick={() => { setMenuOpen(false); logout(); }}
+              >
+                <span className="map-navbar__dropdown-icon">🚪</span>
+                {lang === "en" ? "Logout" : "Изход"}
+              </button>
             </div>
           )}
         </div>

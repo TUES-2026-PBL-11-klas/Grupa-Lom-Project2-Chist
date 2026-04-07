@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { authApi } from "../services/api.ts";
 import "../styles/AuthView.css";
 
 function Field({ label, type = "text", value, onChange, placeholder, icon }) {
@@ -14,7 +15,7 @@ function Field({ label, type = "text", value, onChange, placeholder, icon }) {
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           className={`input-field ${icon ? "auth__field-input" : ""}`}
-          style={{ borderColor: focused ? "var(--primary)" : undefined }}
+          style={{ borderColor: focused ? "var(--pink-primary)" : undefined }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
         />
@@ -29,17 +30,28 @@ function LoginForm({ onSuccess, onSwitch }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!email || !password) {
       setError("Попълни всички полета.");
       return;
     }
     setLoading(true);
     setError("");
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      // Hardcoded test account for development
+      if (email === "test@chist.bg" && password === "test1234") {
+        localStorage.setItem("cw_token", "dev-test-token");
+        onSuccess();
+        return;
+      }
+      const res = await authApi.login(email, password);
+      localStorage.setItem("cw_token", res.token);
       onSuccess();
-    }, 900);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Грешен имейл или парола.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleKey = (e) => e.key === "Enter" && submit();
@@ -93,7 +105,7 @@ function RegisterForm({ onSuccess, onSwitch }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!username || !email || !password) {
       setError("Попълни всички полета.");
       return;
@@ -108,10 +120,15 @@ function RegisterForm({ onSuccess, onSwitch }) {
     }
     setLoading(true);
     setError("");
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const res = await authApi.register({ email, username, password });
+      localStorage.setItem("cw_token", res.token);
       onSuccess();
-    }, 1100);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Грешка при регистрация.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -179,7 +196,6 @@ export default function AuthView({ onAuthenticated }) {
 
       <div className="auth__card">
         <div className="auth__logo">
-          <div className="auth__logo-icon anim-float">🌿</div>
           <div className="auth__logo-wordmark">CHIST</div>
           <div className="auth__logo-sub">SOFIA · ПО-ЧИСТ ГРАД</div>
         </div>

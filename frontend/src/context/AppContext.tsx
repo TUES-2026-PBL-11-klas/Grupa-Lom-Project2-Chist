@@ -125,7 +125,7 @@ function reducer(state, action) {
 
 const AppContext = createContext(null);
 
-export function AppProvider({ children }) {
+export function AppProvider({ children, onLogout }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const addReport = useCallback((data) => {
@@ -186,6 +186,7 @@ export function AppProvider({ children }) {
         completeReport,
         selectReport,
         dismissNotification,
+        logout: onLogout,
         dispatch,
       }}
     >
