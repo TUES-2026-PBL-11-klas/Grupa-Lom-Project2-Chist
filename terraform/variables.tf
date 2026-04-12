@@ -94,3 +94,19 @@ variable "computer_vision_key" {
   sensitive   = true
   default     = ""
 }
+
+variable "acr_registry" {
+  description = "ACR login server"
+  type        = string
+}
+
+variable "acr_username" {
+  description = "ACR admin username"
+  type        = string
+}
+
+variable "acr_password" {
+  description = "ACR admin password"
+  type        = string
+  sensitive   = true
+}
