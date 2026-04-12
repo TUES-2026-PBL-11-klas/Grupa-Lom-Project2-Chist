@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com:TUES-2026-PBL-11-klas/Grupa-Lom-Project2-Chist
+    repoURL: https://github.com/TUES-2026-PBL-11-klas/Grupa-Lom-Project2-Chist
     targetRevision: main
     path: helm/report-module-chart
     helm:
