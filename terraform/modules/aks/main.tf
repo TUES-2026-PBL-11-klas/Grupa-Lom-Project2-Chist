@@ -38,6 +38,12 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
   skip_service_principal_aad_check = true
 }
 
+data "azurerm_resources" "aks_nsg" {
+  resource_group_name = "MC_${var.rg_name}_${azurerm_kubernetes_cluster.aks.name}_${var.location}"
+  type                = "Microsoft.Network/networkSecurityGroups"
+  depends_on          = [azurerm_kubernetes_cluster.aks]
+}
+
 resource "azurerm_network_security_rule" "allow_http" {
   name                        = "allow-http"
   priority                    = 100
@@ -49,9 +55,8 @@ resource "azurerm_network_security_rule" "allow_http" {
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = "MC_${var.rg_name}_${azurerm_kubernetes_cluster.aks.name}_${var.location}"
-  network_security_group_name = "aks-agentpool-${regex("[0-9]+", azurerm_kubernetes_cluster.aks.id)}-nsg"
-
-  depends_on = [azurerm_kubernetes_cluster.aks]
+  network_security_group_name = data.azurerm_resources.aks_nsg.resources[0].name
+  depends_on                  = [azurerm_kubernetes_cluster.aks]
 }
 
 resource "azurerm_network_security_rule" "allow_https" {
@@ -65,7 +70,6 @@ resource "azurerm_network_security_rule" "allow_https" {
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = "MC_${var.rg_name}_${azurerm_kubernetes_cluster.aks.name}_${var.location}"
-  network_security_group_name = "aks-agentpool-${regex("[0-9]+", azurerm_kubernetes_cluster.aks.id)}-nsg"
-
-  depends_on = [azurerm_kubernetes_cluster.aks]
+  network_security_group_name = data.azurerm_resources.aks_nsg.resources[0].name
+  depends_on                  = [azurerm_kubernetes_cluster.aks]
 }

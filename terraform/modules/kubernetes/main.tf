@@ -1,4 +1,4 @@
-# ── NGINX Ingress ────────────────────────────────────────────
+# ── NGINX Ingress ────────────────────────────────────────
 resource "helm_release" "nginx_ingress" {
   name             = "ingress-nginx"
   repository       = "https://kubernetes.github.io/ingress-nginx"
@@ -9,12 +9,18 @@ resource "helm_release" "nginx_ingress" {
 
   values = [yamlencode({
     controller = {
-      service = { type = "LoadBalancer" }
+      service = {
+        type                  = "LoadBalancer"
+        externalTrafficPolicy = "Local"
+      }
+      config = {
+        use-forwarded-headers = "true"
+      }
     }
   })]
 }
-# ── CNPG Operator ────────────────────────────────────────────
 
+# ── CNPG Operator ────────────────────────────────────────
 resource "helm_release" "cnpg_operator" {
   name             = "cnpg"
   repository       = "https://cloudnative-pg.github.io/charts"
@@ -27,7 +33,7 @@ resource "helm_release" "cnpg_operator" {
   timeout = 300
 }
 
-# ── ArgoCD ───────────────────────────────────────────────────
+# ── ArgoCD ───────────────────────────────────────────────
 resource "helm_release" "argocd" {
   name             = "argocd"
   repository       = "https://argoproj.github.io/argo-helm"
@@ -38,24 +44,26 @@ resource "helm_release" "argocd" {
 
   values = [yamlencode({
     server = {
+      extraArgs = ["--insecure"]
       ingress = {
         enabled          = true
         ingressClassName = "nginx"
         hostname         = var.argocd_hostname
+        servicePort      = 80
         annotations = {
           "nginx.ingress.kubernetes.io/ssl-redirect"     = "false"
           "nginx.ingress.kubernetes.io/backend-protocol" = "HTTP"
+          "nginx.ingress.kubernetes.io/force-ssl-redirect" = "false"
         }
         tls = false
       }
-      extraArgs = ["--insecure"]
     }
   })]
 
   depends_on = [helm_release.nginx_ingress]
 }
 
-# ── ArgoCD Apps ──────────────────────────────────────────────
+# ── ArgoCD Apps ──────────────────────────────────────────
 resource "helm_release" "argocd_apps" {
   name             = "argocd-apps"
   repository       = "https://argoproj.github.io/argo-helm"
@@ -69,8 +77,7 @@ resource "helm_release" "argocd_apps" {
   depends_on = [helm_release.argocd]
 }
 
-
-# ── Namespaces ───────────────────────────────────────────────
+# ── Namespaces ───────────────────────────────────────────
 resource "kubernetes_namespace" "db" {
   metadata { name = "db" }
 }
@@ -79,7 +86,7 @@ resource "kubernetes_namespace" "chist" {
   metadata { name = "chist" }
 }
 
-# ── CNPG App credentials secret ──────────────────────────────
+# ── CNPG App credentials secret ──────────────────────────
 resource "kubernetes_secret" "cnpg_app_credentials" {
   metadata {
     name      = "cnpg-app-credentials"
@@ -92,7 +99,7 @@ resource "kubernetes_secret" "cnpg_app_credentials" {
   type = "kubernetes.io/basic-auth"
 }
 
-# ── Backend secret (consumed by pods via envFrom) ─────────────
+# ── Backend secret ───────────────────────────────────────
 resource "kubernetes_secret" "backend_secret" {
   metadata {
     name      = "backend-secret"

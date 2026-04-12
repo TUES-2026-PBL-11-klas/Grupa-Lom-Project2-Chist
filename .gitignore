@@ -29,3 +29,8 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 .idea
+
+argocd-key
+argocd-key.pub
+repo-secret.yaml
+patch*.json
