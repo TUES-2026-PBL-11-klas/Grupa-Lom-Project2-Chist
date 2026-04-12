@@ -1,0 +1,68 @@
+replicaCount: 1
+
+image:
+  repository: acrchistdev.azurecr.io/chist-frontend
+  pullPolicy: Always
+  tag: "latest"
+
+env:
+  VITE_API_URL: "http://user-module:8080"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: "135.116.183.11.nip.io"
+      paths:
+        - path: /api
+          pathType: Prefix
+          serviceName: user-module
+          servicePort: 8080
+        - path: /
+          pathType: Prefix
+          servicePort: 3000
+  tls: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+livenessProbe: {}
+readinessProbe: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+volumeMounts: []
+nodeSelector: {}
+tolerations: []
+affinity: {}

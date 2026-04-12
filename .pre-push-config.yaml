@@ -4,7 +4,7 @@ repos:
       - id: maven-test
         name: Maven Test
         language: system
-        entry: mvn test --no-transfer-progress -q
+        entry: ./mvn test --no-transfer-progress -q
         files: src/.*\.java$
         pass_filenames: false
         stages: [pre-push]

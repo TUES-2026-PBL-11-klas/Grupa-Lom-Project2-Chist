@@ -1,0 +1,37 @@
+server:
+  port: ${SERVER_PORT_VERIFICATION}
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 1
+
+azure:
+  vision:
+    endpoint: ${AZURE_VISION_ENDPOINT}
+    key: ${AZURE_VISION_KEY}
+
+verification:
+  gps:
+    max-distance-meters: 100
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
