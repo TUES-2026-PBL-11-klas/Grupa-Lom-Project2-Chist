@@ -1,12 +1,35 @@
 import "../styles/ReportCard.css";
-import { SEVERITY_META, STATUS_META } from "../data/mockData.js";
-import { useApp } from "../context/AppContext.jsx";
+import { SEVERITY_META, STATUS_META } from "../data/mockData.ts";
+import { useApp } from "../context/AppContext.tsx";
+import { t, translateReport } from "../i18n.ts";
+import type { Lang } from "../i18n.ts";
 
-export default function ReportCard({ report, expanded = false, onClick }) {
+interface ReportCardProps {
+  report: any;
+  expanded?: boolean;
+  onClick?: () => void;
+  lang?: Lang;
+}
+
+export default function ReportCard({ report, expanded = false, onClick, lang = "bg" }: ReportCardProps) {
   const { claimReport, completeReport, user } = useApp();
+  const i = t(lang);
   const meta = SEVERITY_META[report.severity];
   const sMeta = STATUS_META[report.status];
   const isOwn = report.claimedBy === user.name;
+  const tr = translateReport(lang, report);
+
+  const sevLabel: Record<string, string> = {
+    critical: i.sevCritical,
+    high: i.sevHigh,
+    medium: i.sevMedium,
+    low: i.sevLow,
+  };
+  const statLabel: Record<string, string> = {
+    open: i.statusOpen,
+    "in-progress": i.statusInProgress,
+    done: i.statusDone,
+  };
 
   return (
     <article
@@ -36,17 +59,17 @@ export default function ReportCard({ report, expanded = false, onClick }) {
             className="report-card__title"
             style={{ paddingRight: report.aiVerified ? 68 : 0 }}
           >
-            {report.title}
+            {tr.title}
           </div>
           <div className="report-card__loc">
             <span>📍</span>
-            <span>{report.location}</span>
+            <span>{tr.location}</span>
           </div>
         </div>
       </div>
 
-      {expanded && report.description && (
-        <p className="report-card__desc">{report.description}</p>
+      {expanded && tr.description && (
+        <p className="report-card__desc">{tr.description}</p>
       )}
 
       <div className="report-card__bottom">
@@ -63,7 +86,7 @@ export default function ReportCard({ report, expanded = false, onClick }) {
               className="report-card__status-label"
               style={{ color: sMeta.color }}
             >
-              {sMeta.label}
+              {statLabel[report.status] ?? sMeta.label}
             </span>
           </div>
           <span
@@ -74,7 +97,7 @@ export default function ReportCard({ report, expanded = false, onClick }) {
               border: `1px solid ${meta.border}`,
             }}
           >
-            {meta.label}
+            {sevLabel[report.severity] ?? meta.label}
           </span>
           <span className="report-card__time">· {report.time}</span>
         </div>
@@ -88,7 +111,7 @@ export default function ReportCard({ report, expanded = false, onClick }) {
                 claimReport(report.id);
               }}
             >
-              🧹 ПОЕМИ
+              {i.claimTask}
             </button>
           )}
           {report.status === "in-progress" && isOwn && (
@@ -99,11 +122,11 @@ export default function ReportCard({ report, expanded = false, onClick }) {
                 completeReport(report.id);
               }}
             >
-              ✅ ЗАВЪРШИ
+              {i.completeTask}
             </button>
           )}
           {report.status === "done" && (
-            <span className="report-card__done-label">✅ Завършено</span>
+            <span className="report-card__done-label">✅ {i.completed}</span>
           )}
         </div>
       </div>

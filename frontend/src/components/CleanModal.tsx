@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import "../styles/CleanModal.css";
-import { SEVERITY_META } from "../data/mockData.js";
-import { useApp } from "../context/AppContext.jsx";
+import { SEVERITY_META } from "../data/mockData.ts";
+import { useApp } from "../context/AppContext.tsx";
 
 export default function CleanModal({ report, onClose }) {
   const { completeReport } = useApp();

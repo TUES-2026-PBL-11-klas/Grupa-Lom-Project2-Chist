@@ -1,5 +1,5 @@
 import "../styles/Header.css";
-import { useApp } from "../context/AppContext.jsx";
+import { useApp } from "../context/AppContext.tsx";
 
 export default function Header({ onNotifications }) {
   const { user } = useApp();

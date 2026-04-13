@@ -12,8 +12,8 @@
 }
 
 .notif-panel {
-  background: #071810;
-  border-left: 1px solid rgba(74, 222, 128, 0.18);
+  background: #0a0a14;
+  border-left: 1px solid rgba(255, 77, 148, 0.18);
   width: min(380px, 100vw);
   height: 100%;
   padding: 20px 16px;
@@ -36,7 +36,7 @@
   letter-spacing: 2px;
 }
 .notif-panel__unread {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 2px;
@@ -49,10 +49,10 @@
 }
 .notif-panel__mark-all {
   background: none;
-  border: 1px solid rgba(74, 222, 128, 0.2);
+  border: 1px solid rgba(255, 77, 148, 0.2);
   border-radius: var(--radius-sm);
   color: var(--green-bright);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   padding: 6px 10px;
   cursor: pointer;
@@ -60,11 +60,11 @@
   transition: all 0.2s;
 }
 .notif-panel__mark-all:hover {
-  background: rgba(74, 222, 128, 0.1);
+  background: rgba(255, 77, 148, 0.1);
 }
 .notif-panel__close {
   background: none;
-  border: 1px solid rgba(74, 222, 128, 0.2);
+  border: 1px solid rgba(255, 77, 148, 0.2);
   border-radius: var(--radius-sm);
   color: var(--text-muted);
   width: 32px;
@@ -86,7 +86,7 @@
 .notif-panel__empty {
   text-align: center;
   padding: 60px 20px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   color: var(--text-muted);
 }
 .notif-panel__empty-icon {
@@ -108,12 +108,12 @@
   transform: translateX(2px);
 }
 .notif-item--unread {
-  background: rgba(74, 222, 128, 0.07);
-  border: 1px solid rgba(74, 222, 128, 0.25);
+  background: rgba(255, 77, 148, 0.07);
+  border: 1px solid rgba(255, 77, 148, 0.25);
 }
 .notif-item--read {
   background: var(--bg-card);
-  border: 1px solid rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(255, 77, 148, 0.1);
 }
 
 .notif-item__unread-dot {
@@ -141,21 +141,21 @@
   min-width: 0;
 }
 .notif-item__title {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 700;
 }
 .notif-item__message {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--text-muted);
   margin-top: 3px;
   line-height: 1.4;
 }
 .notif-item__time {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 9px;
-  color: rgba(74, 222, 128, 0.28);
+  color: rgba(255, 77, 148, 0.28);
   margin-top: 5px;
   letter-spacing: 1px;
 }
