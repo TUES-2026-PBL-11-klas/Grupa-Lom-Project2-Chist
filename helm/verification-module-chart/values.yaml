@@ -30,7 +30,7 @@ ingress:
 resources:
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 64Mi
   limits:
     cpu: 300m
     memory: 256Mi
@@ -39,14 +39,14 @@ livenessProbe:
   httpGet:
     path: /actuator/health
     port: 8083
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   periodSeconds: 10
 
 readinessProbe:
   httpGet:
     path: /actuator/health
     port: 8083
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   periodSeconds: 10
 
 autoscaling:
