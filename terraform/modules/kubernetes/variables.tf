@@ -58,3 +58,8 @@ variable "kube_ca_certificate" {
   type      = string
   sensitive = true
 }
+
+variable "mail_host" { type = string }
+variable "mail_port" { type = string }
+variable "mail_username" { type = string }
+variable "mail_password" { type = string; sensitive = true }

@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/TUES-2026-PBL-11-klas/Grupa-Lom-Project2-Chist
-    targetRevision: dev
+    targetRevision: main
     path: helm/user-module-chart
     helm:
       valueFiles:
