@@ -5,10 +5,10 @@
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(5, 14, 8, 0.97);
+  background: rgba(10, 10, 20, 0.97);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(74, 222, 128, 0.14);
+  border-top: 1px solid rgba(255, 77, 148, 0.14);
   display: flex;
   justify-content: space-around;
   padding: 8px 0 max(env(safe-area-inset-bottom, 10px), 10px);
@@ -42,7 +42,7 @@
 }
 
 .bottom-nav__label {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 8px;
   letter-spacing: 1px;
   transition: color 0.2s;

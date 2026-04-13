@@ -6,13 +6,15 @@ resource "azurerm_kubernetes_cluster" "aks" {
   kubernetes_version  = "1.32"
   sku_tier            = "Free"
 
-  default_node_pool {
-    name                 = "default"
-    node_count           = 1
-    vm_size              = var.aks_node_vm_size
-    vnet_subnet_id       = var.aks_subnet_id
-    orchestrator_version = "1.32"
-  }
+default_node_pool {
+  name                        = "default"
+  temporary_name_for_rotation = "temppool"
+  node_count                  = 1
+  vm_size                     = var.aks_node_vm_size
+  vnet_subnet_id              = var.aks_subnet_id
+  orchestrator_version        = "1.32"
+  max_pods                    = 60
+}
 
   identity {
     type = "SystemAssigned"

@@ -1,3 +1,5 @@
+/* No tailwind – plain CSS only */
+
 *,
 *::before,
 *::after {
@@ -7,6 +9,11 @@
 }
 
 :root {
+  --pink-primary: #FF4D94;
+  --magenta: #C026D3;
+  --pink-light: #F472B6;
+  --pink-glow: rgba(255, 77, 148, 0.3);
+
   --primary: #ffffff;
   --primary-dim: rgba(255, 255, 255, 0.07);
   --primary-border: rgba(255, 255, 255, 0.18);
@@ -23,6 +30,11 @@
   --green-ok: #aaaaaa;
   --green-dim: rgba(255, 255, 255, 0.06);
   --orange: #cccccc;
+
+  --accent-pink: #FF4D94;
+  --accent-pink-dim: rgba(255, 77, 148, 0.12);
+  --accent-pink-border: rgba(255, 77, 148, 0.35);
+  --accent-pink-glow: rgba(255, 77, 148, 0.4);
 
   --bg-base: #000000;
   --bg-surface: #0f0f0f;
@@ -52,11 +64,11 @@
   --max-w: 480px;
 
   /* Legacy aliases */
-  --green-bright: var(--primary);
+  --green-bright: var(--pink-primary);
   --green-mid: #aaaaaa;
   --green-deep: #666666;
-  --green-border: var(--border-md);
-  --green-glow: var(--primary-glow);
+  --green-border: var(--accent-pink-border);
+  --green-glow: var(--accent-pink-glow);
   --amber: var(--secondary);
   --amber-dim: var(--secondary-dim);
   --red-alert: var(--red);
@@ -132,7 +144,7 @@ button:focus:not(:focus-visible) { outline: none; }
 }
 
 .label-caps {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -155,7 +167,7 @@ button:focus:not(:focus-visible) { outline: none; }
 .btn-primary {
   background: var(--primary);
   color: var(--bg-base);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-weight: 700;
   border: none;
   border-radius: var(--r-md);
@@ -174,7 +186,7 @@ button:focus:not(:focus-visible) { outline: none; }
 .btn-ghost {
   background: transparent;
   color: var(--text-2);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   border: 1px solid var(--border-md);
   border-radius: var(--r-md);
   cursor: pointer;
@@ -192,7 +204,7 @@ button:focus:not(:focus-visible) { outline: none; }
 .btn-danger {
   background: var(--red-dim);
   color: var(--red);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   border: 1px solid rgba(255, 68, 68, 0.25);
   border-radius: var(--r-md);
   cursor: pointer;
@@ -210,7 +222,7 @@ button:focus:not(:focus-visible) { outline: none; }
   border-radius: var(--r-md);
   padding: 11px 14px;
   color: var(--text-1);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 13px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -227,9 +239,9 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 10px;
+  padding: 5px 14px;
   border-radius: 20px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   letter-spacing: 0.5px;
 }
@@ -252,6 +264,19 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
   padding: 16px 16px calc(var(--nav-h) + 20px);
   position: relative;
   z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .page-content {
+    max-width: 960px;
+    padding: 32px 32px 48px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .page-content {
+    max-width: 1100px;
+  }
 }
 
 .ambient-orb-tl {
@@ -312,12 +337,28 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
   overflow-y: auto;
   animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+@media (min-width: 768px) {
+  .modal-backdrop {
+    align-items: center;
+  }
+  .modal-sheet {
+    border-radius: 22px;
+    max-width: 520px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
 .modal-handle {
   width: 36px;
   height: 4px;
   border-radius: 2px;
   background: var(--border-md);
   margin: 0 auto 22px;
+}
+@media (min-width: 768px) {
+  .modal-handle {
+    display: none;
+  }
 }
 .modal-header {
   display: flex;
@@ -353,7 +394,7 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
 .step-bar__segment--pending { background: var(--border); }
 
 .error-box {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--red);
   background: var(--red-dim);
@@ -381,7 +422,7 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
   margin-top: 18px;
 }
 .success-screen__body {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 13px;
   color: var(--text-3);
   margin-top: 10px;
@@ -405,5 +446,5 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
 .drop-zone--dragging { border-color: var(--primary); background: var(--primary-dim); }
 .drop-zone--has-file { border-color: var(--border-md); border-style: solid; }
 .drop-zone__icon { font-size: 38px; }
-.drop-zone__label { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
-.drop-zone__hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); }
+.drop-zone__label { font-family: var(--font-body); font-size: 12px; color: var(--text-2); }
+.drop-zone__hint { font-family: var(--font-body); font-size: 10px; color: var(--text-3); }
