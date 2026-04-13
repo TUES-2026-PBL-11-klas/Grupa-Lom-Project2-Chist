@@ -25,7 +25,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 3000
+  port: 80
 
 ingress:
   enabled: true
@@ -41,7 +41,7 @@ ingress:
           servicePort: 8080
         - path: /
           pathType: Prefix
-          servicePort: 3000
+          serviceport: 80
   tls: []
 
 resources:
