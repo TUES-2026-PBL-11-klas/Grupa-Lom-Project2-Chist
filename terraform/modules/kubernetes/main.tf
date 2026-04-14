@@ -114,6 +114,11 @@ resource "kubernetes_secret" "backend_secret" {
     JWT_SECRET     = var.jwt_secret
     JWT_EXPIRATION = "86400000"
 
+    MAIL_HOST     = var.mail_host
+    MAIL_PORT     = var.mail_port
+    MAIL_USERNAME = var.mail_username
+    MAIL_PASSWORD = var.mail_password
+
     SERVER_PORT_USER         = "8080"
     SERVER_PORT_REPORT       = "8081"
     SERVER_PORT_NOTIFICATION = "8082"
