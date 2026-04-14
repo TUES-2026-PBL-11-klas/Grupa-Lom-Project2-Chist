@@ -15,11 +15,14 @@ import java.util.Arrays;
 public class AiVerificationService {
 
 
-    @Value("${AZURE_VISION_ENDPOINT}")
+    @Value("${AZURE_VISION_ENDPOINT:placeholder}")
     private String endpoint;
 
-    @Value("${AZURE_VISION_KEY}")
+    @Value("${AZURE_VISION_KEY:placeholder}")
     private String key;
+
+    @Value("${azure.vision.mock:false}")
+    private boolean mockMode;
 
     private ImageAnalysisAsyncClient getClient() {
         return new ImageAnalysisClientBuilder()
