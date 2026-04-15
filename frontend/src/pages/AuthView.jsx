@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/AuthView.css";
+import { authApi } from "../services/api.js";
 
 function Field({ label, type = "text", value, onChange, placeholder, icon }) {
   const [focused, setFocused] = useState(false);
@@ -29,17 +30,23 @@ function LoginForm({ onSuccess, onSwitch }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!email || !password) {
       setError("Попълни всички полета.");
       return;
     }
     setLoading(true);
     setError("");
-    setTimeout(() => {
+    try {
+      const response = await authApi.login(email, password);
+      if (!response?.token) throw new Error("Неуспешен вход.");
+      localStorage.setItem("cw_token", response.token);
       setLoading(false);
       onSuccess();
-    }, 900);
+    } catch (e) {
+      setLoading(false);
+      setError(e.message || "Неуспешен вход.");
+    }
   };
 
   const handleKey = (e) => e.key === "Enter" && submit();
@@ -93,7 +100,7 @@ function RegisterForm({ onSuccess, onSwitch }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!username || !email || !password) {
       setError("Попълни всички полета.");
       return;
@@ -108,10 +115,16 @@ function RegisterForm({ onSuccess, onSwitch }) {
     }
     setLoading(true);
     setError("");
-    setTimeout(() => {
+    try {
+      const response = await authApi.register({ username, email, password });
+      if (!response?.token) throw new Error("Неуспешна регистрация.");
+      localStorage.setItem("cw_token", response.token);
       setLoading(false);
       onSuccess();
-    }, 1100);
+    } catch (e) {
+      setLoading(false);
+      setError(e.message || "Неуспешна регистрация.");
+    }
   };
 
   return (

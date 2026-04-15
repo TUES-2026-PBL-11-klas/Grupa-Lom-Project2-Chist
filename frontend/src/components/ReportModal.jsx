@@ -289,14 +289,15 @@ export default function ReportModal({ onClose }) {
   });
   const update = (patch) => setForm((prev) => ({ ...prev, ...patch }));
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      addReport({
+    try {
+      await addReport({
         title: form.location.split(",")[0] || "Нов сигнал",
         location: form.location,
         description: form.description,
         severity: form.severity,
+        photoUrl: form.photoUrl,
         img: "📍",
         points: { critical: 200, high: 120, medium: 80, low: 40 }[
           form.severity
@@ -304,9 +305,10 @@ export default function ReportModal({ onClose }) {
         district: "Sofia",
         gps: { lat: 42.6977, lng: 23.3219 },
       });
-      setLoading(false);
       setDone(true);
-    }, 1400);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

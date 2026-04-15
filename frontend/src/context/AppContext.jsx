@@ -1,5 +1,12 @@
-import { createContext, useContext, useReducer, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useCallback,
+  useEffect,
+} from "react";
 import { CURRENT_USER, REPORTS, ACTIVITY_FEED } from "../data/mockData.js";
+import { reportsApi, usersApi, tasksApi } from "../services/api.js";
 
 const initialState = {
   user: CURRENT_USER,
@@ -8,6 +15,55 @@ const initialState = {
   notifications: [],
   selectedReportId: null,
 };
+
+function mapBackendStatus(status) {
+  switch (status) {
+    case "IN_PROGRESS":
+      return "in-progress";
+    case "CLEANED":
+      return "done";
+    case "NEW":
+    default:
+      return "open";
+  }
+}
+
+function mapBackendReport(report, idx = 0) {
+  const severityOrder = ["low", "medium", "high", "critical"];
+  return {
+    id: report.reportId ?? report.id ?? `${idx}`,
+    title: (report.description || "Сигнал").slice(0, 32),
+    location: "София",
+    district: "София",
+    lat: report.latitude ?? 42.6977,
+    lng: report.longitude ?? 23.3219,
+    status: mapBackendStatus(report.status),
+    severity: severityOrder[idx % severityOrder.length],
+    img: "📍",
+    points: { NEW: 40, IN_PROGRESS: 80, CLEANED: 120 }[report.status] ?? 40,
+    reporter: "Потребител",
+    reporterAvatar: "👤",
+    time: "сега",
+    description: report.description ?? "",
+    volunteers: 0,
+    confirmedBy: [],
+    aiVerified: false,
+    gps: {
+      lat: report.latitude ?? 42.6977,
+      lng: report.longitude ?? 23.3219,
+    },
+  };
+}
+
+function mapBackendUser(user) {
+  return {
+    ...CURRENT_USER,
+    id: user.id,
+    name: user.username || CURRENT_USER.name,
+    points: user.points ?? CURRENT_USER.points,
+    streak: user.streak ?? CURRENT_USER.streak,
+  };
+}
 
 function reducer(state, action) {
   switch (action.type) {
@@ -110,6 +166,21 @@ function reducer(state, action) {
         ],
       };
 
+    case "SET_USER":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload,
+        },
+      };
+
+    case "SET_REPORTS":
+      return {
+        ...state,
+        reports: action.payload,
+      };
+
     case "DISMISS_NOTIFICATION":
       return {
         ...state,
@@ -128,33 +199,83 @@ const AppContext = createContext(null);
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const addReport = useCallback((data) => {
-    dispatch({ type: "ADD_REPORT", payload: data });
-    dispatch({
-      type: "ADD_NOTIFICATION",
-      payload: {
-        type: "success",
-        message: "📍 Сигналът е изпратен! +15 точки",
-        duration: 3500,
-      },
-    });
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const [userData, reportData] = await Promise.all([
+          usersApi.getMe(),
+          reportsApi.list(),
+        ]);
+        if (userData) dispatch({ type: "SET_USER", payload: mapBackendUser(userData) });
+        if (Array.isArray(reportData)) {
+          dispatch({
+            type: "SET_REPORTS",
+            payload: reportData.map((r, idx) => mapBackendReport(r, idx)),
+          });
+        }
+      } catch {
+        // Keep mock state as fallback when backend is unreachable.
+      }
+    };
+    loadInitialData();
   }, []);
 
-  const claimReport = useCallback((id) => {
-    dispatch({ type: "CLAIM_REPORT", payload: id });
-    dispatch({
-      type: "ADD_NOTIFICATION",
-      payload: {
-        type: "info",
-        message: "🧹 Взел си задачата — успех!",
-        duration: 3000,
-      },
-    });
-  }, []);
+  const addReport = useCallback(
+    async (data) => {
+      try {
+        const payload = {
+          latitude: data.gps?.lat ?? 42.6977,
+          longitude: data.gps?.lng ?? 23.3219,
+          photoUrl: data.photoUrl ?? null,
+          description: data.description,
+        };
+        const created = await reportsApi.create(state.user.id, payload);
+        const mapped = mapBackendReport(created, 1);
+        dispatch({ type: "ADD_REPORT", payload: mapped });
+      } catch {
+        dispatch({ type: "ADD_REPORT", payload: data });
+      }
+      dispatch({
+        type: "ADD_NOTIFICATION",
+        payload: {
+          type: "success",
+          message: "📍 Сигналът е изпратен! +15 точки",
+          duration: 3500,
+        },
+      });
+    },
+    [state.user.id],
+  );
+
+  const claimReport = useCallback(
+    async (id) => {
+      try {
+        await tasksApi.create(state.user.id, id);
+        await reportsApi.updateStatus(id, "IN_PROGRESS");
+      } catch {
+        // Fall back to local optimistic state.
+      }
+      dispatch({ type: "CLAIM_REPORT", payload: id });
+      dispatch({
+        type: "ADD_NOTIFICATION",
+        payload: {
+          type: "info",
+          message: "🧹 Взел си задачата — успех!",
+          duration: 3000,
+        },
+      });
+    },
+    [state.user.id],
+  );
 
   const completeReport = useCallback(
-    (id) => {
+    async (id) => {
       const rep = state.reports.find((r) => r.id === id);
+      try {
+        await reportsApi.updateStatus(id, "CLEANED");
+      } catch {
+        // Fall back to local optimistic state.
+      }
       dispatch({ type: "COMPLETE_REPORT", payload: id });
       dispatch({
         type: "ADD_NOTIFICATION",

@@ -5,10 +5,11 @@ function getToken() { return localStorage.getItem("cw_token"); }
 
 async function request(path, options = {}) {
   const token = getToken();
+  const isFormData = options.body instanceof FormData;
   const res   = await fetch(`${BASE_URL}${path}`, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
@@ -27,14 +28,15 @@ export const authApi = {
 };
 
 export const reportsApi = {
-  list:     (params={})   => { const qs=new URLSearchParams(Object.entries(params).filter(([,v])=>v!=null)).toString(); return request(`/reports${qs?`?${qs}`:""}`); },
+  list:     (params={})   => {
+    if (params.status) return request(`/reports/status/${params.status}`);
+    if (params.userId) return request(`/reports/user/${params.userId}`);
+    return request("/reports");
+  },
   getById:  id            => request(`/reports/${id}`),
-  create:   formData      => request("/reports",               { method:"POST",  headers:{}, body: formData }),
-  claim:    id            => request(`/reports/${id}/claim`,   { method:"PATCH" }),
-  complete: (id,formData) => request(`/reports/${id}/complete`,{ method:"POST",  headers:{}, body: formData }),
-  confirm:  id            => request(`/reports/${id}/confirm`, { method:"POST" }),
-  flag:     (id,reason)   => request(`/reports/${id}/flag`,    { method:"POST",  body: JSON.stringify({ reason }) }),
-  mapPins:  bounds        => request(`/reports/map?bounds=${bounds}`),
+  create:   (userId, payload) => request("/reports", { method:"POST", headers:{ "X-User-Id": userId }, body: JSON.stringify(payload) }),
+  updateStatus: (id,status) => request(`/reports/${id}/status?status=${status}`, { method:"PATCH" }),
+  remove: id => request(`/reports/${id}`, { method:"DELETE" }),
 };
 
 export const usersApi = {
@@ -66,4 +68,14 @@ export const notificationsApi = {
   markAllRead:()             => request("/notifications/read-all",   { method:"PATCH" }),
 };
 
-export default { auth:authApi, reports:reportsApi, users:usersApi, leaderboard:leaderboardApi, ai:aiApi, stats:statsApi, notifications:notificationsApi };
+export const tasksApi = {
+  create: (userId, reportId) =>
+    request("/tasks", {
+      method: "POST",
+      headers: { "X-User-Id": userId },
+      body: JSON.stringify({ reportId }),
+    }),
+  complete: (id) => request(`/tasks/${id}/complete`, { method: "PATCH" }),
+};
+
+export default { auth:authApi, reports:reportsApi, users:usersApi, leaderboard:leaderboardApi, ai:aiApi, stats:statsApi, notifications:notificationsApi, tasks:tasksApi };

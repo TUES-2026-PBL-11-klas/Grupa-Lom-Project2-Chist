@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { authApi, reportsApi, usersApi } from "./api";
+import { authApi, reportsApi, usersApi } from "../services/api";
 
 describe("api client", () => {
   beforeEach(() => {
@@ -47,17 +47,17 @@ describe("api client", () => {
     );
   });
 
-  it("builds report query string and skips nullish values", async () => {
+  it("uses status endpoint for report filtering", async () => {
     fetch.mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue([]),
     });
 
-    await reportsApi.list({ status: "open", district: null, page: 1 });
+    await reportsApi.list({ status: "NEW" });
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/reports?status=open&page=1",
+      "http://localhost:8080/api/reports/status/NEW",
       expect.any(Object),
     );
   });
