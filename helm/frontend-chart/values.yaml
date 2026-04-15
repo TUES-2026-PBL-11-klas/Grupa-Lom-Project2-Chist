@@ -41,12 +41,12 @@ ingress:
           servicePort: 8080
         - path: /
           pathType: Prefix
-          serviceport: 80
+          servicePort: 80
   tls: []
 
 resources:
   requests:
-    cpu: 100m
+    cpu: 50m
     memory: 128Mi
   limits:
     cpu: 200m
