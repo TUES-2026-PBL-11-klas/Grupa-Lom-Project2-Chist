@@ -54,6 +54,10 @@ module "kubernetes" {
   kube_client_certificate  = module.aks.kube_client_certificate
   kube_client_key          = module.aks.kube_client_key
   kube_ca_certificate      = module.aks.kube_ca_certificate
+  mail_host     = var.mail_host
+  mail_port     = var.mail_port
+  mail_username = var.mail_username
+  mail_password = var.mail_password
 
   depends_on = [module.aks]
 }
