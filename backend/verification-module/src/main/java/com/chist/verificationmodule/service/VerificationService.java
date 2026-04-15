@@ -10,6 +10,97 @@ import com.chist.verificationmodule.repository.VerificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+@Service
+@RequiredArgsConstructor
 public class VerificationService {
+
+    private final VerificationRepository verificationRepository;
+    private final GpsVerificationService gpsVerificationService;
+    private final AiVerificationService aiVerificationService;
+
+
+    public VerificationResponse verify(VerificationRequest request) {
+        boolean gpsResult = gpsVerificationService.verify(
+                request.getExpectedLatitude(),
+                request.getExpectedLongitude(),
+                request.getActualLatitude(),
+                request.getActualLongitude()
+        );
+
+        boolean aiResult = aiVerificationService.verifyClean(
+                request.getBeforePhotoUrl(),
+                request.getAfterPhotoUrl()
+        ).block();
+
+        VerificationStatus verificationStatus;
+        String result;
+
+        if (gpsResult && aiResult) {
+            verificationStatus = VerificationStatus.APPROVED;
+            result = "Both GPS and AI verification passed";
+        } else if (gpsResult || aiResult) {
+            verificationStatus = VerificationStatus.PENDING;
+            result = "Partial verification - waiting for admin approval";
+        } else {
+            verificationStatus = VerificationStatus.REJECTED;
+            result = "Both GPS and AI verification failed";
+        }
+
+        Verification verification = Verification.builder()
+                .taskId(request.getTaskId())
+                .type(VerificationType.AI)
+                .status(verificationStatus)
+                .actualLat(request.getActualLatitude())
+                .actualLng(request.getActualLongitude())
+                .result(result)
+                .build();
+
+        return mapToDTO(verificationRepository.save(verification));
+    }
+
+    private VerificationResponse mapToDTO(Verification verification) {
+        return VerificationResponse.builder()
+                .id(verification.getId())
+                .taskId(verification.getTaskId())
+                .type(verification.getType())
+                .status(verification.getStatus())
+                .result(verification.getResult())
+                .actualLat(verification.getActualLat())
+                .actualLng(verification.getActualLng())
+                .createdAt(verification.getCreatedAt())
+                .updatedAt(verification.getUpdatedAt())
+                .build();
+    }
+
+    public VerificationResponse getById(UUID id) {
+        return mapToDTO(verificationRepository.findById(id)
+                .orElseThrow(() -> new VerificationNotFoundException("Verification not found")));
+    }
+
+    public List<VerificationResponse> getByTaskId(UUID taskId) {
+        return verificationRepository.findByTaskId(taskId)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public VerificationResponse adminApprove(UUID id) {
+        Verification verification = verificationRepository.findById(id)
+                .orElseThrow(() -> new VerificationNotFoundException("Verification not found"));
+        verification.setStatus(VerificationStatus.APPROVED);
+        verification.setResult("Approved by admin");
+        return mapToDTO(verificationRepository.save(verification));
+    }
+
+    public VerificationResponse adminReject(UUID id) {
+        Verification verification = verificationRepository.findById(id)
+                .orElseThrow(() -> new VerificationNotFoundException("Verification not found"));
+        verification.setStatus(VerificationStatus.REJECTED);
+        verification.setResult("Rejected by admin");
+        return mapToDTO(verificationRepository.save(verification));
+    }
 }
