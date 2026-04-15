@@ -13,6 +13,13 @@ spec:
       values: |
         grafana:
           enabled: true
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              nginx.ingress.kubernetes.io/ssl-redirect: "false"
+            hosts:
+              - grafana.4.165.174.62.nip.io
         prometheus:
           enabled: true
         alertmanager:
