@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { authApi, reportsApi, usersApi } from "./api";
+import {
+  aiApi,
+  authApi,
+  leaderboardApi,
+  notificationsApi,
+  reportsApi,
+  statsApi,
+  usersApi,
+} from "./api";
 
 describe("api client", () => {
   beforeEach(() => {
@@ -96,5 +104,97 @@ describe("api client", () => {
 
     expect(removeSpy).toHaveBeenCalledWith("cw_token");
     expect(result).toBeUndefined();
+  });
+
+  it("calls report claim endpoint", async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ ok: true }),
+    });
+
+    await reportsApi.claim(123);
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:8080/api/reports/123/claim",
+      expect.objectContaining({ method: "PATCH" }),
+    );
+  });
+
+  it("calls report complete endpoint", async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ ok: true }),
+    });
+
+    const payload = new FormData();
+    await reportsApi.complete(44, payload);
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:8080/api/reports/44/complete",
+      expect.objectContaining({ method: "POST", body: payload }),
+    );
+  });
+
+  it("calls leaderboard endpoint with defaults", async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ content: [] }),
+    });
+
+    await leaderboardApi.get();
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:8080/api/leaderboard?period=week&page=0&size=20",
+      expect.any(Object),
+    );
+  });
+
+  it("calls stats endpoint", async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ totalCleaned: 1 }),
+    });
+
+    await statsApi.getGlobal();
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:8080/api/stats/global",
+      expect.any(Object),
+    );
+  });
+
+  it("calls notifications unread filter endpoint", async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue([]),
+    });
+
+    await notificationsApi.list(true);
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:8080/api/notifications?unread=true",
+      expect.any(Object),
+    );
+  });
+
+  it("calls AI verify image endpoint", async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ valid: true }),
+    });
+
+    const payload = new FormData();
+    await aiApi.verifyImage(payload);
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:8080/api/ai/verify-image",
+      expect.objectContaining({ method: "POST", body: payload }),
+    );
   });
 });
