@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, useCallback } from "react";
 import { CURRENT_USER, REPORTS, ACTIVITY_FEED } from "../data/mockData.ts";
 
+
 const initialState = {
   user: CURRENT_USER,
   reports: REPORTS,
