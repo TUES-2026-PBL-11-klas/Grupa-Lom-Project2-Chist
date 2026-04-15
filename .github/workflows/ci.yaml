@@ -99,7 +99,6 @@ jobs:
           context: ./backend/verification-module
           file: ./backend/verification-module/Dockerfile
           push: false
-          no-cache: true
           cache-from: type=gha,scope=verification
           cache-to: type=gha,mode=max,scope=verification
 
