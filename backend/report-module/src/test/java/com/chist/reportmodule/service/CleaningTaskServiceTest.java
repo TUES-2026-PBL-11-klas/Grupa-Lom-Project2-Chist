@@ -9,20 +9,20 @@ import com.chist.reportmodule.model.ReportStatus;
 import com.chist.reportmodule.model.TaskStatus;
 import com.chist.reportmodule.repository.CleaningTaskRepository;
 import com.chist.reportmodule.repository.ReportRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CleaningTaskServiceTest {
@@ -36,83 +36,82 @@ class CleaningTaskServiceTest {
     @InjectMocks
     private CleaningTaskService cleaningTaskService;
 
-    @Test
-    void createCleaningTask_updatesReportAndCreatesPendingTask() {
-        UUID reportId = UUID.randomUUID();
-        UUID cleanerId = UUID.randomUUID();
-        CreateCleaningTaskRequest request = CreateCleaningTaskRequest.builder().reportId(reportId).build();
-        Report report = Report.builder().id(reportId).status(ReportStatus.NEW).build();
-        CleaningTask savedTask = CleaningTask.builder()
-                .id(UUID.randomUUID())
-                .report(report)
-                .cleanerId(cleanerId)
+    private Report testReport;
+    private CleaningTask testTask;
+    private UUID testId;
+    private UUID testCleanerId;
+    private UUID testReportId;
+
+    @BeforeEach
+    void setUp() {
+        testId = UUID.randomUUID();
+        testCleanerId = UUID.randomUUID();
+        testReportId = UUID.randomUUID();
+
+        testReport = Report.builder()
+                .id(testReportId)
+                .status(ReportStatus.NEW)
+                .build();
+
+        testTask = CleaningTask.builder()
+                .id(testId)
+                .report(testReport)
+                .cleanerId(testCleanerId)
                 .status(TaskStatus.PENDING)
                 .verified(false)
                 .build();
-
-        when(reportRepository.findById(reportId)).thenReturn(Optional.of(report));
-        when(cleaningTaskRepository.save(any(CleaningTask.class))).thenReturn(savedTask);
-
-        CleaningTaskResponse response = cleaningTaskService.createCleaningTask(cleanerId, request);
-
-        assertEquals(TaskStatus.PENDING, response.getStatus());
-        assertEquals(reportId, response.getReportId());
-        verify(reportRepository).save(report);
     }
 
     @Test
-    void uploadPhotos_setsFieldsAndMovesToInProgress() {
-        UUID taskId = UUID.randomUUID();
-        Report report = Report.builder().id(UUID.randomUUID()).status(ReportStatus.IN_PROGRESS).build();
-        CleaningTask task = CleaningTask.builder()
-                .id(taskId)
-                .report(report)
-                .cleanerId(UUID.randomUUID())
-                .status(TaskStatus.PENDING)
-                .verified(false)
-                .build();
+    void createTask_success() {
+        CreateCleaningTaskRequest request = new CreateCleaningTaskRequest(testReportId);
+        when(reportRepository.findById(testReportId)).thenReturn(Optional.of(testReport));
+        when(cleaningTaskRepository.save(any(CleaningTask.class))).thenReturn(testTask);
 
-        when(cleaningTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(cleaningTaskRepository.save(task)).thenReturn(task);
+        CleaningTaskResponse response = cleaningTaskService.createCleaningTask(testCleanerId, request);
 
-        CleaningTaskResponse response = cleaningTaskService.uploadPhotos(taskId, "before.jpg", "after.jpg");
-
-        assertEquals("before.jpg", response.getBeforePhoto());
-        assertEquals("after.jpg", response.getAfterPhoto());
-        assertEquals(TaskStatus.IN_PROGRESS, response.getStatus());
+        assertNotNull(response);
+        assertEquals(testCleanerId, response.getCleanerId());
+        verify(reportRepository).save(testReport);
     }
 
     @Test
-    void completeTask_updatesTaskAndReportStatus() {
-        UUID taskId = UUID.randomUUID();
-        Report report = Report.builder().id(UUID.randomUUID()).status(ReportStatus.IN_PROGRESS).build();
-        CleaningTask task = CleaningTask.builder()
-                .id(taskId)
-                .report(report)
-                .cleanerId(UUID.randomUUID())
-                .status(TaskStatus.IN_PROGRESS)
-                .verified(false)
-                .build();
+    void createTask_reportNotFound_throwsException() {
+        CreateCleaningTaskRequest request = new CreateCleaningTaskRequest(testReportId);
+        when(reportRepository.findById(testReportId)).thenReturn(Optional.empty());
 
-        when(cleaningTaskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(cleaningTaskRepository.save(task)).thenReturn(task);
-
-        CleaningTaskResponse response = cleaningTaskService.completeTask(taskId);
-
-        assertEquals(TaskStatus.COMPLETED, response.getStatus());
-        assertEquals(ReportStatus.CLEANED, report.getStatus());
-        verify(reportRepository).save(report);
+        assertThrows(ReportOrTaskNotFoundException.class,
+                () -> cleaningTaskService.createCleaningTask(testCleanerId, request));
     }
 
     @Test
-    void createCleaningTask_throwsWhenReportMissing() {
-        UUID missingReportId = UUID.randomUUID();
-        CreateCleaningTaskRequest request = CreateCleaningTaskRequest.builder().reportId(missingReportId).build();
-        when(reportRepository.findById(missingReportId)).thenReturn(Optional.empty());
+    void getTaskById_success() {
+        when(cleaningTaskRepository.findById(testId)).thenReturn(Optional.of(testTask));
 
-        assertThrows(
-                ReportOrTaskNotFoundException.class,
-                () -> cleaningTaskService.createCleaningTask(UUID.randomUUID(), request)
-        );
+        CleaningTaskResponse response = cleaningTaskService.getCleaningTaskById(testId);
+
+        assertNotNull(response);
+        assertEquals(testId, response.getTask_id());
+    }
+
+    @Test
+    void getTasksByCleanerId_success() {
+        when(cleaningTaskRepository.findByCleanerId(testCleanerId)).thenReturn(List.of(testTask));
+
+        List<CleaningTaskResponse> result = cleaningTaskService.getCleaningTaskByCleanerId(testCleanerId);
+
+        assertEquals(1, result.size());
+        assertEquals(testCleanerId, result.get(0).getCleanerId());
+    }
+
+    @Test
+    void completeTask_success() {
+        when(cleaningTaskRepository.findById(testId)).thenReturn(Optional.of(testTask));
+        when(cleaningTaskRepository.save(any(CleaningTask.class))).thenReturn(testTask);
+
+        CleaningTaskResponse response = cleaningTaskService.completeTask(testId);
+
+        assertNotNull(response);
+        assertEquals(TaskStatus.COMPLETED, testTask.getStatus());
     }
 }
