@@ -62,6 +62,7 @@ function reducer(state: any, action: any) {
 
     case "COMPLETE_REPORT": {
       const rep = state.reports.find((r: any) => r.id === action.payload);
+
       const pts = rep?.points ?? 0;
       const feed = {
         id: Date.now(),
