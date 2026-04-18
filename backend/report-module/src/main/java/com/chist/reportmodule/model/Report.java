@@ -38,6 +38,7 @@ public class Report {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "severity")
     private String severity;
 
     @Enumerated(EnumType.STRING)
