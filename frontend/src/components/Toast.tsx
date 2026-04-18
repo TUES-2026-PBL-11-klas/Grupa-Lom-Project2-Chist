@@ -2,7 +2,14 @@ import { useEffect } from "react";
 import "../styles/Toast.css";
 import { useApp } from "../context/AppContext.tsx";
 
-function SingleToast({ notif }) {
+interface Notification {
+  id: number;
+  type?: string;
+  message: string;
+  duration?: number;
+}
+
+function SingleToast({ notif }: { notif: Notification }) {
   const { dismissNotification } = useApp();
   useEffect(() => {
     if (!notif.duration) return;
@@ -26,7 +33,7 @@ export default function Toast() {
   if (!notifications.length) return null;
   return (
     <div className="toast-container" aria-live="polite">
-      {notifications.slice(0, 3).map((n) => (
+      {notifications.slice(0, 3).map((n: Notification) => (
         <SingleToast key={n.id} notif={n} />
       ))}
     </div>

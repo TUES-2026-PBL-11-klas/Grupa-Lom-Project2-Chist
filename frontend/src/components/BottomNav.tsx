@@ -1,18 +1,25 @@
+import { Home, MapPin, Trophy, Gift, User } from "lucide-react";
 import "../styles/BottomNav.css";
 
 const TABS = [
-  { id: "home", icon: "🏠", label: "Начало" },
-  { id: "reports", icon: "📍", label: "Сигнали" },
-  { id: "board", icon: "🏆", label: "Класация" },
-  { id: "rewards", icon: "🎁", label: "Награди" },
-  { id: "profile", icon: "👤", label: "Профил" },
+  { id: "home", icon: Home, label: "Начало" },
+  { id: "reports", icon: MapPin, label: "Сигнали" },
+  { id: "board", icon: Trophy, label: "Класация" },
+  { id: "rewards", icon: Gift, label: "Награди" },
+  { id: "profile", icon: User, label: "Профил" },
 ];
 
-export default function BottomNav({ active, onChange }) {
+interface BottomNavProps {
+  active: string;
+  onChange: (id: string) => void;
+}
+
+export default function BottomNav({ active, onChange }: BottomNavProps) {
   return (
     <nav className="bottom-nav" aria-label="Главна навигация">
       {TABS.map((t) => {
         const isActive = active === t.id;
+        const Icon = t.icon;
         return (
           <button
             key={t.id}
@@ -27,7 +34,7 @@ export default function BottomNav({ active, onChange }) {
                   : "bottom-nav__icon--inactive"
               }`}
             >
-              {t.icon}
+              <Icon size={18} strokeWidth={isActive ? 2.2 : 1.6} />
             </span>
             <span
               className={`bottom-nav__label ${

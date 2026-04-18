@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Crown, Flame, Paintbrush, Trophy, Check } from "lucide-react";
+import DataIcon from "../components/DataIcon.tsx";
 import "../styles/LeaderboardView.css";
 import { LEADERBOARD, BADGES } from "../data/mockData.ts";
 import { useApp } from "../context/AppContext.tsx";
@@ -48,7 +50,7 @@ function Podium({ top3 }: { top3: UserEntry[] }) {
       {order.map((user, i) => (
         <div key={user.id} className="leaderboard__podium-item">
           {positions[i] === 1 && (
-            <div className="leaderboard__podium-crown anim-float">👑</div>
+            <div className="leaderboard__podium-crown anim-float"><Crown size={20} strokeWidth={1.8} /></div>
           )}
           <div className="leaderboard__podium-avatar" style={{ fontSize: sizes[i] }}>
             {user.avatar}
@@ -75,9 +77,9 @@ function Podium({ top3 }: { top3: UserEntry[] }) {
               #{positions[i]}
             </div>
             <div className="leaderboard__podium-pts" style={{ color: "var(--text-3)" }}>
-              {user.awards} 🏆
+              {user.awards} <Trophy size={12} strokeWidth={2} />
             </div>
-            <div className="leaderboard__podium-icon">{user.levelIcon}</div>
+            <div className="leaderboard__podium-icon"><DataIcon name={user.levelIcon} size={16} /></div>
           </div>
         </div>
       ))}
@@ -119,18 +121,18 @@ function LeaderRow({ user, isMe, index, sortBy, i: i18n, lang }: { user: UserEnt
       <div className="leaderboard__row-info">
         <div className="leaderboard__row-name" style={{ color: "var(--text-1)" }}>
           {user.name}
-          {user.verified && <span className="leaderboard__verified-badge">✓</span>}
+          {user.verified && <span className="leaderboard__verified-badge"><Check size={10} strokeWidth={3} /></span>}
           {isMe && <span className="leaderboard__me-badge">{i18n.leaderboardYou}</span>}
         </div>
         <div className="leaderboard__row-meta">
-          <span>{user.levelIcon} {translateLevel(lang, user.level)}</span>
-          {user.streak > 0 && <span style={{ color: "var(--text-3)" }}>· 🔥 {user.streak}</span>}
-          <span style={{ color: "var(--text-3)" }}>· 🧹 {user.cleanings}</span>
+          <span><DataIcon name={user.levelIcon} size={12} /> {translateLevel(lang, user.level)}</span>
+          {user.streak > 0 && <span style={{ color: "var(--text-3)" }}>· <Flame size={12} strokeWidth={2} /> {user.streak}</span>}
+          <span style={{ color: "var(--text-3)" }}>· <Paintbrush size={12} strokeWidth={2} /> {user.cleanings}</span>
         </div>
         {sortBy === "awards" && user.earnedBadges.length > 0 && (
           <div className="leaderboard__badges-preview">
             {user.earnedBadges.slice(0, 3).map((badge) => (
-              <span key={badge.id} title={badge.name}>{badge.icon}</span>
+              <span key={badge.id} title={badge.name}><DataIcon name={badge.icon} size={14} /></span>
             ))}
             {user.earnedBadges.length > 3 && (
               <span className="leaderboard__more-badges">+{user.earnedBadges.length - 3}</span>
@@ -198,10 +200,10 @@ export default function LeaderboardView({ lang }: LeaderboardViewProps) {
           <span className="leaderboard__my-rank-val">
             #{myEntry.rank} ·{" "}
             {sortBy === "awards"
-              ? myEntry.awards + " 🏆"
+              ? <>{myEntry.awards} <Trophy size={12} strokeWidth={2} /></>
               : sortBy === "cleanings"
-                ? myEntry.cleanings + " 🧹"
-                : myEntry.points.toLocaleString() + " ⭐"}
+                ? <>{myEntry.cleanings} <Paintbrush size={12} strokeWidth={2} /></>
+                : <>{myEntry.points.toLocaleString()} <DataIcon name="star" size={12} /></>}
           </span>
         </div>
       )}

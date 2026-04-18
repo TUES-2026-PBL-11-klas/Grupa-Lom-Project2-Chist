@@ -1,3 +1,4 @@
+import DataIcon from "./DataIcon.tsx";
 import type { T, Lang } from "../i18n.ts";
 import { translateReport } from "../i18n.ts";
 import "../styles/SignalCard.css";
@@ -40,7 +41,7 @@ export default function SignalCard({ report, isSelected, onClick, lang }: Signal
       <div className="signal-card__accent" style={{ backgroundColor: sevColor }} />
 
       <div className="signal-card__body">
-        <div className="signal-card__icon">{report.img}</div>
+        <div className="signal-card__icon"><DataIcon name={report.img} size={16} /></div>
         <h4 className="signal-card__title">{tr.title}</h4>
       </div>
     </button>

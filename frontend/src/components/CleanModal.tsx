@@ -1,21 +1,37 @@
 import { useState, useRef } from "react";
+import { PartyPopper, Leaf, Star, Flame, Trophy, X, MapPin, Satellite, Camera, Bot, CheckCircle, CircleX, Loader2, Check } from "lucide-react";
+import DataIcon from "./DataIcon.tsx";
 import "../styles/CleanModal.css";
 import { SEVERITY_META } from "../data/mockData.ts";
 import { useApp } from "../context/AppContext.tsx";
 
-export default function CleanModal({ report, onClose }) {
+interface CleanModalReport {
+  id: number;
+  title: string;
+  location: string;
+  severity: string;
+  img: string;
+  points: number;
+}
+
+interface CleanModalProps {
+  report: CleanModalReport | null;
+  onClose: () => void;
+}
+
+export default function CleanModal({ report, onClose }: CleanModalProps) {
   const { completeReport } = useApp();
-  const [photoUrl, setPhotoUrl] = useState(null);
-  const [aiResult, setAiResult] = useState(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [aiResult, setAiResult] = useState<string | null>(null);
   const [gpsOk, setGpsOk] = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   if (!report) return null;
-  const meta = SEVERITY_META[report.severity ?? "medium"];
+  const meta = SEVERITY_META[report.severity as keyof typeof SEVERITY_META] ?? SEVERITY_META.medium;
 
-  const handleFile = (f) => {
+  const handleFile = (f: File | undefined) => {
     if (!f?.type.startsWith("image/")) return;
     setPhotoUrl(URL.createObjectURL(f));
     setAiResult("pending");
@@ -43,12 +59,12 @@ export default function CleanModal({ report, onClose }) {
         <div className="modal-handle" />
         {done ? (
           <div className="success-screen">
-            <div className="success-screen__emoji">🎉</div>
+            <div className="success-screen__emoji"><PartyPopper size={52} strokeWidth={1.5} /></div>
             <div className="success-screen__title">ЗАВЪРШЕНО!</div>
             <div className="success-screen__body">
               +{report.points} точки добавени!
               <br />
-              Благодарим, Sofia е по-чиста с теб! 🌿
+              Благодарим, Sofia е по-чиста с теб!
             </div>
             <div
               style={{
@@ -58,15 +74,15 @@ export default function CleanModal({ report, onClose }) {
                 marginTop: 16,
               }}
             >
-              {["⭐", "🔥", "🏆"].map((e, i) => (
+              {[Star, Flame, Trophy].map((Icon, i) => (
                 <span
                   key={i}
                   style={{
-                    fontSize: 28,
                     animation: `floatY ${1.5 + i * 0.3}s ease-in-out infinite`,
+                    display: "inline-flex",
                   }}
                 >
-                  {e}
+                  <Icon size={28} strokeWidth={1.5} />
                 </span>
               ))}
             </div>
@@ -88,7 +104,7 @@ export default function CleanModal({ report, onClose }) {
                 </div>
               </div>
               <button className="modal-close" onClick={onClose}>
-                ✕
+                <X size={14} strokeWidth={2} />
               </button>
             </div>
 
@@ -99,11 +115,11 @@ export default function CleanModal({ report, onClose }) {
                 border: `1px solid ${meta.border}`,
               }}
             >
-              <span className="clean-modal__task-icon">{report.img}</span>
+              <span className="clean-modal__task-icon"><DataIcon name={report.img} size={18} /></span>
               <div>
                 <div className="clean-modal__task-title">{report.title}</div>
                 <div className="clean-modal__task-loc">
-                  📍 {report.location}
+                  <MapPin size={12} strokeWidth={2} /> {report.location}
                 </div>
               </div>
               <span
@@ -124,7 +140,7 @@ export default function CleanModal({ report, onClose }) {
                   gpsOk ? "clean-modal__step--ok" : "clean-modal__step--pending"
                 }`}
               >
-                <span className="clean-modal__step-icon">📡</span>
+                <span className="clean-modal__step-icon"><Satellite size={16} strokeWidth={1.8} /></span>
                 <div className="clean-modal__step-body">
                   <div className="clean-modal__step-title">GPS Верификация</div>
                   <div className="clean-modal__step-detail">
@@ -139,7 +155,7 @@ export default function CleanModal({ report, onClose }) {
                     color: gpsOk ? "var(--text-1)" : "var(--text-3)",
                   }}
                 >
-                  {gpsOk ? "✓ OK" : "⏳"}
+                  {gpsOk ? <><Check size={12} strokeWidth={3} /> OK</> : <Loader2 size={14} strokeWidth={2} className="spinner" />}
                 </span>
               </div>
 
@@ -165,7 +181,7 @@ export default function CleanModal({ report, onClose }) {
                     />
                   ) : (
                     <>
-                      <span className="drop-zone__icon">📸</span>
+                      <span className="drop-zone__icon"><Camera size={32} strokeWidth={1.5} /></span>
                       <span className="drop-zone__label">
                         Снимай почистеното място
                       </span>
@@ -178,13 +194,13 @@ export default function CleanModal({ report, onClose }) {
                   accept="image/*"
                   capture="environment"
                   style={{ display: "none" }}
-                  onChange={(e) => handleFile(e.target.files[0])}
+                  onChange={(e) => handleFile(e.target.files?.[0])}
                 />
               </div>
 
               {aiResult && (
                 <div className={`clean-modal__ai clean-modal__ai--${aiResult}`}>
-                  <span className="clean-modal__ai-icon">🤖</span>
+                  <span className="clean-modal__ai-icon"><Bot size={18} strokeWidth={1.8} /></span>
                   <div>
                     <div
                       className="clean-modal__ai-title"
@@ -202,21 +218,16 @@ export default function CleanModal({ report, onClose }) {
                     <div className="clean-modal__ai-desc">
                       {aiResult === "pending" && "Анализиране на снимката…"}
                       {aiResult === "pass" &&
-                        "✅ Чисто! Местото изглежда почистено."}
+                        "Чисто! Местото изглежда почистено."}
                       {aiResult === "fail" &&
-                        "❌ Снимката не показва почистено място."}
+                        "Снимката не показва почистено място."}
                     </div>
                   </div>
                   {aiResult === "pending" && (
-                    <span
-                      className="spinner"
-                      style={{ fontSize: 18, color: "var(--text-2)" }}
-                    >
-                      ⟳
-                    </span>
+                    <Loader2 size={18} strokeWidth={2} className="spinner" style={{ color: "var(--text-2)" }} />
                   )}
                   {aiResult === "pass" && (
-                    <div className="clean-modal__ai-score">97% ✓</div>
+                    <div className="clean-modal__ai-score">97% <Check size={12} strokeWidth={3} /></div>
                   )}
                 </div>
               )}
@@ -229,10 +240,12 @@ export default function CleanModal({ report, onClose }) {
             >
               {loading ? (
                 <>
-                  <span className="spinner">⟳</span> Изпращане…
+                  <Loader2 size={14} strokeWidth={2} className="spinner" /> Изпращане…
                 </>
               ) : (
-                `✅ ПОТВЪРДИ ПОЧИСТВАНЕТО (+${report.points} pts)`
+                <>
+                  <CheckCircle size={14} strokeWidth={2} /> ПОТВЪРДИ ПОЧИСТВАНЕТО (+{report.points} pts)
+                </>
               )}
             </button>
           </>
