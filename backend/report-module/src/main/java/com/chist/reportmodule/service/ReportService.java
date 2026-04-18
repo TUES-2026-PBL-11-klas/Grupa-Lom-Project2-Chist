@@ -8,29 +8,48 @@ import com.chist.reportmodule.model.Report;
 import com.chist.reportmodule.model.ReportStatus;
 import com.chist.reportmodule.repository.ReportRepository;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReportService {
 
-    private ReportRepository reportRepository;
+    private final ReportRepository reportRepository;
 
-    public ReportResponse createReport(UUID userId, CreateReportRequest request){
+    @Value("${app.upload-dir:uploads/reports}")
+    private String uploadDir;
+
+    public ReportResponse createReport(UUID userId, CreateReportRequest request, MultipartFile image) throws IOException {
+        String photoUrl = null;
+        if (image != null && !image.isEmpty()) {
+            Path uploadPath = Paths.get(uploadDir);
+            Files.createDirectories(uploadPath);
+            String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path filePath = uploadPath.resolve(filename);
+            Files.copy(image.getInputStream(), filePath);
+            photoUrl = "/uploads/reports/" + filename;
+        }
+
         Report report = Report.builder()
                 .userId(userId)
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
-                .photoUrl(request.getPhotoUrl())
+                .photoUrl(photoUrl)
                 .description(request.getDescription())
+                .severity(request.getSeverity())
                 .status(ReportStatus.NEW)
                 .build();
         return mapToDTO(reportRepository.save(report));
-
     }
 
     public ReportResponse getReportById(UUID  reportId){
@@ -82,6 +101,7 @@ public class ReportService {
                 .longitude(report.getLongitude())
                 .photoUrl(report.getPhotoUrl())
                 .description(report.getDescription())
+                .severity(report.getSeverity())
                 .status(report.getStatus())
                 .createdAt(report.getCreatedAt())
                 .updatedAt(report.getUpdatedAt())

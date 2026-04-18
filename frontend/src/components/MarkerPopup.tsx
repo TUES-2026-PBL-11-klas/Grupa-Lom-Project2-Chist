@@ -1,3 +1,5 @@
+import { MapPin, CheckCircle } from "lucide-react";
+import DataIcon from "./DataIcon.tsx";
 import type { T, Lang } from "../i18n.ts";
 import { translateReport } from "../i18n.ts";
 import "../styles/MarkerPopup.css";
@@ -61,10 +63,10 @@ export default function MarkerPopup({ report, onClaim, onComplete, i, lang }: Ma
 
       <div className="marker-popup__body">
         <div className="marker-popup__header">
-          <div className="marker-popup__icon">{report.img}</div>
+          <div className="marker-popup__icon"><DataIcon name={report.img} size={20} /></div>
           <div className="marker-popup__info">
             <h3 className="marker-popup__title">{tr.title}</h3>
-            <p className="marker-popup__location">{tr.location}</p>
+            <p className="marker-popup__location"><MapPin size={11} strokeWidth={2} /> {tr.location}</p>
           </div>
         </div>
 
@@ -115,7 +117,7 @@ export default function MarkerPopup({ report, onClaim, onComplete, i, lang }: Ma
           </button>
         )}
         {report.status === "done" && (
-          <div className="marker-popup__done-label">{i.completed}</div>
+          <div className="marker-popup__done-label"><CheckCircle size={12} strokeWidth={2} /> {i.completed}</div>
         )}
       </div>
     </div>

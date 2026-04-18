@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { AlertCircle, Leaf, Search } from "lucide-react";
 import "../styles/ReportsView.css";
 import { useApp } from "../context/AppContext.tsx";
 import ReportCard from "../components/ReportCard.tsx";
@@ -59,7 +60,7 @@ export default function ReportsView({ onNewReport, lang }: ReportsViewProps) {
             </span>
             {criticalCount > 0 && (
               <span className="reports-view__header-meta--critical">
-                · 🚨 {criticalCount} {i.reportsCritical}
+                · <AlertCircle size={12} strokeWidth={2} /> {criticalCount} {i.reportsCritical}
               </span>
             )}
           </div>
@@ -116,7 +117,7 @@ export default function ReportsView({ onNewReport, lang }: ReportsViewProps) {
         {filtered.length === 0 ? (
           <div className="reports-view__empty">
             <div className="reports-view__empty-icon">
-              {search ? "🔍" : "🌿"}
+              {search ? <Search size={24} strokeWidth={1.5} /> : <Leaf size={24} strokeWidth={1.5} />}
             </div>
             <div className="reports-view__empty-text">
               {search ? `${i.reportsNoResults} „${search}"` : i.reportsNoSignals}

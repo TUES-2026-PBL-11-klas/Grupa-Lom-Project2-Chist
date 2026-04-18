@@ -1,3 +1,4 @@
+import { Flame } from "lucide-react";
 import FilterChips from "./FilterChips.tsx";
 import SignalCard from "./SignalCard.tsx";
 import type { T, Lang } from "../i18n.ts";
@@ -75,7 +76,7 @@ export default function Sidebar({
             </div>
           </div>
           <div className="sidebar__streak">
-            <span className="sidebar__streak-icon">🔥</span>
+            <span className="sidebar__streak-icon"><Flame size={16} strokeWidth={2} /></span>
             <span className="sidebar__streak-val">
               {streakDays} {i.days}
             </span>
