@@ -73,3 +73,17 @@
   opacity: 0;
   transform: scale(0);
 }
+
+/* ── Small mobile ── */
+@media (max-width: 374px) {
+  .bottom-nav__btn {
+    padding: 4px 8px;
+    min-width: 44px;
+  }
+  .bottom-nav__icon {
+    font-size: 18px;
+  }
+  .bottom-nav__label {
+    font-size: 7px;
+  }
+}

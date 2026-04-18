@@ -65,12 +65,8 @@
 .reports-view__filters {
   display: flex;
   gap: 6px;
-  overflow-x: auto;
+  flex-wrap: wrap;
   padding-bottom: 2px;
-  scrollbar-width: none;
-}
-.reports-view__filters::-webkit-scrollbar {
-  display: none;
 }
 .reports-view__filter-pill {
   padding: 6px 14px;
@@ -81,7 +77,6 @@
   white-space: nowrap;
   transition: all 0.15s;
   letter-spacing: 0.5px;
-  flex-shrink: 0;
 }
 .reports-view__filter-pill--active {
   background: rgba(255, 77, 148, 0.15);
@@ -144,6 +139,31 @@
   margin-top: 14px;
   padding: 8px 20px;
   font-size: 11px;
+}
+
+/* ── Small mobile ── */
+@media (max-width: 374px) {
+  .reports-view__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .reports-view__new-btn {
+    padding: 7px 12px;
+    font-size: 10px;
+    width: 100%;
+    text-align: center;
+  }
+  .reports-view__filter-pill {
+    padding: 5px 10px;
+    font-size: 9px;
+  }
+  .reports-view__empty {
+    padding: 32px 12px;
+  }
+  .reports-view__empty-icon {
+    font-size: 36px;
+  }
 }
 
 /* ── Desktop layout ── */

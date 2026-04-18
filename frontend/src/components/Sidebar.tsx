@@ -62,10 +62,6 @@ export default function Sidebar({
       )}
 
       <aside className={`sidebar ${!mobileOpen ? "sidebar--hidden" : ""}`}>
-        <div className="sidebar__mobile-handle">
-          <div className="sidebar__mobile-handle-bar" />
-        </div>
-
         <div className="sidebar__stats">
           <div className="sidebar__stats-left">
             <div className="sidebar__stats-row">

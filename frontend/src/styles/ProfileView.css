@@ -382,6 +382,40 @@
 }
 
 /* ════════════════════════════════
+   Small mobile
+   ════════════════════════════════ */
+@media (max-width: 374px) {
+  .profile__hero-layout {
+    gap: 14px;
+  }
+  .profile__avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+  .profile__name {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+  .profile__badge-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .profile__badge-icon {
+    font-size: 22px;
+  }
+  .profile__stat {
+    padding: 12px 6px;
+  }
+  .profile__stat-val {
+    font-size: 16px;
+  }
+  .profile__stat-label {
+    font-size: 7px;
+  }
+}
+
+/* ════════════════════════════════
    Desktop
    ════════════════════════════════ */
 @media (min-width: 768px) {

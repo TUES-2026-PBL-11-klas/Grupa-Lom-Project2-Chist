@@ -238,6 +238,34 @@
   letter-spacing: 0.5px;
 }
 
+/* ── Small mobile ── */
+@media (max-width: 374px) {
+  .leaderboard__podium {
+    gap: 4px;
+  }
+  .leaderboard__podium-name {
+    font-size: 9px;
+  }
+  .leaderboard__podium-avatar {
+    font-size: 18px;
+  }
+  .leaderboard__row {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .leaderboard__rank-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  .leaderboard__row-name {
+    font-size: 12px;
+  }
+  .leaderboard__row-pts {
+    font-size: 13px;
+  }
+}
+
 /* ── Desktop layout ── */
 @media (min-width: 768px) {
   .leaderboard {

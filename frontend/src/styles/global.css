@@ -266,6 +266,12 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
   z-index: 1;
 }
 
+@media (max-width: 374px) {
+  .page-content {
+    padding: 12px 10px calc(var(--nav-h) + 16px);
+  }
+}
+
 @media (min-width: 768px) {
   .page-content {
     max-width: 960px;
@@ -354,6 +360,10 @@ textarea.input-field { resize: vertical; line-height: 1.6; }
   border-radius: 2px;
   background: var(--border-md);
   margin: 0 auto 22px;
+  padding: 10px 0;
+  background-clip: content-box;
+  cursor: grab;
+  touch-action: none;
 }
 @media (min-width: 768px) {
   .modal-handle {

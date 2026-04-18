@@ -76,13 +76,13 @@
 
 .rewards__section-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 12px;
 }
 .rewards__filter-tabs {
   display: flex;
-  gap: 5px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 .rewards__filter-tab {
@@ -394,6 +394,57 @@
   font-size: 12px;
 }
 
+/* ── Small mobile ── */
+@media (max-width: 374px) {
+  .rewards__points-hero {
+    padding: 20px 14px;
+  }
+  .rewards__balance-value {
+    font-size: 42px;
+  }
+  .rewards__quick-stats {
+    gap: 14px;
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+  .rewards__qs-val {
+    font-size: 14px;
+  }
+  .rewards__grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .reward-card {
+    padding: 14px 12px;
+  }
+  .reward-card--featured {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+  .reward-card__emoji {
+    font-size: 30px;
+  }
+  .rewards__claim-card {
+    padding: 24px 16px;
+  }
+  .rewards__claim-emoji {
+    font-size: 42px;
+  }
+  .rewards__claim-title {
+    font-size: 20px;
+  }
+  .rewards__history-item {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .rewards__history-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+}
+
 /* ── Desktop layout ── */
 @media (min-width: 768px) {
   .rewards {
@@ -432,8 +483,7 @@
   }
 
   .rewards__section-header {
-    flex-wrap: wrap;
-    gap: 12px;
+    gap: 14px;
   }
 
   .rewards__filter-tabs {

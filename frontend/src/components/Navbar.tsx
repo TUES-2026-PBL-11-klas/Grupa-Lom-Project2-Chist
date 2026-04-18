@@ -76,7 +76,7 @@ export default function Navbar({ lang, onToggleLang, currentTab, onNavigate }: N
                     setMenuOpen(false);
                   }}
                 >
-                  <span className="map-navbar__dropdown-icon">{item.icon}</span>
+                  <span className="map-navbar__dropdown-icon">{(() => { const Icon = item.icon; return <Icon size={16} strokeWidth={1.8} />; })()}</span>
                   {lang === "en" ? item.labelEn : item.labelBg}
                 </button>
               ))}
@@ -85,7 +85,7 @@ export default function Navbar({ lang, onToggleLang, currentTab, onNavigate }: N
                 className="map-navbar__dropdown-item map-navbar__dropdown-item--logout"
                 onClick={() => { setMenuOpen(false); logout(); }}
               >
-                <span className="map-navbar__dropdown-icon">🚪</span>
+                <span className="map-navbar__dropdown-icon"><LogOut size={16} strokeWidth={1.8} /></span>
                 {lang === "en" ? "Logout" : "Изход"}
               </button>
             </div>

@@ -496,6 +496,36 @@ export default function ReportModal({ onClose }: ReportModalProps) {
     }
   };
 
+  /* ── Swipe-to-close on mobile handle ── */
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const dragY = useRef(0);
+  const dragging = useRef(false);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    dragY.current = e.touches[0].clientY;
+    dragging.current = true;
+    if (sheetRef.current) sheetRef.current.style.transition = "none";
+  }, []);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!dragging.current || !sheetRef.current) return;
+    const dy = e.touches[0].clientY - dragY.current;
+    if (dy > 0) sheetRef.current.style.transform = `translateY(${dy}px)`;
+  }, []);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (!dragging.current || !sheetRef.current) return;
+    dragging.current = false;
+    const dy = e.changedTouches[0].clientY - dragY.current;
+    sheetRef.current.style.transition = "transform 0.25s ease";
+    if (dy > 100) {
+      sheetRef.current.style.transform = `translateY(100%)`;
+      setTimeout(onClose, 250);
+    } else {
+      sheetRef.current.style.transform = "";
+    }
+  }, [onClose]);
+
   // Step 2 is rendered as a full-screen overlay, outside the modal
   if (step === 2) {
     return (
@@ -513,8 +543,13 @@ export default function ReportModal({ onClose }: ReportModalProps) {
       className="modal-backdrop"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="modal-sheet">
-        <div className="modal-handle" />
+      <div className="modal-sheet" ref={sheetRef}>
+        <div
+          className="modal-handle"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        />
         {done ? (
           <div className="success-screen">
             <div className="success-screen__emoji"><PartyPopper size={52} strokeWidth={1.5} /></div>

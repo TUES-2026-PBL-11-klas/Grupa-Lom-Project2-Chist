@@ -172,3 +172,29 @@
 .notif-item__dismiss:hover {
   color: var(--red-alert);
 }
+
+/* ── Small mobile ── */
+@media (max-width: 374px) {
+  .notif-panel {
+    padding: 14px 10px;
+    gap: 10px;
+  }
+  .notif-panel__title {
+    font-size: 18px;
+  }
+  .notif-item {
+    padding: 10px 10px;
+    gap: 8px;
+  }
+  .notif-item__icon-box {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  .notif-item__title {
+    font-size: 11px;
+  }
+  .notif-item__message {
+    font-size: 10px;
+  }
+}

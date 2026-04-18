@@ -108,3 +108,35 @@
 .header__avatar:hover {
   box-shadow: 0 0 20px var(--primary-glow);
 }
+
+/* ── Small mobile ── */
+@media (max-width: 374px) {
+  .header {
+    padding: 0 10px;
+    height: 50px;
+  }
+  .header__logo-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+  .header__logo-wordmark {
+    font-size: 18px;
+  }
+  .header__logo-sub {
+    display: none;
+  }
+  .header__icon-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+  .header__avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  .header__pts-val {
+    font-size: 11px;
+  }
+}

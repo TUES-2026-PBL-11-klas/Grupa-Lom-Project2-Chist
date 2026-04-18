@@ -9,9 +9,21 @@ import {
   usersApi,
 } from "./api";
 
+// Node 22+ provides a broken built-in localStorage; stub with a proper implementation
+const store: Record<string, string> = {};
+const storageMock: Storage = {
+  getItem: (key: string) => store[key] ?? null,
+  setItem: (key: string, value: string) => { store[key] = value; },
+  removeItem: (key: string) => { delete store[key]; },
+  clear: () => { for (const k of Object.keys(store)) delete store[k]; },
+  get length() { return Object.keys(store).length; },
+  key: (i: number) => Object.keys(store)[i] ?? null,
+};
+
 describe("api client", () => {
   beforeEach(() => {
-    localStorage.clear();
+    storageMock.clear();
+    vi.stubGlobal("localStorage", storageMock);
     vi.restoreAllMocks();
     vi.stubGlobal("fetch", vi.fn());
   });
@@ -26,7 +38,7 @@ describe("api client", () => {
     const result = await authApi.login("demo@mail.com", "secret");
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/auth/login",
+      "/api/auth/login",
       expect.objectContaining({
         method: "POST",
         body: JSON.stringify({ email: "demo@mail.com", password: "secret" }),
@@ -46,7 +58,7 @@ describe("api client", () => {
     await usersApi.getMe();
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/users/me",
+      "/api/users/me",
       expect.objectContaining({
         headers: expect.objectContaining({
           Authorization: "Bearer token-123",
@@ -62,10 +74,10 @@ describe("api client", () => {
       json: vi.fn().mockResolvedValue([]),
     } as unknown as Response);
 
-    await reportsApi.list({ status: "open", district: null, page: 1 });
+    await reportsApi.list({ status: "open", district: null as unknown as string, page: "1" });
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/reports?status=open&page=1",
+      "/api/reports?status=open&page=1",
       expect.any(Object),
     );
   });
@@ -88,13 +100,13 @@ describe("api client", () => {
       json: vi.fn().mockResolvedValue({ message: "Invalid payload" }),
     } as unknown as Response);
 
-    await expect(authApi.register({})).rejects.toThrow("Invalid payload");
+    await expect(authApi.register({} as Record<string, string>)).rejects.toThrow("Invalid payload");
   });
 
   it("clears token and exits early on unauthorized responses", async () => {
-    localStorage.setItem("cw_token", "expired");
-    const removeSpy = vi.spyOn(Storage.prototype, "removeItem");
-    vi.spyOn(window.location, "reload").mockImplementation(() => {});
+    storageMock.setItem("cw_token", "expired");
+    const removeSpy = vi.spyOn(storageMock, "removeItem");
+    vi.stubGlobal("location", { ...window.location, reload: vi.fn() });
     vi.mocked(fetch).mockResolvedValue({
       ok: false,
       status: 401,
@@ -108,93 +120,93 @@ describe("api client", () => {
   });
 
   it("calls report claim endpoint", async () => {
-    fetch.mockResolvedValue({
+    vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue({ ok: true }),
-    });
+    } as unknown as Response);
 
     await reportsApi.claim(123);
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/reports/123/claim",
+      "/api/reports/123/claim",
       expect.objectContaining({ method: "PATCH" }),
     );
   });
 
   it("calls report complete endpoint", async () => {
-    fetch.mockResolvedValue({
+    vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue({ ok: true }),
-    });
+    } as unknown as Response);
 
     const payload = new FormData();
     await reportsApi.complete(44, payload);
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/reports/44/complete",
+      "/api/reports/44/complete",
       expect.objectContaining({ method: "POST", body: payload }),
     );
   });
 
   it("calls leaderboard endpoint with defaults", async () => {
-    fetch.mockResolvedValue({
+    vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue({ content: [] }),
-    });
+    } as unknown as Response);
 
     await leaderboardApi.get();
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/leaderboard?period=week&page=0&size=20",
+      "/api/leaderboard?period=week&page=0&size=20",
       expect.any(Object),
     );
   });
 
   it("calls stats endpoint", async () => {
-    fetch.mockResolvedValue({
+    vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue({ totalCleaned: 1 }),
-    });
+    } as unknown as Response);
 
     await statsApi.getGlobal();
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/stats/global",
+      "/api/stats/global",
       expect.any(Object),
     );
   });
 
   it("calls notifications unread filter endpoint", async () => {
-    fetch.mockResolvedValue({
+    vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue([]),
-    });
+    } as unknown as Response);
 
     await notificationsApi.list(true);
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/notifications?unread=true",
+      "/api/notifications?unread=true",
       expect.any(Object),
     );
   });
 
   it("calls AI verify image endpoint", async () => {
-    fetch.mockResolvedValue({
+    vi.mocked(fetch).mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue({ valid: true }),
-    });
+    } as unknown as Response);
 
     const payload = new FormData();
     await aiApi.verifyImage(payload);
 
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/ai/verify-image",
+      "/api/verifications/check-image",
       expect.objectContaining({ method: "POST", body: payload }),
     );
   });

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { authApi } from "../services/api.ts";
+import type { LucideIcon } from "lucide-react";
 import "../styles/AuthView.css";
 import { authApi } from "../services/api.ts";
 import { Mail, Lock, User, MapPin, Sparkles, Trophy, Leaf } from "lucide-react";
@@ -29,8 +29,8 @@ function Field({ label, type = "text", value, onChange, placeholder, icon: Icon 
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`input-field ${icon ? "auth__field-input" : ""}`}
-          style={{ borderColor: focused ? "var(--pink-primary)" : undefined }}
+          className={`input-field ${Icon ? "auth__field-input" : ""}`}
+          style={{ borderColor: focused ? "var(--accent-pink)" : undefined }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
         />
@@ -65,10 +65,12 @@ function LoginForm({ onSuccess, onSwitch }: FormProps) {
         return;
       }
       const res = await authApi.login(email, password);
-      localStorage.setItem("cw_token", res.token);
+      if (res?.token) {
+        localStorage.setItem("cw_token", res.token);
+      }
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Грешен имейл или парола.");
+      setError(err instanceof Error ? err.message : "Login failed. Check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -143,10 +145,12 @@ function RegisterForm({ onSuccess, onSwitch }: FormProps) {
     setError("");
     try {
       const res = await authApi.register({ email, username, password });
-      localStorage.setItem("cw_token", res.token);
+      if (res?.token) {
+        localStorage.setItem("cw_token", res.token);
+      }
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Грешка при регистрация.");
+      setError(err instanceof Error ? err.message : "Registration failed. Try again.");
     } finally {
       setLoading(false);
     }
@@ -214,6 +218,9 @@ export default function AuthView({ onAuthenticated }: { onAuthenticated: () => v
     <div className="auth">
       <div className="auth__card">
         <div className="auth__logo">
+          <div className="auth__logo-icon anim-float">
+            <Leaf size={32} strokeWidth={1.8} />
+          </div>        
           <div className="auth__logo-wordmark">CHIST</div>
           <div className="auth__logo-sub">SOFIA · CLEANER CITY</div>
         </div>
@@ -248,17 +255,19 @@ export default function AuthView({ onAuthenticated }: { onAuthenticated: () => v
         )}
 
         <div className="auth__features">
-          {[
-            "📍 Докладвай замърсявания",
-            "🧹 Почиствай и печели",
-            "🏆 Класирай се & Спечели награди",
-          ].map((f) => (
-            <div key={f} className="auth__feature-item">
-              {f}
-            </div>
-          ))}
+          <div className="auth__feature-item">
+            <MapPin size={14} strokeWidth={1.8} />
+            Report pollution
+          </div>
+          <div className="auth__feature-item">
+            <Sparkles size={14} strokeWidth={1.8} />
+            Clean up & earn points
+          </div>
+          <div className="auth__feature-item">
+            <Trophy size={14} strokeWidth={1.8} />
+            Compete & win rewards
+          </div>
         </div>
-
       </div>
 
       <div className="auth__footer">

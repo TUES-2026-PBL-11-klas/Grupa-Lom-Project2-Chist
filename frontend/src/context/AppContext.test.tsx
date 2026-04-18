@@ -20,7 +20,7 @@ describe("AppContext", () => {
     root = createRoot(host);
     act(() => {
       root!.render(
-        <AppProvider>
+        <AppProvider onLogout={() => {}}>
           <Probe />
         </AppProvider>,
       );

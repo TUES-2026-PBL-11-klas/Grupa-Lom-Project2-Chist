@@ -62,6 +62,8 @@ type Action =
   | { type: "ADD_NOTIFICATION"; payload: Omit<Notification, "id"> }
   | { type: "DISMISS_NOTIFICATION"; payload: number };
 
+const POINTS_BY_SEVERITY: Record<string, number> = { critical: 200, high: 120, medium: 80, low: 40 };
+
 const initialState: AppState = {
   user: CURRENT_USER,
   reports: REPORTS as Report[],
@@ -199,12 +201,7 @@ function reducer(state: any, action: any) {
 
 const AppContext = createContext<any>(null);
 
-interface AppProviderProps {
-  children: ReactNode;
-  onLogout: () => void;
-}
-
-export function AppProvider({ children, onLogout }: { children: any; onLogout: any }) {
+export function AppProvider({ children, onLogout }: { children: React.ReactNode; onLogout: () => void }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   // Keep a ref so callbacks don't need state in their dependency arrays
@@ -242,7 +239,7 @@ export function AppProvider({ children, onLogout }: { children: any; onLogout: a
       type: "ADD_NOTIFICATION",
       payload: {
         type: "success",
-        message: `🎉 Почистено! +${rep?.points ?? 0} точки`,
+        message: `Почистено! +${rep?.points ?? 0} точки`,
         duration: 4000,
       },
     });
