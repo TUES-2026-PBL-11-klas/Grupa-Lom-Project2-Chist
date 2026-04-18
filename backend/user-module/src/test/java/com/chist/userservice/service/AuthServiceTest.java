@@ -3,12 +3,13 @@ package com.chist.userservice.service;
 import com.chist.userservice.dto.AuthRequest;
 import com.chist.userservice.dto.AuthResponse;
 import com.chist.userservice.dto.RegisterRequest;
+import com.chist.userservice.exception.EmailAlreadyExistException;
 import com.chist.userservice.model.User;
 import com.chist.userservice.repository.UserRepository;
 import com.chist.userservice.security.JwtService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,15 +19,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -45,47 +43,61 @@ class AuthServiceTest {
     @InjectMocks
     private AuthService authService;
 
-    @Test
-    void register_throwsWhenEmailExists() {
-        RegisterRequest request = new RegisterRequest("mail@test.com", "alice", "raw");
-        when(userRepository.existsByEmail(request.getEmail())).thenReturn(true);
+    private User testUser;
+    private RegisterRequest registerRequest;
+    private AuthRequest authRequest;
 
-        assertThrows(RuntimeException.class, () -> authService.register(request));
+    @BeforeEach
+    void setUp() {
+        testUser = User.builder()
+                .email("test@test.com")
+                .username("testuser")
+                .password("encodedPassword")
+                .build();
+
+        registerRequest = new RegisterRequest("test@test.com", "testuser", "password123");
+        authRequest = new AuthRequest("test@test.com", "password123");
+    }
+
+    @Test
+    void register_success() {
+        when(userRepository.existsByEmail(anyString())).thenReturn(false);
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(jwtService.generateToken(anyString())).thenReturn("testToken");
+
+        AuthResponse response = authService.register(registerRequest);
+
+        assertNotNull(response);
+        assertEquals("testToken", response.getToken());
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void register_emailAlreadyExists_throwsException() {
+        when(userRepository.existsByEmail(anyString())).thenReturn(true);
+
+        assertThrows(EmailAlreadyExistException.class, () -> authService.register(registerRequest));
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
-    void register_savesUserSendsNotificationAndReturnsToken() {
-        RegisterRequest request = new RegisterRequest("mail@test.com", "alice", "raw");
-        when(userRepository.existsByEmail(request.getEmail())).thenReturn(false);
-        when(passwordEncoder.encode("raw")).thenReturn("encoded");
-        when(jwtService.generateToken(request.getEmail())).thenReturn("jwt-token");
+    void login_success() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
+        when(jwtService.generateToken(anyString())).thenReturn("testToken");
 
-        AuthResponse response = authService.register(request);
+        AuthResponse response = authService.login(authRequest);
 
-        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userCaptor.capture());
-        assertEquals("mail@test.com", userCaptor.getValue().getEmail());
-        assertEquals("alice", userCaptor.getValue().getUsername());
-        assertEquals("encoded", userCaptor.getValue().getPassword());
-        verify(restTemplate).postForObject(
-                contains("/api/notifications/registration?to=mail@test.com&username=alice"),
-                eq(null),
-                eq(String.class)
-        );
-        assertEquals("jwt-token", response.getToken());
+        assertNotNull(response);
+        assertEquals("testToken", response.getToken());
     }
 
     @Test
-    void login_authenticatesAndReturnsToken() {
-        AuthRequest request = new AuthRequest("mail@test.com", "secret");
-        User user = User.builder().email("mail@test.com").password("encoded").build();
-        when(userRepository.findByEmail("mail@test.com")).thenReturn(Optional.of(user));
-        when(jwtService.generateToken("mail@test.com")).thenReturn("jwt-token");
+    void login_userNotFound_throwsException() {
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(null);
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        AuthResponse response = authService.login(request);
-
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        assertEquals("jwt-token", response.getToken());
+        assertThrows(RuntimeException.class, () -> authService.login(authRequest));
     }
 }

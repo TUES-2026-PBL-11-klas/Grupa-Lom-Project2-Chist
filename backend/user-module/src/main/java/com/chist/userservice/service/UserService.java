@@ -1,5 +1,6 @@
 package com.chist.userservice.service;
 
+import com.chist.userservice.exception.UserNotFoundException;
 import com.chist.userservice.model.User;
 import com.chist.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class UserService {
 
     public User getUserById(UUID id){
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
 
     }
 
