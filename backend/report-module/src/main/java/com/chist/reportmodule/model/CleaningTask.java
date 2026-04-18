@@ -24,7 +24,7 @@ public class CleaningTask {
     @Column(name = "task_id")
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "report_id",nullable = false)
     private Report report;
 

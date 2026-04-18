@@ -49,18 +49,20 @@ class ReportServiceTest {
     }
 
     @Test
-    void createReport_success() {
+    void createReport_success() throws Exception {
         CreateReportRequest request = new CreateReportRequest(
-                42.6977, 23.3219, "photo.jpg", "Test report"
+                42.6977, 23.3219, "Test report","Landfill"
+                ,"Terrible"
         );
         when(reportRepository.save(any(Report.class))).thenReturn(testReport);
 
-        ReportResponse response = reportService.createReport(testUserId, request);
+        ReportResponse response = reportService.createReport(testUserId, request, null);
 
         assertNotNull(response);
         assertEquals(testUserId, response.getUserId());
         verify(reportRepository).save(any(Report.class));
     }
+
 
     @Test
     void getReportById_success() {
