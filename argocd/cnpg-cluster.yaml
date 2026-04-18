@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/TUES-2026-PBL-11-klas/Grupa-Lom-Project2-Chist
     targetRevision: main
-    path: k8s/cnpg-cluster
+    path: terraform/modules/kubernetes/cnpg-cluster
   destination:
     server: https://kubernetes.default.svc
     namespace: db
