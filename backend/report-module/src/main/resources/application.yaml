@@ -2,6 +2,11 @@ server:
   port: ${SERVER_PORT_REPORT}
 
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 25MB
   profiles:
     active: local
   datasource:

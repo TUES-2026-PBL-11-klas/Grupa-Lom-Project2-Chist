@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useApp } from "../context/AppContext.tsx";
 import type { Lang } from "../i18n.ts";
 import { t } from "../i18n.ts";
+import { Home, MapPin, Trophy, Gift, User, Star, LogOut } from "lucide-react";
 import "../styles/MapNavbar.css";
 
 interface NavbarProps {
@@ -12,15 +13,15 @@ interface NavbarProps {
 }
 
 const NAV_ITEMS = [
-  { id: "home", icon: "🏠", labelBg: "Начало", labelEn: "Home" },
-  { id: "reports", icon: "📍", labelBg: "Сигнали", labelEn: "Reports" },
-  { id: "board", icon: "🏆", labelBg: "Класация", labelEn: "Leaderboard" },
-  { id: "rewards", icon: "🎁", labelBg: "Награди", labelEn: "Rewards" },
-  { id: "profile", icon: "👤", labelBg: "Профил", labelEn: "Profile" },
+  { id: "home", icon: Home, labelBg: "Начало", labelEn: "Home" },
+  { id: "reports", icon: MapPin, labelBg: "Сигнали", labelEn: "Reports" },
+  { id: "board", icon: Trophy, labelBg: "Класация", labelEn: "Leaderboard" },
+  { id: "rewards", icon: Gift, labelBg: "Награди", labelEn: "Rewards" },
+  { id: "profile", icon: User, labelBg: "Профил", labelEn: "Profile" },
 ];
 
 export default function Navbar({ lang, onToggleLang, currentTab, onNavigate }: NavbarProps) {
-  const { user } = useApp();
+  const { user, logout } = useApp();
   const i = t(lang);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -45,7 +46,7 @@ export default function Navbar({ lang, onToggleLang, currentTab, onNavigate }: N
 
       <div className="map-navbar__right">
         <div className="map-navbar__stat">
-          <span className="map-navbar__stat-icon--star">★</span>
+          <span className="map-navbar__stat-icon--star"><Star size={14} strokeWidth={2} /></span>
           <span className="map-navbar__stat-val">{user.points.toLocaleString()}</span>
         </div>
 
@@ -66,19 +67,30 @@ export default function Navbar({ lang, onToggleLang, currentTab, onNavigate }: N
 
           {menuOpen && (
             <div className="map-navbar__dropdown">
-              {NAV_ITEMS.map((item) => (
-                <button
-                  key={item.id}
-                  className={`map-navbar__dropdown-item ${currentTab === item.id ? "map-navbar__dropdown-item--active" : ""}`}
-                  onClick={() => {
-                    onNavigate(item.id);
-                    setMenuOpen(false);
-                  }}
-                >
-                  <span className="map-navbar__dropdown-icon">{item.icon}</span>
-                  {lang === "en" ? item.labelEn : item.labelBg}
-                </button>
-              ))}
+              {NAV_ITEMS.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    className={`map-navbar__dropdown-item ${currentTab === item.id ? "map-navbar__dropdown-item--active" : ""}`}
+                    onClick={() => {
+                      onNavigate(item.id);
+                      setMenuOpen(false);
+                    }}
+                  >
+                    <span className="map-navbar__dropdown-icon"><Icon size={16} strokeWidth={1.8} /></span>
+                    {lang === "en" ? item.labelEn : item.labelBg}
+                  </button>
+                );
+              })}
+              <div className="map-navbar__dropdown-divider" />
+              <button
+                className="map-navbar__dropdown-item map-navbar__dropdown-item--logout"
+                onClick={() => { setMenuOpen(false); logout(); }}
+              >
+                <span className="map-navbar__dropdown-icon"><LogOut size={16} strokeWidth={1.8} /></span>
+                {lang === "en" ? "Logout" : "Изход"}
+              </button>
             </div>
           )}
         </div>

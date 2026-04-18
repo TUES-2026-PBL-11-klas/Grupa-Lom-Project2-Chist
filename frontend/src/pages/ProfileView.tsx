@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Star, Paintbrush, MapPin, Flame } from "lucide-react";
+import DataIcon from "../components/DataIcon.tsx";
 import "../styles/ProfileView.css";
 import { BADGES, LEVEL_THRESHOLDS } from "../data/mockData.ts";
 import { useApp } from "../context/AppContext.tsx";
@@ -32,6 +34,8 @@ function Toggle({ label, desc, value, onToggle }: { label: string; desc: string;
     </div>
   );
 }
+
+const STAT_ICONS = { star: Star, paintbrush: Paintbrush, "map-pin": MapPin, flame: Flame };
 
 interface ProfileViewProps {
   lang: Lang;
@@ -71,10 +75,10 @@ export default function ProfileView({ lang }: ProfileViewProps) {
         <div className="profile__hero-info">
           <div className="profile__name">
             {user.name}
-            {user.verified && <span className="profile__verified">✓ VERIFIED</span>}
+            {user.verified && <span className="profile__verified">VERIFIED</span>}
           </div>
           <div className="profile__level-badge">
-            {currentLevel?.icon} {currentLevel?.level}
+            {currentLevel && <DataIcon name={currentLevel.icon} size={14} />} {currentLevel?.level}
           </div>
         </div>
       </div>
@@ -108,30 +112,30 @@ export default function ProfileView({ lang }: ProfileViewProps) {
       {/* Stat cards */}
       <div className="profile__stats">
         {[
-          { icon: "⭐", val: user.points.toLocaleString(), label: i.profilePoints },
-          { icon: "🧹", val: user.cleanings, label: i.profileCleanings },
-          { icon: "📍", val: user.reports, label: i.profileSignals },
+          { icon: "star", val: user.points.toLocaleString(), label: i.profilePoints },
+          { icon: "paintbrush", val: user.cleanings, label: i.profileCleanings },
+          { icon: "map-pin", val: user.reports, label: i.profileSignals },
         ].map((s) => (
           <div key={s.label} className="profile__stat">
-            <div className="profile__stat-icon">{s.icon}</div>
+            <div className="profile__stat-icon"><DataIcon name={s.icon} size={18} /></div>
             <div className="profile__stat-val">{s.val}</div>
             <div className="profile__stat-label">{s.label}</div>
           </div>
         ))}
       </div>
 
-      {/* ── Tab content ── */}
+      {/* -- Tab content -- */}
       {activeTab === "stats" && (
         <div className="profile__stat-bars anim-fade-up">
           {[
-            { icon: "⭐", key: i.profileTotalPoints, val: user.points.toLocaleString(), pct: user.points / 5000 },
-            { icon: "🧹", key: i.profileCleaningsLabel, val: user.cleanings, pct: user.cleanings / 50 },
-            { icon: "📍", key: i.profileReportsLabel, val: user.reports, pct: user.reports / 30 },
-            { icon: "🔥", key: i.profileStreakRecord, val: `${user.streak} ${i.profileDays}`, pct: user.streak / 30 },
+            { icon: "star", key: i.profileTotalPoints, val: user.points.toLocaleString(), pct: user.points / 5000 },
+            { icon: "paintbrush", key: i.profileCleaningsLabel, val: user.cleanings, pct: user.cleanings / 50 },
+            { icon: "map-pin", key: i.profileReportsLabel, val: user.reports, pct: user.reports / 30 },
+            { icon: "flame", key: i.profileStreakRecord, val: `${user.streak} ${i.profileDays}`, pct: user.streak / 30 },
           ].map((s) => (
             <div key={s.key} className="profile__stat-bar-card">
               <div className="profile__stat-bar-header">
-                <span className="profile__stat-bar-key">{s.icon} {s.key}</span>
+                <span className="profile__stat-bar-key"><DataIcon name={s.icon} size={13} /> {s.key}</span>
                 <span className="profile__stat-bar-val">{s.val}</span>
               </div>
               <div className="profile__stat-bar-track">
@@ -150,7 +154,7 @@ export default function ProfileView({ lang }: ProfileViewProps) {
           <div className="profile__badge-grid">
             {BADGES.map((b: any) => (
               <div key={b.id} title={b.desc} className={`profile__badge-item ${b.earned ? "profile__badge-item--earned" : "profile__badge-item--locked"}`}>
-                <div className="profile__badge-icon">{b.icon}</div>
+                <div className="profile__badge-icon"><DataIcon name={b.icon} size={22} /></div>
                 <div className="profile__badge-name" style={{ color: b.earned ? "var(--text-1)" : "var(--text-3)" }}>{b.name}</div>
                 {b.earned && <div className="profile__badge-earned-dot" />}
               </div>

@@ -12,5 +12,6 @@ public class CreateReportRequest {
     private double longitude;
     private String photoUrl;
     private String description;
+    private String severity;
 
 }

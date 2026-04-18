@@ -1,11 +1,31 @@
+import { MapPin, Bot, Check, CheckCircle, Users } from "lucide-react";
+import DataIcon from "./DataIcon.tsx";
 import "../styles/ReportCard.css";
 import { SEVERITY_META, STATUS_META } from "../data/mockData.ts";
 import { useApp } from "../context/AppContext.tsx";
 import { t, translateReport } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";
 
+interface ReportData {
+  id: number;
+  title: string;
+  location: string;
+  description?: string;
+  severity: string;
+  status: string;
+  img: string;
+  points: number;
+  reporter: string;
+  reporterAvatar: string;
+  time: string;
+  volunteers: number;
+  district?: string;
+  aiVerified?: boolean;
+  claimedBy?: string;
+}
+
 interface ReportCardProps {
-  report: any;
+  report: ReportData;
   expanded?: boolean;
   onClick?: () => void;
   lang?: Lang;
@@ -14,8 +34,8 @@ interface ReportCardProps {
 export default function ReportCard({ report, expanded = false, onClick, lang = "bg" }: ReportCardProps) {
   const { claimReport, completeReport, user } = useApp();
   const i = t(lang);
-  const meta = SEVERITY_META[report.severity];
-  const sMeta = STATUS_META[report.status];
+  const meta = SEVERITY_META[report.severity as keyof typeof SEVERITY_META] ?? SEVERITY_META.medium;
+  const sMeta = STATUS_META[report.status as keyof typeof STATUS_META] ?? STATUS_META.open;
   const isOwn = report.claimedBy === user.name;
   const tr = translateReport(lang, report);
 
@@ -44,7 +64,7 @@ export default function ReportCard({ report, expanded = false, onClick, lang = "
         }}
       />
       {report.aiVerified && (
-        <div className="report-card__ai-badge">🤖 AI ✓</div>
+        <div className="report-card__ai-badge"><Bot size={12} strokeWidth={2} /> AI <Check size={10} strokeWidth={3} /></div>
       )}
 
       <div className="report-card__top">
@@ -52,7 +72,7 @@ export default function ReportCard({ report, expanded = false, onClick, lang = "
           className="report-card__icon-box"
           style={{ background: meta.bg, border: `1px solid ${meta.border}` }}
         >
-          {report.img}
+          <DataIcon name={report.img} size={18} />
         </div>
         <div className="report-card__info">
           <div
@@ -62,7 +82,7 @@ export default function ReportCard({ report, expanded = false, onClick, lang = "
             {tr.title}
           </div>
           <div className="report-card__loc">
-            <span>📍</span>
+            <span><MapPin size={12} strokeWidth={2} /></span>
             <span>{tr.location}</span>
           </div>
         </div>
@@ -126,7 +146,7 @@ export default function ReportCard({ report, expanded = false, onClick, lang = "
             </button>
           )}
           {report.status === "done" && (
-            <span className="report-card__done-label">✅ {i.completed}</span>
+            <span className="report-card__done-label"><CheckCircle size={12} strokeWidth={2} /> {i.completed}</span>
           )}
         </div>
       </div>
@@ -143,7 +163,7 @@ export default function ReportCard({ report, expanded = false, onClick, lang = "
         {report.volunteers > 0 && (
           <>
             <span className="report-card__footer-sep">·</span>
-            <span>👥 {report.volunteers}</span>
+            <span><Users size={12} strokeWidth={2} /> {report.volunteers}</span>
           </>
         )}
       </div>

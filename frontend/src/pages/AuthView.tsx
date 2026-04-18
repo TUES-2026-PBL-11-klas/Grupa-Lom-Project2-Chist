@@ -1,20 +1,36 @@
 import { useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import "../styles/AuthView.css";
+import { authApi } from "../services/api.ts";
+import { Mail, Lock, User, MapPin, Sparkles, Trophy, Leaf } from "lucide-react";
 
-function Field({ label, type = "text", value, onChange, placeholder, icon }) {
+interface FieldProps {
+  label: string;
+  type?: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  icon?: LucideIcon;
+}
+
+function Field({ label, type = "text", value, onChange, placeholder, icon: Icon }: FieldProps) {
   const [focused, setFocused] = useState(false);
   return (
     <div className="auth__field">
       <label className="label-caps auth__field-label">{label}</label>
       <div className="auth__field-wrap">
-        {icon && <span className="auth__field-icon">{icon}</span>}
+        {Icon && (
+          <span className="auth__field-icon">
+            <Icon size={15} strokeWidth={1.8} />
+          </span>
+        )}
         <input
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`input-field ${icon ? "auth__field-input" : ""}`}
-          style={{ borderColor: focused ? "var(--primary)" : undefined }}
+          className={`input-field ${Icon ? "auth__field-input" : ""}`}
+          style={{ borderColor: focused ? "var(--accent-pink)" : undefined }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
         />
@@ -23,45 +39,65 @@ function Field({ label, type = "text", value, onChange, placeholder, icon }) {
   );
 }
 
-function LoginForm({ onSuccess, onSwitch }) {
+interface FormProps {
+  onSuccess: () => void;
+  onSwitch: () => void;
+}
+
+function LoginForm({ onSuccess, onSwitch }: FormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!email || !password) {
-      setError("Попълни всички полета.");
+      setError("Fill in all fields.");
       return;
     }
     setLoading(true);
     setError("");
-    setTimeout(() => {
-      setLoading(false);
+
+    // Mock account for local testing
+    if (email === "test@chist.bg" && password === "test1234") {
+      localStorage.setItem("cw_token", "mock-dev-token");
+      setTimeout(() => onSuccess(), 400);
+      return;
+    }
+
+    try {
+      const res = await authApi.login(email, password);
+      if (res?.token) {
+        localStorage.setItem("cw_token", res.token);
+      }
       onSuccess();
-    }, 900);
+    } catch (err) {
+      setError((err as Error).message || "Login failed. Check your credentials.");
+      setLoading(false);
+    }
   };
 
-  const handleKey = (e) => e.key === "Enter" && submit();
+  const handleKey = (e: React.KeyboardEvent) => e.key === "Enter" && submit();
 
   return (
     <>
       <Field
-        label="Имейл"
+        label="Email"
         value={email}
         onChange={setEmail}
         placeholder="you@example.com"
-        icon="📧"
-        onKeyDown={handleKey}
+        icon={Mail}
       />
-      <Field
-        label="Парола"
-        value={password}
-        onChange={setPassword}
-        placeholder="••••••••"
-        icon="🔒"
-        type="password"
-      />
+      <div onKeyDown={handleKey}>
+        <Field
+          label="Password"
+          value={password}
+          onChange={setPassword}
+          placeholder="••••••••"
+          icon={Lock}
+          type="password"
+        />
+      </div>
       {error && <div className="error-box">{error}</div>}
       <button
         className="btn-primary auth__submit"
@@ -70,22 +106,22 @@ function LoginForm({ onSuccess, onSwitch }) {
       >
         {loading ? (
           <>
-            <span className="spinner">⟳</span> Влизане…
+            <span className="spinner">⟳</span> Logging in...
           </>
         ) : (
-          "ВЛЕЗ В ПРОФИЛА"
+          "LOG IN"
         )}
       </button>
       <p className="auth__switch">
         <button className="auth__switch-btn" onClick={onSwitch}>
-          Нямаш профил? РЕГИСТРИРАЙ СЕ →
+          Don't have an account? REGISTER →
         </button>
       </p>
     </>
   );
 }
 
-function RegisterForm({ onSuccess, onSwitch }) {
+function RegisterForm({ onSuccess, onSwitch }: FormProps) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -93,57 +129,71 @@ function RegisterForm({ onSuccess, onSwitch }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!username || !email || !password) {
-      setError("Попълни всички полета.");
+      setError("Fill in all fields.");
       return;
     }
     if (password !== confirm) {
-      setError("Паролите не съвпадат.");
+      setError("Passwords don't match.");
       return;
     }
     if (password.length < 8) {
-      setError("Парола — мин. 8 символа.");
+      setError("Password must be at least 8 characters.");
       return;
     }
     setLoading(true);
     setError("");
-    setTimeout(() => {
-      setLoading(false);
+
+    // Mock registration for local testing
+    if (email === "test@chist.bg") {
+      localStorage.setItem("cw_token", "mock-dev-token");
+      setTimeout(() => onSuccess(), 400);
+      return;
+    }
+
+    try {
+      const res = await authApi.register({ email, username, password });
+      if (res?.token) {
+        localStorage.setItem("cw_token", res.token);
+      }
       onSuccess();
-    }, 1100);
+    } catch (err) {
+      setError((err as Error).message || "Registration failed. Try again.");
+      setLoading(false);
+    }
   };
 
   return (
     <>
       <Field
-        label="Потребителско име"
+        label="Username"
         value={username}
         onChange={setUsername}
         placeholder="GreenWarrior99"
-        icon="🌿"
+        icon={User}
       />
       <Field
-        label="Имейл"
+        label="Email"
         value={email}
         onChange={setEmail}
         placeholder="you@example.com"
-        icon="📧"
+        icon={Mail}
       />
       <Field
-        label="Парола"
+        label="Password"
         value={password}
         onChange={setPassword}
-        placeholder="мин. 8 символа"
-        icon="🔒"
+        placeholder="min. 8 characters"
+        icon={Lock}
         type="password"
       />
       <Field
-        label="Потвърди парола"
+        label="Confirm password"
         value={confirm}
         onChange={setConfirm}
         placeholder="••••••••"
-        icon="🔒"
+        icon={Lock}
         type="password"
       />
       {error && <div className="error-box">{error}</div>}
@@ -154,49 +204,48 @@ function RegisterForm({ onSuccess, onSwitch }) {
       >
         {loading ? (
           <>
-            <span className="spinner">⟳</span> Регистриране…
+            <span className="spinner">⟳</span> Registering...
           </>
         ) : (
-          "СЪЗДАЙ ПРОФИЛ"
+          "CREATE ACCOUNT"
         )}
       </button>
       <p className="auth__switch">
         <button className="auth__switch-btn" onClick={onSwitch}>
-          ← ВЕЧЕ ИМАМ ПРОФИЛ
+          ← ALREADY HAVE AN ACCOUNT
         </button>
       </p>
     </>
   );
 }
 
-export default function AuthView({ onAuthenticated }) {
+export default function AuthView({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [mode, setMode] = useState("login");
 
   return (
     <div className="auth">
-      <div className="auth__orb-top" aria-hidden="true" />
-      <div className="auth__orb-br" aria-hidden="true" />
-
       <div className="auth__card">
         <div className="auth__logo">
-          <div className="auth__logo-icon anim-float">🌿</div>
+          <div className="auth__logo-icon anim-float">
+            <Leaf size={32} strokeWidth={1.8} />
+          </div>
           <div className="auth__logo-wordmark">CHIST</div>
-          <div className="auth__logo-sub">SOFIA · ПО-ЧИСТ ГРАД</div>
+          <div className="auth__logo-sub">SOFIA · CLEANER CITY</div>
         </div>
 
         <div className="auth__tabs">
           {[
-            { id: "login", label: "ВХОД" },
-            { id: "register", label: "РЕГИСТРАЦИЯ" },
-          ].map((t) => (
+            { id: "login", label: "LOGIN" },
+            { id: "register", label: "REGISTER" },
+          ].map((tab) => (
             <button
-              key={t.id}
+              key={tab.id}
               className={`auth__tab ${
-                mode === t.id ? "auth__tab--active" : "auth__tab--inactive"
+                mode === tab.id ? "auth__tab--active" : "auth__tab--inactive"
               }`}
-              onClick={() => setMode(t.id)}
+              onClick={() => setMode(tab.id)}
             >
-              {t.label}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -214,26 +263,23 @@ export default function AuthView({ onAuthenticated }) {
         )}
 
         <div className="auth__features">
-          {[
-            "📍 Докладвай замърсявания",
-            "🧹 Почиствай и печели",
-            "🏆 Класирай се & Спечели награди",
-          ].map((f) => (
-            <div key={f} className="auth__feature-item">
-              {f}
-            </div>
-          ))}
-        </div>
-
-        <div className="auth__guest-wrap">
-          <button className="auth__guest-btn" onClick={onAuthenticated}>
-            Продължи като гост →
-          </button>
+          <div className="auth__feature-item">
+            <MapPin size={14} strokeWidth={1.8} />
+            Report pollution
+          </div>
+          <div className="auth__feature-item">
+            <Sparkles size={14} strokeWidth={1.8} />
+            Clean up & earn points
+          </div>
+          <div className="auth__feature-item">
+            <Trophy size={14} strokeWidth={1.8} />
+            Compete & win rewards
+          </div>
         </div>
       </div>
 
       <div className="auth__footer">
-        © 2025 CHIST · GROUP LOM · SOFIA, BG
+        © 2025 CHIST · GRUPA LOM · SOFIA, BG
       </div>
     </div>
   );

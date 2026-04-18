@@ -16,6 +16,7 @@ public class ReportResponse {
     private double longitude;
     private String photoUrl;
     private String description;
+    private String severity;
     private ReportStatus status;
     private Date createdAt;
     private Date updatedAt;

@@ -1,11 +1,16 @@
 import { useState } from "react";
+import { Star, Medal, MapPin, CheckCircle, Flame, Bell, X } from "lucide-react";
 import "../styles/NotificationsPanel.css";
+
+import type { LucideIcon } from "lucide-react";
+
+const ICON_MAP: Record<string, LucideIcon> = { star: Star, medal: Medal, "map-pin": MapPin, "check-circle": CheckCircle, flame: Flame };
 
 const INITIAL = [
   {
     id: 1,
     type: "points",
-    icon: "⭐",
+    icon: "star",
     title: "+120 точки!",
     message: "Задачата 'Борисова градина' беше потвърдена.",
     time: "преди 5мин",
@@ -14,16 +19,16 @@ const INITIAL = [
   {
     id: 2,
     type: "badge",
-    icon: "🏅",
+    icon: "medal",
     title: "Нова значка!",
-    message: "Получи: 🔥 7-дневен стрийк",
+    message: "Получи: 7-дневен стрийк",
     time: "преди 1ч",
     read: false,
   },
   {
     id: 3,
     type: "report",
-    icon: "📍",
+    icon: "map-pin",
     title: "Нов сигнал в района ти",
     message: "Борисова градина — критично замърсяване.",
     time: "преди 2ч",
@@ -32,7 +37,7 @@ const INITIAL = [
   {
     id: 4,
     type: "confirm",
-    icon: "✅",
+    icon: "check-circle",
     title: "Задачата ти беше потвърдена",
     message: "EcoHero99 потвърди: 'Студентски град'",
     time: "преди 1д",
@@ -41,7 +46,7 @@ const INITIAL = [
   {
     id: 5,
     type: "streak",
-    icon: "🔥",
+    icon: "flame",
     title: "Не прекъсвай стрийка!",
     message: "Имаш 7 дни поред. Влез и продължи!",
     time: "преди 2д",
@@ -50,7 +55,7 @@ const INITIAL = [
   {
     id: 6,
     type: "points",
-    icon: "⭐",
+    icon: "star",
     title: "+80 точки!",
     message: "Задачата 'Люлин 5' беше потвърдена.",
     time: "преди 3д",
@@ -58,7 +63,7 @@ const INITIAL = [
   },
 ];
 
-const TYPE_COLORS = {
+const TYPE_COLORS: Record<string, { color: string; bg: string }> = {
   points: { color: "var(--text-1)", bg: "rgba(255,255,255,0.06)" },
   badge: { color: "var(--text-2)", bg: "rgba(255,255,255,0.04)" },
   report: { color: "var(--text-2)", bg: "rgba(255,255,255,0.04)" },
@@ -66,7 +71,11 @@ const TYPE_COLORS = {
   streak: { color: "var(--text-2)", bg: "rgba(255,255,255,0.04)" },
 };
 
-export default function NotificationsPanel({ onClose }) {
+interface NotificationsPanelProps {
+  onClose: () => void;
+}
+
+export default function NotificationsPanel({ onClose }: NotificationsPanelProps) {
   const [notifs, setNotifs] = useState(INITIAL);
   const unread = notifs.filter((n) => !n.read).length;
 
@@ -99,7 +108,7 @@ export default function NotificationsPanel({ onClose }) {
               onClick={onClose}
               aria-label="Затвори"
             >
-              ✕
+              <X size={16} strokeWidth={2} />
             </button>
           </div>
         </div>
@@ -108,12 +117,13 @@ export default function NotificationsPanel({ onClose }) {
 
         {notifs.length === 0 ? (
           <div className="notif-panel__empty">
-            <div className="notif-panel__empty-icon">🔔</div>
+            <div className="notif-panel__empty-icon"><Bell size={24} strokeWidth={1.5} /></div>
             Няма известия
           </div>
         ) : (
           notifs.map((n, i) => {
             const c = TYPE_COLORS[n.type] || TYPE_COLORS.confirm;
+            const IconComp = ICON_MAP[n.icon] || Star;
             return (
               <div
                 key={n.id}
@@ -127,7 +137,7 @@ export default function NotificationsPanel({ onClose }) {
                   className="notif-item__icon-box"
                   style={{ background: c.bg, border: `1px solid rgba(255,255,255,0.12)` }}
                 >
-                  {n.icon}
+                  <IconComp size={16} strokeWidth={1.8} />
                 </div>
                 <div className="notif-item__body">
                   <div
@@ -150,7 +160,7 @@ export default function NotificationsPanel({ onClose }) {
                   }
                   aria-label="Изтрий"
                 >
-                  ✕
+                  <X size={14} strokeWidth={2} />
                 </button>
               </div>
             );

@@ -25,8 +25,8 @@ const translations = {
     statusOpen: "Отворен",
     statusInProgress: "В процес",
     statusDone: "Завършен",
-    claimTask: "🧹 Поеми задачата",
-    completeTask: "✅ Завърши",
+    claimTask: "Поеми задачата",
+    completeTask: "Завърши",
     completed: "Завършено",
 
     // Levels
@@ -69,16 +69,16 @@ const translations = {
     leaderboardPoints: "ТОЧКИ",
     leaderboardYourPos: "Твоята позиция:",
     leaderboardYou: "ТИ",
-    leaderboardAwardsLabel: "🏆 НАГРАДИ",
-    leaderboardCleaningsLabel: "🧹 ПОЧИСТВАНИЯ",
+    leaderboardAwardsLabel: "НАГРАДИ",
+    leaderboardCleaningsLabel: "ПОЧИСТВАНИЯ",
     leaderboardPointsLabel: "⭐ ТОЧКИ",
 
     // Rewards
     rewardsTitle: "Награди · Размени точки",
     rewardsAvailable: "НАЛИЧНИ ТОЧКИ",
     rewardsChist: "⭐ CHIST POINTS",
-    rewardsShop: "🛍️ Магазин",
-    rewardsHistory: "📋 История",
+    rewardsShop: "Магазин",
+    rewardsHistory: "История",
     rewardsCategories: "Категории",
     rewardsCatAll: "ВСИЧКИ",
     rewardsConfirmTitle: "ПОТВЪРДИ РАЗМЯНА",
@@ -105,8 +105,30 @@ const translations = {
     reportsFilterOpen: "Отворени",
     reportsFilterInProgress: "В процес",
     reportsFilterDone: "Завършени",
-    reportsFilterCritical: "🚨 Критични",
-    reportsFilterHigh: "⚠️ Сериозни",
+    reportsFilterCritical: "Критични",
+    reportsFilterHigh: "Сериозни",
+
+    // Report Modal - Map Picker
+    mapPickerTitle: "Избери местоположение",
+    mapPickerInstruction: "Натисни на картата за да поставиш маркер",
+    mapPickerConfirm: "ПОТВЪРДИ ЛОКАЦИЯТА",
+    mapPickerCancel: "ОТКАЗ",
+    mapPickerCoords: "Координати",
+
+    // Report Modal - AI Verification
+    aiAnalyzing: "Анализиране на снимката...",
+    aiTrashDetected: "Открити са отпадъци",
+    aiNoTrash: "Не са открити отпадъци. Моля качете друга снимка.",
+    aiError: "Грешка при анализа. Опитайте отново.",
+    aiUploadPhoto: "Качете снимка",
+
+    // Report Modal - Steps
+    stepPhoto: "СНИМКА",
+    stepLocation: "ЛОКАЦИЯ",
+    stepDetails: "ДЕТАЙЛИ",
+    submitReport: "ИЗПРАТИ СИГНАЛ",
+    submitting: "Изпращане...",
+    submitError: "Грешка при изпращане. Опитайте отново.",
   },
   en: {
     // Navbar / Sidebar
@@ -134,8 +156,8 @@ const translations = {
     statusOpen: "Open",
     statusInProgress: "In progress",
     statusDone: "Completed",
-    claimTask: "🧹 Claim task",
-    completeTask: "✅ Complete",
+    claimTask: "Claim task",
+    completeTask: "Complete",
     completed: "Completed",
 
     // Levels
@@ -178,16 +200,16 @@ const translations = {
     leaderboardPoints: "POINTS",
     leaderboardYourPos: "Your position:",
     leaderboardYou: "YOU",
-    leaderboardAwardsLabel: "🏆 AWARDS",
-    leaderboardCleaningsLabel: "🧹 CLEANINGS",
+    leaderboardAwardsLabel: "AWARDS",
+    leaderboardCleaningsLabel: "CLEANINGS",
     leaderboardPointsLabel: "⭐ POINTS",
 
     // Rewards
     rewardsTitle: "Rewards · Redeem points",
     rewardsAvailable: "AVAILABLE POINTS",
     rewardsChist: "⭐ CHIST POINTS",
-    rewardsShop: "🛍️ Shop",
-    rewardsHistory: "📋 History",
+    rewardsShop: "Shop",
+    rewardsHistory: "History",
     rewardsCategories: "Categories",
     rewardsCatAll: "ALL",
     rewardsConfirmTitle: "CONFIRM REDEMPTION",
@@ -214,8 +236,30 @@ const translations = {
     reportsFilterOpen: "Open",
     reportsFilterInProgress: "In progress",
     reportsFilterDone: "Completed",
-    reportsFilterCritical: "🚨 Critical",
-    reportsFilterHigh: "⚠️ Serious",
+    reportsFilterCritical: "Critical",
+    reportsFilterHigh: "Serious",
+
+    // Report Modal - Map Picker
+    mapPickerTitle: "Choose location",
+    mapPickerInstruction: "Tap on the map to place your marker",
+    mapPickerConfirm: "CONFIRM LOCATION",
+    mapPickerCancel: "CANCEL",
+    mapPickerCoords: "Coordinates",
+
+    // Report Modal - AI Verification
+    aiAnalyzing: "Analyzing image...",
+    aiTrashDetected: "Trash detected",
+    aiNoTrash: "No trash detected. Please upload a different photo.",
+    aiError: "Analysis error. Please try again.",
+    aiUploadPhoto: "Upload a photo",
+
+    // Report Modal - Steps
+    stepPhoto: "PHOTO",
+    stepLocation: "LOCATION",
+    stepDetails: "DETAILS",
+    submitReport: "SEND REPORT",
+    submitting: "Submitting...",
+    submitError: "Submission error. Please try again.",
   },
 } as const;
 
