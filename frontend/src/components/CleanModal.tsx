@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { PartyPopper, Leaf, Star, Flame, Trophy, X, MapPin, Satellite, Camera, Bot, CheckCircle, CircleX, Loader2, Check } from "lucide-react";
 import DataIcon from "./DataIcon.tsx";
 import "../styles/CleanModal.css";
-import { SEVERITY_META } from "../data/mockData.ts";
+import { SEVERITY_META } from "../data/constants.ts";
 import { useApp } from "../context/AppContext.tsx";
 
 interface CleanModalReport {
