@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import "../styles/AuthView.css";
 import { authApi } from "../services/api.ts";
 import { Mail, Lock, User, MapPin, Sparkles, Trophy, Leaf } from "lucide-react";
@@ -29,6 +30,8 @@ function Field({ label, type = "text", value, onChange, placeholder, icon: Icon 
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
+          className={`input-field ${Icon ? "auth__field-input" : ""}`}
+          style={{ borderColor: focused ? "var(--accent-pink)" : undefined }}
           className={`input-field ${Icon ? "auth__field-input" : ""}`}
           style={{ borderColor: focused ? "var(--accent-pink)" : undefined }}
           onFocus={() => setFocused(true)}
@@ -70,9 +73,13 @@ function LoginForm({ onSuccess, onSwitch }: FormProps) {
       if (res?.token) {
         localStorage.setItem("cw_token", res.token);
       }
+      if (res?.token) {
+        localStorage.setItem("cw_token", res.token);
+      }
       onSuccess();
     } catch (err) {
-      setError((err as Error).message || "Login failed. Check your credentials.");
+      setError(err instanceof Error ? err.message : "Login failed. Check your credentials.");
+    } finally {
       setLoading(false);
     }
   };
@@ -157,9 +164,13 @@ function RegisterForm({ onSuccess, onSwitch }: FormProps) {
       if (res?.token) {
         localStorage.setItem("cw_token", res.token);
       }
+      if (res?.token) {
+        localStorage.setItem("cw_token", res.token);
+      }
       onSuccess();
     } catch (err) {
-      setError((err as Error).message || "Registration failed. Try again.");
+      setError(err instanceof Error ? err.message : "Registration failed. Try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -263,6 +274,18 @@ export default function AuthView({ onAuthenticated }: { onAuthenticated: () => v
         )}
 
         <div className="auth__features">
+          <div className="auth__feature-item">
+            <MapPin size={14} strokeWidth={1.8} />
+            Report pollution
+          </div>
+          <div className="auth__feature-item">
+            <Sparkles size={14} strokeWidth={1.8} />
+            Clean up & earn points
+          </div>
+          <div className="auth__feature-item">
+            <Trophy size={14} strokeWidth={1.8} />
+            Compete & win rewards
+          </div>
           <div className="auth__feature-item">
             <MapPin size={14} strokeWidth={1.8} />
             Report pollution

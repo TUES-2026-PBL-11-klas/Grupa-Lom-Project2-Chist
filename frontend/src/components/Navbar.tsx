@@ -67,27 +67,25 @@ export default function Navbar({ lang, onToggleLang, currentTab, onNavigate }: N
 
           {menuOpen && (
             <div className="map-navbar__dropdown">
-              {NAV_ITEMS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    className={`map-navbar__dropdown-item ${currentTab === item.id ? "map-navbar__dropdown-item--active" : ""}`}
-                    onClick={() => {
-                      onNavigate(item.id);
-                      setMenuOpen(false);
-                    }}
-                  >
-                    <span className="map-navbar__dropdown-icon"><Icon size={16} strokeWidth={1.8} /></span>
-                    {lang === "en" ? item.labelEn : item.labelBg}
-                  </button>
-                );
-              })}
+              {NAV_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  className={`map-navbar__dropdown-item ${currentTab === item.id ? "map-navbar__dropdown-item--active" : ""}`}
+                  onClick={() => {
+                    onNavigate(item.id);
+                    setMenuOpen(false);
+                  }}
+                >
+                  <span className="map-navbar__dropdown-icon">{(() => { const Icon = item.icon; return <Icon size={16} strokeWidth={1.8} />; })()}</span>
+                  {lang === "en" ? item.labelEn : item.labelBg}
+                </button>
+              ))}
               <div className="map-navbar__dropdown-divider" />
               <button
                 className="map-navbar__dropdown-item map-navbar__dropdown-item--logout"
                 onClick={() => { setMenuOpen(false); logout(); }}
               >
+                <span className="map-navbar__dropdown-icon"><LogOut size={16} strokeWidth={1.8} /></span>
                 <span className="map-navbar__dropdown-icon"><LogOut size={16} strokeWidth={1.8} /></span>
                 {lang === "en" ? "Logout" : "Изход"}
               </button>

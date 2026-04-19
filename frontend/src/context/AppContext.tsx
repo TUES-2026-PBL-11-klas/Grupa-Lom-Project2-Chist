@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useReducer, useCallback, useRef } from "react";
 import { CURRENT_USER, REPORTS, ACTIVITY_FEED } from "../data/mockData.ts";
 
 interface Report {
@@ -62,6 +62,8 @@ type Action =
   | { type: "ADD_NOTIFICATION"; payload: Omit<Notification, "id"> }
   | { type: "DISMISS_NOTIFICATION"; payload: number };
 
+const POINTS_BY_SEVERITY: Record<string, number> = { critical: 200, high: 120, medium: 80, low: 40 };
+
 const initialState: AppState = {
   user: CURRENT_USER,
   reports: REPORTS as Report[],
@@ -69,8 +71,6 @@ const initialState: AppState = {
   notifications: [],
   selectedReportId: null,
 };
-
-const POINTS_BY_SEVERITY: Record<string, number> = { critical: 200, high: 120, medium: 80, low: 40 };
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -200,13 +200,10 @@ function reducer(state: AppState, action: Action): AppState {
 
 const AppContext = createContext<any>(null);
 
-interface AppProviderProps {
-  children: ReactNode;
-  onLogout: () => void;
-}
-
-export function AppProvider({ children, onLogout }: AppProviderProps) {
+export function AppProvider({ children, onLogout }: { children: React.ReactNode; onLogout: () => void }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const reportsRef = useRef(state.reports);
+  reportsRef.current = state.reports;
 
   const addReport = useCallback((data: Record<string, unknown>) => {
     dispatch({ type: "ADD_REPORT", payload: data });
@@ -232,21 +229,18 @@ export function AppProvider({ children, onLogout }: AppProviderProps) {
     });
   }, []);
 
-  const completeReport = useCallback(
-    (id: number) => {
-      const rep = state.reports.find((r) => r.id === id);
-      dispatch({ type: "COMPLETE_REPORT", payload: id });
-      dispatch({
-        type: "ADD_NOTIFICATION",
-        payload: {
-          type: "success",
-          message: `Почистено! +${rep?.points ?? 0} точки`,
-          duration: 4000,
-        },
-      });
-    },
-    [state.reports],
-  );
+  const completeReport = useCallback((id: any) => {
+    const rep = reportsRef.current.find((r: any) => r.id === id);
+    dispatch({ type: "COMPLETE_REPORT", payload: id });
+    dispatch({
+      type: "ADD_NOTIFICATION",
+      payload: {
+        type: "success",
+        message: `Почистено! +${rep?.points ?? 0} точки`,
+        duration: 4000,
+      },
+    });
+  }, []);
 
   const selectReport = useCallback(
     (id: number | null) => dispatch({ type: "SELECT_REPORT", payload: id }),

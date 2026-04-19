@@ -313,10 +313,12 @@ const LEVEL_MAP: Record<string, keyof T> = {
   "ЛЕГЕНДА": "levelLegend",
 };
 
-export function translateLevel(lang: Lang, level: string): string {
+export function translateLevel(_lang: Lang, level: string): string {
   const key = LEVEL_MAP[level];
   if (!key) return level;
-  return translations[lang][key];
+  const bg = translations["bg"][key];
+  const en = translations["en"][key];
+  return bg === en ? bg : `${bg} / ${en}`;
 }
 
 export function translateReport(lang: Lang, report: { id: number; title: string; location: string; description?: string }) {

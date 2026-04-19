@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { useApp } from "../context/AppContext.tsx";
+import { List, X } from "lucide-react";
 import Navbar from "./Navbar.tsx";
 import Sidebar from "./Sidebar.tsx";
 import MapContainer from "./MapContainer.tsx";
@@ -95,13 +96,11 @@ export default function MapDashboard({ onNavigate, currentTab, lang, onToggleLan
       </main>
 
       <button
-        onClick={() => setMobileOpen(true)}
-        className="map-dashboard__mobile-toggle"
-        aria-label="Отвори сигнали"
+        onClick={() => setMobileOpen((v) => !v)}
+        className={`map-dashboard__mobile-toggle ${mobileOpen ? "map-dashboard__mobile-toggle--active" : ""}`}
+        aria-label={mobileOpen ? "Затвори сигнали" : "Отвори сигнали"}
       >
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
+        {mobileOpen ? <X size={20} strokeWidth={2.5} /> : <List size={20} strokeWidth={2.5} />}
       </button>
 
       <div className="map-dashboard__glow-tr" />

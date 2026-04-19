@@ -4,7 +4,7 @@ import DataIcon from "../components/DataIcon.tsx";
 import "../styles/ProfileView.css";
 import { BADGES, LEVEL_THRESHOLDS } from "../data/mockData.ts";
 import { useApp } from "../context/AppContext.tsx";
-import { t } from "../i18n.ts";
+import { t, translateLevel } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";
 
 const WEEK_DATA = [
@@ -78,7 +78,7 @@ export default function ProfileView({ lang }: ProfileViewProps) {
             {user.verified && <span className="profile__verified">VERIFIED</span>}
           </div>
           <div className="profile__level-badge">
-            {currentLevel && <DataIcon name={currentLevel.icon} size={14} />} {currentLevel?.level}
+            {currentLevel && <DataIcon name={currentLevel.icon} size={14} />} {currentLevel ? translateLevel(lang, currentLevel.level) : ""}
           </div>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function ProfileView({ lang }: ProfileViewProps) {
       {/* XP bar */}
       <div className="profile__xp">
         <div className="profile__xp-header">
-          <span className="profile__xp-label">{i.profileTowards} {nextLevel?.level || "MAX"}</span>
+          <span className="profile__xp-label">{i.profileTowards} {nextLevel ? translateLevel(lang, nextLevel.level) : "MAX"}</span>
           <span className="profile__xp-val">
             {user.points.toLocaleString()} / {nextLevel?.min?.toLocaleString() || "∞"}
           </span>
