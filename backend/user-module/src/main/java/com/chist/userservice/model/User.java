@@ -44,7 +44,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private int points = 0;
 
-    @Column(nullable = false, name = "streak_days")
+    @Column(nullable = false, name = "streak")
     private int streak = 0;
 
     @CreatedDate
