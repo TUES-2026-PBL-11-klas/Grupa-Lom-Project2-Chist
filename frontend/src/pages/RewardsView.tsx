@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Flame, Sparkles, Star, Lock } from "lucide-react";
 import DataIcon from "../components/DataIcon.tsx";
 import "../styles/RewardsView.css";
@@ -30,13 +30,24 @@ const REWARDS: Reward[] = [
   { id: 8, icon: "droplets", name: "Почистващ комплект", desc: "Професионален еко комплект за почистване — ръкавици, торби, инструменти.", partner: "ECO TOOLS BG", cost: 400, category: "eco" },
 ];
 
-const HISTORY = [
-  { id: 1, icon: "coffee", name: "Безплатно кафе", date: "12 Май 2025", dateEn: "12 May 2025", pts: -500 },
-  { id: 2, icon: "paintbrush", name: "Завърши задача", date: "10 Май 2025", dateEn: "10 May 2025", pts: +120 },
-  { id: 3, icon: "map-pin", name: "Нов сигнал", date: "9 Май 2025", dateEn: "9 May 2025", pts: +15 },
-  { id: 4, icon: "flame", name: "7-дневен стрийк бонус", date: "7 Май 2025", dateEn: "7 May 2025", pts: +100 },
-  { id: 5, icon: "utensils", name: "Отстъпка 20% храна", date: "2 Май 2025", dateEn: "2 May 2025", pts: -350 },
-];
+interface HistoryItem {
+  id: number;
+  icon: string;
+  name: string;
+  date: string;
+  dateEn: string;
+  pts: number;
+}
+
+function loadHistory(): HistoryItem[] {
+  try {
+    return JSON.parse(localStorage.getItem("cw_reward_history") || "[]");
+  } catch { return []; }
+}
+
+function saveHistory(items: HistoryItem[]) {
+  localStorage.setItem("cw_reward_history", JSON.stringify(items));
+}
 
 const CATS = ["all", "food", "eco", "transport", "experience", "status"];
 
@@ -122,6 +133,13 @@ export default function RewardsView({ lang }: RewardsViewProps) {
   const [tab, setTab] = useState("shop");
   const [claimed, setClaimed] = useState<Set<number>>(new Set());
   const [pending, setPending] = useState<Reward | null>(null);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+
+  useEffect(() => {
+    const stored = loadHistory();
+    setHistory(stored);
+    setClaimed(new Set(stored.filter((h) => h.pts < 0).map((_, idx) => idx + 1)));
+  }, []);
 
   const filtered = REWARDS.filter((r) => cat === "all" || r.category === cat);
   const featured = filtered.find((r) => r.featured);
@@ -137,6 +155,18 @@ export default function RewardsView({ lang }: RewardsViewProps) {
     dispatch({ type: "SPEND_POINTS", payload: pending.cost });
     dispatch({ type: "ADD_NOTIFICATION", payload: { type: "success", message: `${pending.name} — ${lang === "en" ? "claimed!" : "взето успешно!"}`, duration: 4000 } });
     setClaimed((prev) => new Set([...prev, pending.id]));
+    const now = new Date();
+    const newItem: HistoryItem = {
+      id: Date.now(),
+      icon: pending.icon,
+      name: pending.name,
+      date: now.toLocaleDateString("bg-BG", { day: "numeric", month: "long", year: "numeric" }),
+      dateEn: now.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" }),
+      pts: -pending.cost,
+    };
+    const updated = [newItem, ...history];
+    setHistory(updated);
+    saveHistory(updated);
     setPending(null);
   };
 
@@ -208,7 +238,12 @@ export default function RewardsView({ lang }: RewardsViewProps) {
 
       {tab === "history" && (
         <div className="rewards__history stagger">
-          {HISTORY.map((h) => (
+          {history.length === 0 && (
+            <div style={{ textAlign: "center", color: "var(--text-3)", padding: "24px 0", fontSize: 12, letterSpacing: 1 }}>
+              {lang === "en" ? "No history yet" : "Няма история"}
+            </div>
+          )}
+          {history.map((h) => (
             <div key={h.id} className="rewards__history-item anim-fade-up">
               <div className="rewards__history-icon" style={{
                 background: h.pts > 0 ? "rgba(255,255,255,0.06)" : "rgba(255,68,68,0.08)",

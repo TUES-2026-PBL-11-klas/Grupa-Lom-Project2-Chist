@@ -25,7 +25,16 @@ service:
   port: 8083
 
 ingress:
-  enabled: false
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  hosts:
+    - host: "4.165.174.62.nip.io"
+      paths:
+        - path: /api/verifications(/|$)(.*)
+          pathType: Prefix
+  tls: []
 
 resources:
   requests:

@@ -1,7 +1,51 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppProvider, useApp } from "./AppContext";
+
+// Mock the API module so AppProvider doesn't make real HTTP calls
+vi.mock("../services/api.ts", () => ({
+  usersApi: {
+    getMe: () =>
+      Promise.resolve({
+        id: "test-id",
+        username: "TestUser",
+        email: "test@test.com",
+        points: 1200,
+        streak: 5,
+        role: "User",
+        cleanings: 3,
+        reports: 7,
+        createdAt: "2025-01-01T00:00:00Z",
+      }),
+    getLeaderboard: () => Promise.resolve([]),
+  },
+  reportsApi: {
+    list: () =>
+      Promise.resolve([
+        {
+          reportId: "r1",
+          description: "Test report location near park",
+          latitude: 42.6977,
+          longitude: 23.3219,
+          status: "OPEN",
+          severity: "medium",
+          reporterName: "TestUser",
+          createdAt: "2025-05-01T00:00:00Z",
+        },
+        {
+          reportId: "r2",
+          description: "Another dirty spot",
+          latitude: 42.7,
+          longitude: 23.33,
+          status: "OPEN",
+          severity: "high",
+          reporterName: "Someone",
+          createdAt: "2025-05-02T00:00:00Z",
+        },
+      ]),
+  },
+}));
 
 let latestCtx: any = null;
 let root: ReturnType<typeof createRoot> | null = null;
@@ -13,12 +57,14 @@ function Probe() {
 }
 
 describe("AppContext", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     latestCtx = null;
     host = document.createElement("div");
     document.body.appendChild(host);
     root = createRoot(host);
-    act(() => {
+
+    // Render and wait for the async useEffect to resolve
+    await act(async () => {
       root!.render(
         <AppProvider onLogout={() => {}}>
           <Probe />
