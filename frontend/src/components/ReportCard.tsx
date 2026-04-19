@@ -1,7 +1,7 @@
 import { MapPin, Bot, Check, CheckCircle, Users } from "lucide-react";
 import DataIcon from "./DataIcon.tsx";
 import "../styles/ReportCard.css";
-import { SEVERITY_META, STATUS_META } from "../data/mockData.ts";
+import { SEVERITY_META, STATUS_META } from "../data/constants.ts";
 import { useApp } from "../context/AppContext.tsx";
 import { t, translateReport } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";

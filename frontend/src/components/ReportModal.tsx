@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "../styles/ReportModal.css";
-import { SEVERITY_META } from "../data/mockData.ts";
+import { SEVERITY_META } from "../data/constants.ts";
 import { useApp } from "../context/AppContext.tsx";
 import { reportsApi, aiApi } from "../services/api.ts";
 import { Camera, Loader2, CheckCircle, CircleX, MapPinned, MapPin, X, PartyPopper, Check, Bot } from "lucide-react";

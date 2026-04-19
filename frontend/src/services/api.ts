@@ -43,12 +43,13 @@ export const reportsApi = {
 };
 
 export const usersApi = {
-  getMe:      ()                    => request("/users/me"),
-  updateMe:   (p: Record<string, unknown>) => request("/users/me",           { method:"PATCH", body: JSON.stringify(p) }),
-  getById:    (id: string)          => request(`/users/${id}`),
-  getBadges:  ()                    => request("/users/me/badges"),
-  getActivity:(pg=0)                => request(`/users/me/activity?page=${pg}&size=20`),
-  getStats:   ()                    => request("/users/me/stats"),
+  getMe:          ()                    => request("/users/me"),
+  updateMe:       (p: Record<string, unknown>) => request("/users/me",           { method:"PATCH", body: JSON.stringify(p) }),
+  getById:        (id: string)          => request(`/users/${id}`),
+  getBadges:      ()                    => request("/users/me/badges"),
+  getActivity:    (pg=0)                => request(`/users/me/activity?page=${pg}&size=20`),
+  getStats:       ()                    => request("/users/me/stats"),
+  getLeaderboard: ()                    => request("/users/leaderboard"),
 };
 
 export const leaderboardApi = {

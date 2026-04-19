@@ -1,13 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Crown, Flame, Paintbrush, Trophy, Check } from "lucide-react";
 import DataIcon from "../components/DataIcon.tsx";
 import "../styles/LeaderboardView.css";
-import { LEADERBOARD, BADGES } from "../data/mockData.ts";
+import { BADGES } from "../data/constants.ts";
 import { useApp } from "../context/AppContext.tsx";
+import { usersApi } from "../services/api.ts";
 import { t, translateLevel } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";
 
 const RANK_COLORS = ["#ffffff", "#aaaaaa", "#777777"];
+
+const LEVEL_THRESHOLDS = [
+  { level: "НОВИЧ", icon: "sprout", min: 0, max: 499 },
+  { level: "АКТИВЕН", icon: "award", min: 500, max: 1499 },
+  { level: "ПРО", icon: "medal", min: 1500, max: 2999 },
+  { level: "МАСТЪР", icon: "gem", min: 3000, max: 4999 },
+  { level: "ЛЕГЕНДА", icon: "trophy", min: 5000, max: Infinity },
+];
 
 interface UserEntry {
   id: string;
@@ -24,8 +33,24 @@ interface UserEntry {
   earnedBadges: Array<{ id: string; icon: string; name: string }>;
 }
 
-const usersWithAwards = LEADERBOARD.map((user: any) => {
-  const earnedBadges = BADGES.filter((badge: any) => {
+function mapLeaderboardUser(data: any): UserEntry {
+  const pts = data.points ?? 0;
+  const lvl = LEVEL_THRESHOLDS.find((l) => pts >= l.min && pts <= l.max) ?? LEVEL_THRESHOLDS[0];
+  const user = {
+    id: data.id ?? "",
+    name: data.username ?? "",
+    avatar: (data.username ?? "??").slice(0, 2).toUpperCase(),
+    points: pts,
+    streak: data.streak ?? 0,
+    level: lvl.level,
+    levelIcon: lvl.icon,
+    cleanings: data.cleanings ?? 0,
+    verified: data.role === "VerifiedUser",
+    rank: 0,
+    awards: 0,
+    earnedBadges: [] as Array<{ id: string; icon: string; name: string }>,
+  };
+  const earnedBadges = BADGES.filter((badge) => {
     if (badge.id === "first_report" && user.cleanings > 0) return true;
     if (badge.id === "first_clean" && user.cleanings > 0) return true;
     if (badge.id === "streak_7" && user.streak >= 7) return true;
@@ -36,8 +61,10 @@ const usersWithAwards = LEADERBOARD.map((user: any) => {
     if (badge.id === "team_player" && user.cleanings >= 20) return true;
     return false;
   });
-  return { ...user, awards: earnedBadges.length, earnedBadges };
-});
+  user.awards = earnedBadges.length;
+  user.earnedBadges = earnedBadges;
+  return user;
+}
 
 function Podium({ top3 }: { top3: UserEntry[] }) {
   const order = [top3[1], top3[0], top3[2]];
@@ -158,6 +185,13 @@ export default function LeaderboardView({ lang }: LeaderboardViewProps) {
   const { user } = useApp();
   const i = t(lang);
   const [sortBy, setSortBy] = useState("awards");
+  const [leaderboardData, setLeaderboardData] = useState<UserEntry[]>([]);
+
+  useEffect(() => {
+    usersApi.getLeaderboard()
+      .then((data: any[]) => setLeaderboardData(data.map(mapLeaderboardUser)))
+      .catch(() => setLeaderboardData([]));
+  }, []);
 
   const periods = [
     { id: "awards", label: i.leaderboardAwards },
@@ -165,15 +199,15 @@ export default function LeaderboardView({ lang }: LeaderboardViewProps) {
     { id: "points", label: i.leaderboardPoints },
   ];
 
-  const sortedData = [...usersWithAwards]
-    .sort((a: any, b: any) => {
+  const sortedData = [...leaderboardData]
+    .sort((a, b) => {
       if (sortBy === "awards") return b.awards - a.awards;
       if (sortBy === "cleanings") return b.cleanings - a.cleanings;
       return b.points - a.points;
     })
-    .map((u: any, idx: number) => ({ ...u, rank: idx + 1 }));
+    .map((u, idx) => ({ ...u, rank: idx + 1 }));
 
-  const myEntry = sortedData.find((u: any) => u.name === user.name);
+  const myEntry = sortedData.find((u) => u.name === user.name);
   const top3 = sortedData.slice(0, 3);
 
   return (
