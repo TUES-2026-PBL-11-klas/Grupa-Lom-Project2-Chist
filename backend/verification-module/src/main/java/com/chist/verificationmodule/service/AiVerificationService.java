@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.azure.ai.vision.imageanalysis.ImageAnalysisAsyncClient;
+import com.azure.core.util.BinaryData;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
@@ -71,6 +72,19 @@ public class AiVerificationService {
         )
         .map(this::containsTrashTags)
         .doOnError(e -> System.err.println("Azure CV verifyHasTrash error: " + e.getMessage()))
+        .onErrorReturn(false);
+    }
+
+    public Mono<Boolean> verifyHasTrashFromBytes(byte[] imageBytes) {
+        ImageAnalysisAsyncClient client = getClient();
+
+        return client.analyze(
+                BinaryData.fromBytes(imageBytes),
+                Arrays.asList(VisualFeatures.TAGS, VisualFeatures.CAPTION),
+                null
+        )
+        .map(this::containsTrashTags)
+        .doOnError(e -> System.err.println("Azure CV verifyHasTrashFromBytes error: " + e.getMessage()))
         .onErrorReturn(false);
     }
 

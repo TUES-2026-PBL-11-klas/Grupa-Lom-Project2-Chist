@@ -10,13 +10,14 @@ interface RequestOptions extends RequestInit {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function request(path: string, options: RequestOptions = {}): Promise<any> {
   const token = getToken();
+  const isFormData = options.body instanceof FormData;
+  const headers: Record<string, string> = {
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
   const res   = await fetch(`${BASE_URL}${path}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
+    headers,
   });
   if (res.status === 401) { localStorage.removeItem("cw_token"); window.location.href = "/"; return; }
   if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message ?? `HTTP ${res.status}`); }
