@@ -15,10 +15,10 @@ import java.util.Arrays;
 public class AiVerificationService {
 
 
-    @Value("${COMPUTER_VISION_ENDPOINT:placeholder}")
+    @Value("${COMPUTER_VISION_ENDPOINT}")
     private String endpoint;
 
-    @Value("${COMPUTER_VISION_KEY:placeholder}")
+    @Value("${COMPUTER_VISION_KEY}")
     private String key;
 
 
