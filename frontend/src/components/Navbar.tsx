@@ -86,7 +86,6 @@ export default function Navbar({ lang, onToggleLang, currentTab, onNavigate }: N
                 onClick={() => { setMenuOpen(false); logout(); }}
               >
                 <span className="map-navbar__dropdown-icon"><LogOut size={16} strokeWidth={1.8} /></span>
-                <span className="map-navbar__dropdown-icon"><LogOut size={16} strokeWidth={1.8} /></span>
                 {lang === "en" ? "Logout" : "Изход"}
               </button>
             </div>

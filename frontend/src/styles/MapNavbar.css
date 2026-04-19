@@ -186,6 +186,14 @@
   margin: 4px 8px;
 }
 
+.map-navbar__dropdown-item--logout {
+  color: var(--red);
+}
+.map-navbar__dropdown-item--logout:hover {
+  background: var(--red-dim);
+  color: var(--red);
+}
+
 @media (max-width: 639px) {
   .map-navbar {
     padding: 0 14px;

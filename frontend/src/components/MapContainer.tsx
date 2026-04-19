@@ -122,6 +122,12 @@ export default function MapContainer({
       attributionControl: false,
     });
 
+    // Suppress non-fatal MapLibre v5 projection error during style load
+    map.on("error", (e) => {
+      if (e?.error?.message?.includes("projection")) return;
+      console.error(e);
+    });
+
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
       "bottom-right"

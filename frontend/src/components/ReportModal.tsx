@@ -78,10 +78,9 @@ function Step1Photo({ data, onChange, onNext }: Step1Props) {
           onChange({ aiVerified: false });
         }
       } catch {
-        // If backend is unavailable, allow submission anyway for development
-        setAiState("success");
-        setAiMessage("offline");
-        onChange({ aiVerified: true });
+        setAiState("error");
+        setAiMessage("Verification failed — try again.");
+        onChange({ aiVerified: false });
       }
     },
     [onChange],
@@ -217,6 +216,12 @@ function Step2MapPicker({ data, onChange, onConfirm, onCancel }: Step2Props) {
       center: [23.3219, 42.6977],
       zoom: 12,
       attributionControl: false,
+    });
+
+    // Suppress non-fatal MapLibre v5 projection error during style load
+    map.on("error", (e) => {
+      if (e?.error?.message?.includes("projection")) return;
+      console.error(e);
     });
 
     map.addControl(
