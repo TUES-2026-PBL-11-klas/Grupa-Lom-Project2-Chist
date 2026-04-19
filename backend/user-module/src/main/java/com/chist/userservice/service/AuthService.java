@@ -38,13 +38,15 @@ public class AuthService {
 
         userRepository.save(user);
 
-        restTemplate.postForObject(
-                "http://localhost:8083/api/notifications/registration?to=" +
-                        user.getEmail() + "&username=" + user.getUsername(),
-                null,String.class
-        );
-
-
+        try {
+            restTemplate.postForObject(
+                    "http://localhost:8083/api/notifications/registration?to=" +
+                            user.getEmail() + "&username=" + user.getUsername(),
+                    null, String.class
+            );
+        } catch (Exception e) {
+            // Registration should succeed even if the notification service is unavailable
+        }
 
         String token = jwtService.generateToken(user.getEmail());
         return new AuthResponse(token);

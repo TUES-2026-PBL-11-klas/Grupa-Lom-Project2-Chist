@@ -58,12 +58,12 @@ function LoginForm({ onSuccess, onSwitch }: FormProps) {
     setLoading(true);
     setError("");
 
-    // Mock account for local testing
-    if (email === "test@chist.bg" && password === "test1234") {
-      localStorage.setItem("cw_token", "mock-dev-token");
-      setTimeout(() => onSuccess(), 400);
-      return;
-    }
+    // realno trqq se iztrie ama mai pak sh go polzvam
+    //if (email === "test@chist.bg" && password === "test1234") {
+    //  localStorage.setItem("cw_token", "mock-dev-token");
+    //  setTimeout(() => onSuccess(), 400);
+    //  return;
+    //}
 
     try {
       const res = await authApi.login(email, password);

@@ -34,9 +34,9 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-md);
   border-radius: var(--r-xl);
-  padding: 32px 28px;
+  padding: 28px 24px;
   width: 100%;
-  max-width: 400px;
+  max-width: 360px;
   position: relative;
   box-shadow:
     0 24px 64px rgba(0, 0, 0, 0.5),
@@ -56,7 +56,7 @@
 
 .auth__logo {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 .auth__logo-icon {
   width: 64px;
@@ -75,7 +75,7 @@
 }
 .auth__logo-wordmark {
   font-family: var(--font-display);
-  font-size: 34px;
+  font-size: 28px;
   color: var(--text-1);
   letter-spacing: 4px;
 }
@@ -124,7 +124,7 @@
 }
 
 .auth__field {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 .auth__field-label {
   display: block;
@@ -147,8 +147,8 @@
 
 .auth__submit {
   width: 100%;
-  padding: 13px;
-  font-size: 14px;
+  padding: 11px;
+  font-size: 13px;
   letter-spacing: 2px;
   margin-top: 4px;
   box-shadow: 0 0 24px var(--primary-glow);
@@ -173,21 +173,21 @@
 }
 
 .auth__features {
-  margin-top: 18px;
-  padding-top: 16px;
+  margin-top: 14px;
+  padding-top: 12px;
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 5px;
 }
 .auth__feature-item {
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-2);
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 12px;
+  padding: 6px 10px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--r-sm);
