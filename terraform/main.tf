@@ -48,8 +48,8 @@ module "kubernetes" {
   db_username              = var.db_username
   db_password              = var.db_password
   jwt_secret               = var.jwt_secret
-  computer_vision_endpoint = var.computer_vision_endpoint
-  computer_vision_key      = var.computer_vision_key
+  computer_vision_endpoint = module.cognitive.endpoint
+  computer_vision_key      = module.cognitive.primary_key
   kube_host                = module.aks.kube_host
   kube_client_certificate  = module.aks.kube_client_certificate
   kube_client_key          = module.aks.kube_client_key
@@ -59,7 +59,7 @@ module "kubernetes" {
   mail_username = var.mail_username
   mail_password = var.mail_password
 
-  depends_on = [module.aks]
+  depends_on = [module.aks, module.cognitive]
 }
 
 # ── 6. Cognitive Services (Computer Vision) ──────────────────
