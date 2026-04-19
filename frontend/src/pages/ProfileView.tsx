@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Star, Paintbrush, MapPin, Flame } from "lucide-react";
 import DataIcon from "../components/DataIcon.tsx";
 import "../styles/ProfileView.css";
-import { BADGES, LEVEL_THRESHOLDS } from "../data/mockData.ts";
+import { BADGES, LEVEL_THRESHOLDS } from "../data/constants.ts";
 import { useApp } from "../context/AppContext.tsx";
 import { t, translateLevel } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";
