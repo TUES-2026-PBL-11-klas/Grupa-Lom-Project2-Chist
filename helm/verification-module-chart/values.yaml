@@ -27,12 +27,11 @@ service:
 ingress:
   enabled: true
   className: nginx
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  annotations: {}
   hosts:
     - host: "4.165.174.62.nip.io"
       paths:
-        - path: /api/verifications(/|$)(.*)
+        - path: /api/verifications
           pathType: Prefix
   tls: []
 
@@ -48,7 +47,7 @@ livenessProbe:
   httpGet:
     path: /actuator/health
     port: 8083
-  initialDelaySeconds: 90
+  initialDelaySeconds: 120
   periodSeconds: 15
   failureThreshold: 5
 
@@ -56,7 +55,7 @@ readinessProbe:
   httpGet:
     path: /actuator/health
     port: 8083
-  initialDelaySeconds: 90
+  initialDelaySeconds: 120
   periodSeconds: 15
   failureThreshold: 5
 
