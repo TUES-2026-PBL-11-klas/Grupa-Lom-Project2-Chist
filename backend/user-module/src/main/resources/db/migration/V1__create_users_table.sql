@@ -5,7 +5,7 @@ CREATE TABLE users (
                        password VARCHAR(255) NOT NULL,
                        username VARCHAR(100) NOT NULL,
                        points INT NOT NULL DEFAULT 0,
-                       streak_days INT NOT NULL DEFAULT 0,
+                       streak INT NOT NULL DEFAULT 0,
                        bonus_multiplier FLOAT,
                        verified_since TIMESTAMP,
                        admin_level INT,
