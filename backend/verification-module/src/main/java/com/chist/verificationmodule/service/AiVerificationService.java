@@ -14,10 +14,11 @@ import java.util.Arrays;
 @Service
 public class AiVerificationService {
 
-    @Value("${AZURE_VISION_ENDPOINT:placeholder}")
+
+    @Value("${COMPUTER_VISION_ENDPOINT}")
     private String endpoint;
 
-    @Value("${AZURE_VISION_KEY:placeholder}")
+    @Value("${COMPUTER_VISION_KEY}")
     private String key;
 
     private ImageAnalysisAsyncClient getClient() {
