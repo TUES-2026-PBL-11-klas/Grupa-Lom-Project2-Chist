@@ -2,6 +2,7 @@ import { Flame } from "lucide-react";
 import FilterChips from "./FilterChips.tsx";
 import SignalCard from "./SignalCard.tsx";
 import type { T, Lang } from "../i18n.ts";
+import { useApp } from "../context/AppContext.tsx";
 import "../styles/MapSidebar.css";
 
 interface Report {
@@ -45,8 +46,8 @@ export default function Sidebar({
   i,
   lang,
 }: SidebarProps) {
+  const { user } = useApp();
   const totalSignals = allReports.length;
-  const streakDays = 7;
 
   const legend = [
     { label: i.legendCritical, color: "#EF4444" },
@@ -74,7 +75,7 @@ export default function Sidebar({
           <div className="sidebar__streak">
             <span className="sidebar__streak-icon"><Flame size={16} strokeWidth={2} /></span>
             <span className="sidebar__streak-val">
-              {streakDays} {i.days}
+              {user.streak} {i.days}
             </span>
           </div>
         </div>
