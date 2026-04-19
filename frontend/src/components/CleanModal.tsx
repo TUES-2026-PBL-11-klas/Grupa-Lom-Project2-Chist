@@ -6,7 +6,7 @@ import { SEVERITY_META } from "../data/constants.ts";
 import { useApp } from "../context/AppContext.tsx";
 
 interface CleanModalReport {
-  id: number;
+  id: string | number;
   title: string;
   location: string;
   severity: string;

@@ -7,7 +7,7 @@ import type { T, Lang } from "../i18n.ts";
 import "../styles/MapDashboard.css";
 
 interface Report {
-  id: number;
+  id: string | number;
   title: string;
   location: string;
   description: string;
@@ -25,10 +25,10 @@ interface Report {
 
 interface MapContainerProps {
   reports: Report[];
-  selectedId: number | null;
-  onSelectReport: (id: number) => void;
-  onClaim: (id: number) => void;
-  onComplete: (id: number) => void;
+  selectedId: string | number | null;
+  onSelectReport: (id: string | number) => void;
+  onClaim: (id: string | number) => void;
+  onComplete: (id: string | number) => void;
   i: T;
   lang: Lang;
 }
