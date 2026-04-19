@@ -22,7 +22,6 @@ public class VerificationService {
     private final GpsVerificationService gpsVerificationService;
     private final AiVerificationService aiVerificationService;
 
-
     public VerificationResponse verify(VerificationRequest request) {
         boolean gpsResult = gpsVerificationService.verify(
                 request.getExpectedLatitude(),
@@ -31,10 +30,20 @@ public class VerificationService {
                 request.getActualLongitude()
         );
 
-        boolean aiResult = aiVerificationService.verifyClean(
-                request.getBeforePhotoUrl(),
-                request.getAfterPhotoUrl()
-        ).block();
+        boolean aiResult;
+
+        // STEP 1 — само before снимка (проверява дали има боклук)
+        if (request.getAfterPhotoUrl() == null || request.getAfterPhotoUrl().isBlank()) {
+            aiResult = aiVerificationService.verifyHasTrash(
+                    request.getBeforePhotoUrl()
+            ).block();
+        } else {
+            // STEP 3 — before + after (проверява дали е почистено)
+            aiResult = aiVerificationService.verifyClean(
+                    request.getBeforePhotoUrl(),
+                    request.getAfterPhotoUrl()
+            ).block();
+        }
 
         VerificationStatus verificationStatus;
         String result;
@@ -90,7 +99,7 @@ public class VerificationService {
 
     public VerificationResponse adminApprove(UUID id) {
         Verification verification = verificationRepository.findById(id)
-                .orElseThrow(() -> new VerificationNotFoundException("Verification not found"));
+                .orElseThrow(() -> new VerificationNotFoundException("Verification not found")));
         verification.setStatus(VerificationStatus.APPROVED);
         verification.setResult("Approved by admin");
         return mapToDTO(verificationRepository.save(verification));
@@ -98,7 +107,7 @@ public class VerificationService {
 
     public VerificationResponse adminReject(UUID id) {
         Verification verification = verificationRepository.findById(id)
-                .orElseThrow(() -> new VerificationNotFoundException("Verification not found"));
+                .orElseThrow(() -> new VerificationNotFoundException("Verification not found")));
         verification.setStatus(VerificationStatus.REJECTED);
         verification.setResult("Rejected by admin");
         return mapToDTO(verificationRepository.save(verification));
