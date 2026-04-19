@@ -39,3 +39,8 @@ management:
 verification:
   gps:
     max-distance-meters: 100
+
+azure:
+  vision:
+    endpoint: ${COMPUTER_VISION_ENDPOINT}
+    key: ${COMPUTER_VISION_KEY}
