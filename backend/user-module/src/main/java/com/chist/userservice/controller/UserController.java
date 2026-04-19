@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
 
     @GetMapping("/me")
@@ -54,6 +55,20 @@ public class UserController {
         );
     }
 
+
+    @PatchMapping("/internal/{id}/points")
+    public ResponseEntity<?> addPoints(@PathVariable UUID id, @RequestParam int points) {
+        userService.addPoints(id, points);
+        return ResponseEntity.ok(mapToDTO(userService.getUserById(id)));
+    }
+
+    @PatchMapping("/internal/{id}/streak")
+    public ResponseEntity<?> setStreak(@PathVariable UUID id, @RequestParam int streak) {
+        User user = userService.getUserById(id);
+        user.setStreak(streak);
+        userRepository.save(user);
+        return ResponseEntity.ok(mapToDTO(user));
+    }
 
     private UserResponse mapToDTO(User user){
         return UserResponse.builder()

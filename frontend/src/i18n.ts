@@ -321,9 +321,9 @@ export function translateLevel(_lang: Lang, level: string): string {
   return bg === en ? bg : `${bg} / ${en}`;
 }
 
-export function translateReport(lang: Lang, report: { id: number; title: string; location: string; description?: string }) {
+export function translateReport(lang: Lang, report: { id: string | number; title: string; location: string; description?: string }) {
   if (lang === "bg") return { title: report.title, location: report.location, description: report.description ?? "" };
-  const tr = reportTranslations[report.id];
+  const tr = reportTranslations[report.id as number];
   if (!tr) return { title: report.title, location: report.location, description: report.description ?? "" };
   return tr;
 }

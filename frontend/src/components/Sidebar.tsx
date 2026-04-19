@@ -6,7 +6,7 @@ import { useApp } from "../context/AppContext.tsx";
 import "../styles/MapSidebar.css";
 
 interface Report {
-  id: number;
+  id: string | number;
   title: string;
   location: string;
   severity: string;
@@ -24,8 +24,8 @@ interface SidebarProps {
   onFilterChange: (id: string) => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
-  selectedId: number | null;
-  onSelectReport: (id: number) => void;
+  selectedId: string | number | null;
+  onSelectReport: (id: string | number) => void;
   mobileOpen: boolean;
   onMobileClose: () => void;
   i: T;
