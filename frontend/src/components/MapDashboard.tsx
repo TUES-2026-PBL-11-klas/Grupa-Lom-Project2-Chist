@@ -57,7 +57,7 @@ export default function MapDashboard({ onNavigate, currentTab, lang, onToggleLan
   }, [reports, activeFilter, searchQuery]);
 
   const handleSelectReport = useCallback(
-    (id: number) => {
+    (id: string | number) => {
       selectReport(id);
       setMobileOpen(false);
     },

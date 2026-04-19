@@ -4,7 +4,7 @@ import { translateReport } from "../i18n.ts";
 import "../styles/SignalCard.css";
 
 interface Report {
-  id: number;
+  id: string | number;
   title: string;
   location: string;
   severity: string;

@@ -5,7 +5,7 @@ import { translateReport } from "../i18n.ts";
 import "../styles/MarkerPopup.css";
 
 interface Report {
-  id: number;
+  id: string | number;
   title: string;
   location: string;
   description: string;
@@ -21,8 +21,8 @@ interface Report {
 
 interface MarkerPopupProps {
   report: Report;
-  onClaim: (id: number) => void;
-  onComplete: (id: number) => void;
+  onClaim: (id: string | number) => void;
+  onComplete: (id: string | number) => void;
   i: T;
   lang: Lang;
 }

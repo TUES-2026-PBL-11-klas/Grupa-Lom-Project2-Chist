@@ -7,7 +7,7 @@ import { t, translateReport } from "../i18n.ts";
 import type { Lang } from "../i18n.ts";
 
 interface ReportData {
-  id: number;
+  id: string | number;
   title: string;
   location: string;
   description?: string;

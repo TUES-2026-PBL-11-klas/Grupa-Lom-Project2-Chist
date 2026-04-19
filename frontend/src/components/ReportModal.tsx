@@ -86,7 +86,7 @@ function Step1Photo({ data, onChange, onNext }: Step1Props) {
     [onChange],
   );
 
-  const canProceed = data.photoFile && (aiState === "success");
+  const canProceed = data.photoFile && (aiState === "success" || aiState === "error");
 
   return (
     <div className="anim-fade-up">

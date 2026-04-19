@@ -142,7 +142,13 @@ function mapApiReport(data: any): Report {
     district: data.district ?? "София",
     lat: data.latitude ?? 0,
     lng: data.longitude ?? 0,
-    status: data.status?.toLowerCase()?.replace("_", "-") ?? "open",
+    status: (() => {
+      const raw = (data.status ?? "open").toUpperCase();
+      if (raw === "NEW" || raw === "OPEN") return "open";
+      if (raw === "IN_PROGRESS" || raw === "IN-PROGRESS") return "in-progress";
+      if (raw === "COMPLETED" || raw === "DONE") return "done";
+      return "open";
+    })(),
     severity: sev,
     img: "map-pin",
     points: POINTS_BY_SEVERITY[sev] ?? 80,
