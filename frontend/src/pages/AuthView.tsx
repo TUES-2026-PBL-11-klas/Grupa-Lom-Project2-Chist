@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import "../styles/AuthView.css";
 import { authApi } from "../services/api.ts";
 import { Mail, Lock, User, MapPin, Sparkles, Trophy, Leaf } from "lucide-react";
@@ -32,8 +31,6 @@ function Field({ label, type = "text", value, onChange, placeholder, icon: Icon 
           placeholder={placeholder}
           className={`input-field ${Icon ? "auth__field-input" : ""}`}
           style={{ borderColor: focused ? "var(--accent-pink)" : undefined }}
-          className={`input-field ${Icon ? "auth__field-input" : ""}`}
-          style={{ borderColor: focused ? "var(--accent-pink)" : undefined }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
         />
@@ -61,18 +58,15 @@ function LoginForm({ onSuccess, onSwitch }: FormProps) {
     setLoading(true);
     setError("");
 
-    // Mock account for local testing
-    if (email === "test@chist.bg" && password === "test1234") {
-      localStorage.setItem("cw_token", "mock-dev-token");
-      setTimeout(() => onSuccess(), 400);
-      return;
-    }
+    // realno trqq se iztrie ama mai pak sh go polzvam
+    //if (email === "test@chist.bg" && password === "test1234") {
+    //  localStorage.setItem("cw_token", "mock-dev-token");
+    //  setTimeout(() => onSuccess(), 400);
+    //  return;
+    //}
 
     try {
       const res = await authApi.login(email, password);
-      if (res?.token) {
-        localStorage.setItem("cw_token", res.token);
-      }
       if (res?.token) {
         localStorage.setItem("cw_token", res.token);
       }
@@ -161,9 +155,6 @@ function RegisterForm({ onSuccess, onSwitch }: FormProps) {
 
     try {
       const res = await authApi.register({ email, username, password });
-      if (res?.token) {
-        localStorage.setItem("cw_token", res.token);
-      }
       if (res?.token) {
         localStorage.setItem("cw_token", res.token);
       }
@@ -274,18 +265,6 @@ export default function AuthView({ onAuthenticated }: { onAuthenticated: () => v
         )}
 
         <div className="auth__features">
-          <div className="auth__feature-item">
-            <MapPin size={14} strokeWidth={1.8} />
-            Report pollution
-          </div>
-          <div className="auth__feature-item">
-            <Sparkles size={14} strokeWidth={1.8} />
-            Clean up & earn points
-          </div>
-          <div className="auth__feature-item">
-            <Trophy size={14} strokeWidth={1.8} />
-            Compete & win rewards
-          </div>
           <div className="auth__feature-item">
             <MapPin size={14} strokeWidth={1.8} />
             Report pollution
