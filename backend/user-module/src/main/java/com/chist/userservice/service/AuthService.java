@@ -40,7 +40,7 @@ public class AuthService {
 
         try {
             restTemplate.postForObject(
-                    "http://localhost:8083/api/notifications/registration?to=" +
+                    "http://notification-module:8082/api/notifications/registration?to=" +
                             user.getEmail() + "&username=" + user.getUsername(),
                     null, String.class
             );
