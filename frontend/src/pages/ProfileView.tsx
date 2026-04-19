@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Star, Paintbrush, MapPin, Flame } from "lucide-react";
 import DataIcon from "../components/DataIcon.tsx";
 import "../styles/ProfileView.css";
@@ -42,13 +42,40 @@ interface ProfileViewProps {
 }
 
 export default function ProfileView({ lang }: ProfileViewProps) {
-  const { user } = useApp();
+  const { user, logout } = useApp();
   const i = t(lang);
   const [activeTab, setTab] = useState("stats");
-  const [notifs, setNotifs] = useState(true);
-  const [gps, setGps] = useState(true);
-  const [dark, setDark] = useState(true);
-  const [emails, setEmails] = useState(false);
+  const [notifs, setNotifs] = useState(() => localStorage.getItem("cw_notifs") !== "false");
+  const [gps, setGps] = useState(() => localStorage.getItem("cw_gps") !== "false");
+  const [emails, setEmails] = useState(() => localStorage.getItem("cw_emails") === "true");
+
+  const toggleNotifs = useCallback(() => {
+    setNotifs((v) => {
+      const next = !v;
+      localStorage.setItem("cw_notifs", String(next));
+      if (next && "Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+      return next;
+    });
+  }, []);
+
+  const toggleGps = useCallback(() => {
+    setGps((v) => {
+      const next = !v;
+      localStorage.setItem("cw_gps", String(next));
+      return next;
+    });
+  }, []);
+
+  const toggleEmails = useCallback(() => {
+    setEmails((v) => {
+      const next = !v;
+      localStorage.setItem("cw_emails", String(next));
+      return next;
+    });
+  }, []);
+
 
   const DAYS = lang === "en" ? DAYS_EN : DAYS_BG;
 
@@ -187,11 +214,11 @@ export default function ProfileView({ lang }: ProfileViewProps) {
 
       {activeTab === "settings" && (
         <div className="profile__settings-section anim-fade-up">
-          <Toggle label={i.profilePushNotifs} desc={i.profilePushDesc} value={notifs} onToggle={() => setNotifs((v) => !v)} />
-          <Toggle label={i.profileGps} desc={i.profileGpsDesc} value={gps} onToggle={() => setGps((v) => !v)} />
-          <Toggle label={i.profileDarkMode} desc={i.profileDarkDesc} value={dark} onToggle={() => setDark((v) => !v)} />
-          <Toggle label={i.profileEmails} desc={i.profileEmailsDesc} value={emails} onToggle={() => setEmails((v) => !v)} />
-          <button className="btn-danger profile__logout">{i.profileLogout}</button>
+          <Toggle label={i.profilePushNotifs} desc={i.profilePushDesc} value={notifs} onToggle={toggleNotifs} />
+          <Toggle label={i.profileGps} desc={i.profileGpsDesc} value={gps} onToggle={toggleGps} />
+
+          <Toggle label={i.profileEmails} desc={i.profileEmailsDesc} value={emails} onToggle={toggleEmails} />
+          <button className="btn-danger profile__logout" onClick={logout}>{i.profileLogout}</button>
         </div>
       )}
     </div>
