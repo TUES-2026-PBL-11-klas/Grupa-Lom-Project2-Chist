@@ -99,7 +99,7 @@ public class VerificationService {
 
     public VerificationResponse adminApprove(UUID id) {
         Verification verification = verificationRepository.findById(id)
-                .orElseThrow(() -> new VerificationNotFoundException("Verification not found")));
+                .orElseThrow(() -> new VerificationNotFoundException("Verification not found"));
         verification.setStatus(VerificationStatus.APPROVED);
         verification.setResult("Approved by admin");
         return mapToDTO(verificationRepository.save(verification));
@@ -107,7 +107,7 @@ public class VerificationService {
 
     public VerificationResponse adminReject(UUID id) {
         Verification verification = verificationRepository.findById(id)
-                .orElseThrow(() -> new VerificationNotFoundException("Verification not found")));
+                .orElseThrow(() -> new VerificationNotFoundException("Verification not found"));
         verification.setStatus(VerificationStatus.REJECTED);
         verification.setResult("Rejected by admin");
         return mapToDTO(verificationRepository.save(verification));
