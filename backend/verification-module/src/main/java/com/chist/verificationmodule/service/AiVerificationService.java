@@ -4,6 +4,7 @@ import com.azure.ai.vision.imageanalysis.ImageAnalysisClientBuilder;
 import com.azure.ai.vision.imageanalysis.models.ImageAnalysisResult;
 import com.azure.ai.vision.imageanalysis.models.VisualFeatures;
 import com.azure.core.credential.KeyCredential;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.azure.ai.vision.imageanalysis.ImageAnalysisAsyncClient;
@@ -14,12 +15,19 @@ import java.util.Arrays;
 @Service
 public class AiVerificationService {
 
-
     @Value("${COMPUTER_VISION_ENDPOINT}")
     private String endpoint;
 
     @Value("${COMPUTER_VISION_KEY}")
     private String key;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("=== Azure CV Config ===");
+        System.out.println("Endpoint: " + endpoint);
+        System.out.println("Key set: " + (key != null && !key.isBlank()));
+        System.out.println("=======================");
+    }
 
     private ImageAnalysisAsyncClient getClient() {
         return new ImageAnalysisClientBuilder()
@@ -47,10 +55,9 @@ public class AiVerificationService {
                 .map(tuple -> {
                     boolean beforeHasTrash = containsTrashTags(tuple.getT1());
                     boolean afterHasTrash = containsTrashTags(tuple.getT2());
-
-                    // Before MUST have trash, after MUST be clean
                     return beforeHasTrash && !afterHasTrash;
                 })
+                .doOnError(e -> System.err.println("Azure CV verifyClean error: " + e.getMessage()))
                 .onErrorReturn(false);
     }
 
@@ -63,13 +70,13 @@ public class AiVerificationService {
                 null
         )
         .map(this::containsTrashTags)
+        .doOnError(e -> System.err.println("Azure CV verifyHasTrash error: " + e.getMessage()))
         .onErrorReturn(false);
     }
 
     private boolean containsTrashTags(ImageAnalysisResult result) {
         if (result.getTags() == null) return false;
 
-        // Log all tags from Azure for debugging
         result.getTags().getValues().forEach(tag ->
                 System.out.println("AZURE TAG: " + tag.getName() + " | confidence: " + tag.getConfidence())
         );
