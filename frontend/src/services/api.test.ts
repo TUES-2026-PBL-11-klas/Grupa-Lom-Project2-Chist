@@ -29,11 +29,11 @@ describe("api client", () => {
   });
 
   it("sends login request with expected payload", async () => {
-    vi.mocked(fetch).mockResolvedValue({
+    fetch.mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue({ accessToken: "abc" }),
-    } as unknown as Response);
+    });
 
     const result = await authApi.login("demo@mail.com", "secret");
 
@@ -49,11 +49,11 @@ describe("api client", () => {
 
   it("adds bearer token when token exists", async () => {
     localStorage.setItem("cw_token", "token-123");
-    vi.mocked(fetch).mockResolvedValue({
+    fetch.mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue({ id: "usr_1" }),
-    } as unknown as Response);
+    });
 
     await usersApi.getMe();
 
@@ -68,11 +68,11 @@ describe("api client", () => {
   });
 
   it("builds report query string and skips nullish values", async () => {
-    vi.mocked(fetch).mockResolvedValue({
+    fetch.mockResolvedValue({
       ok: true,
       status: 200,
       json: vi.fn().mockResolvedValue([]),
-    } as unknown as Response);
+    });
 
     await reportsApi.list({ status: "open", district: null as unknown as string, page: "1" });
 
@@ -83,10 +83,10 @@ describe("api client", () => {
   });
 
   it("returns null for 204 responses", async () => {
-    vi.mocked(fetch).mockResolvedValue({
+    fetch.mockResolvedValue({
       ok: true,
       status: 204,
-    } as unknown as Response);
+    });
 
     const result = await authApi.logout();
 
@@ -94,11 +94,11 @@ describe("api client", () => {
   });
 
   it("throws backend error message for non-ok responses", async () => {
-    vi.mocked(fetch).mockResolvedValue({
+    fetch.mockResolvedValue({
       ok: false,
       status: 400,
       json: vi.fn().mockResolvedValue({ message: "Invalid payload" }),
-    } as unknown as Response);
+    });
 
     await expect(authApi.register({} as Record<string, string>)).rejects.toThrow("Invalid payload");
   });
@@ -111,7 +111,7 @@ describe("api client", () => {
       ok: false,
       status: 401,
       json: vi.fn(),
-    } as unknown as Response);
+    });
 
     const result = await usersApi.getMe();
 

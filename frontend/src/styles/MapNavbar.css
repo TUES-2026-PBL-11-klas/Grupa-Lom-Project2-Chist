@@ -84,7 +84,10 @@
   color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   font-family: var(--font-body);
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .map-navbar__lang-btn:hover {
@@ -107,7 +110,9 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
   color: rgba(255, 255, 255, 0.6);
 }
 
@@ -132,7 +137,9 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
   padding: 6px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255, 77, 148, 0.1);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.6),
+    0 0 24px rgba(255, 77, 148, 0.1);
   backdrop-filter: blur(20px);
   z-index: 100;
   animation: fadeInUp 0.15s ease;
@@ -151,7 +158,9 @@
   font-family: var(--font-body);
   font-size: 14px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
   text-align: left;
 }
 
@@ -175,14 +184,6 @@
   height: 1px;
   background: rgba(255, 255, 255, 0.06);
   margin: 4px 8px;
-}
-
-.map-navbar__dropdown-item--logout {
-  color: var(--red);
-}
-.map-navbar__dropdown-item--logout:hover {
-  background: var(--red-dim);
-  color: var(--red);
 }
 
 @media (max-width: 639px) {
@@ -233,6 +234,12 @@
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback, useMemo, useRef, } from "react";
+import { createContext, useContext, useReducer, useCallback, type ReactNode } from "react";
 import { CURRENT_USER, REPORTS, ACTIVITY_FEED } from "../data/mockData.ts";
 
 interface Report {
@@ -72,7 +72,9 @@ const initialState: AppState = {
   selectedReportId: null,
 };
 
-function reducer(state: any, action: any) {
+const POINTS_BY_SEVERITY: Record<string, number> = { critical: 200, high: 120, medium: 80, low: 40 };
+
+function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case "ADD_REPORT": {
       const p = action.payload as Record<string, any>;
@@ -123,7 +125,7 @@ function reducer(state: any, action: any) {
     case "CLAIM_REPORT":
       return {
         ...state,
-        reports: state.reports.map((r: any) =>
+        reports: state.reports.map((r) =>
           r.id === action.payload
             ? {
                 ...r,
@@ -136,8 +138,7 @@ function reducer(state: any, action: any) {
       };
 
     case "COMPLETE_REPORT": {
-      const rep = state.reports.find((r: any) => r.id === action.payload);
-
+      const rep = state.reports.find((r) => r.id === action.payload);
       const pts = rep?.points ?? 0;
       const feed: FeedItem = {
         id: Date.now(),
@@ -151,7 +152,7 @@ function reducer(state: any, action: any) {
       };
       return {
         ...state,
-        reports: state.reports.map((r: any) =>
+        reports: state.reports.map((r) =>
           r.id === action.payload
             ? { ...r, status: "done", cleanedBy: state.user.name }
             : r,
@@ -190,7 +191,7 @@ function reducer(state: any, action: any) {
       return {
         ...state,
         notifications: state.notifications.filter(
-          (n: any) => n.id !== action.payload,
+          (n) => n.id !== action.payload,
         ),
       };
 
@@ -204,11 +205,7 @@ const AppContext = createContext<any>(null);
 export function AppProvider({ children, onLogout }: { children: React.ReactNode; onLogout: () => void }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Keep a ref so callbacks don't need state in their dependency arrays
-  const reportsRef = useRef(state.reports);
-  reportsRef.current = state.reports;
-
-  const addReport = useCallback((data: any) => {
+  const addReport = useCallback((data: Record<string, unknown>) => {
     dispatch({ type: "ADD_REPORT", payload: data });
     dispatch({
       type: "ADD_NOTIFICATION",
@@ -220,7 +217,7 @@ export function AppProvider({ children, onLogout }: { children: React.ReactNode;
     });
   }, []);
 
-  const claimReport = useCallback((id: any) => {
+  const claimReport = useCallback((id: number) => {
     dispatch({ type: "CLAIM_REPORT", payload: id });
     dispatch({
       type: "ADD_NOTIFICATION",
@@ -246,31 +243,27 @@ export function AppProvider({ children, onLogout }: { children: React.ReactNode;
   }, []);
 
   const selectReport = useCallback(
-    (id: any) => dispatch({ type: "SELECT_REPORT", payload: id }),
+    (id: number | null) => dispatch({ type: "SELECT_REPORT", payload: id }),
     [],
   );
   const dismissNotification = useCallback(
-    (id: any) => dispatch({ type: "DISMISS_NOTIFICATION", payload: id }),
+    (id: number) => dispatch({ type: "DISMISS_NOTIFICATION", payload: id }),
     [],
   );
 
-  const contextValue = useMemo(
-    () => ({
-      ...state,
-      addReport,
-      claimReport,
-      completeReport,
-      selectReport,
-      dismissNotification,
-      logout: onLogout,
-      dispatch,
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [state, addReport, claimReport, completeReport, selectReport, dismissNotification, onLogout],
-  );
-
   return (
-    <AppContext.Provider value={contextValue}>
+    <AppContext.Provider
+      value={{
+        ...state,
+        addReport,
+        claimReport,
+        completeReport,
+        selectReport,
+        dismissNotification,
+        logout: onLogout,
+        dispatch,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import "../styles/MapPopup.css";
 import { createRoot } from "react-dom/client";
 import MarkerPopup from "./MarkerPopup.tsx";
 import type { T, Lang } from "../i18n.ts";
@@ -236,5 +235,64 @@ export default function MapContainer({
     openPopup(report);
   }, [selectedId, reports, openPopup]);
 
-  return <div ref={containerRef} className="map-container" />;
+  return (
+    <>
+      <div ref={containerRef} className="map-container" />
+
+      {/* Custom popup & control styling */}
+      <style>{`
+        .chist-popup .maplibregl-popup-content {
+          background: transparent !important;
+          padding: 0 !important;
+          border-radius: 16px !important;
+          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 77, 148, 0.2) !important;
+          overflow: hidden;
+        }
+        .chist-popup .maplibregl-popup-tip {
+          border-top-color: #0F172A !important;
+        }
+        .chist-popup .maplibregl-popup-close-button {
+          color: rgba(255,255,255,0.4) !important;
+          font-size: 20px !important;
+          right: 10px !important;
+          top: 10px !important;
+          z-index: 10 !important;
+          width: 28px !important;
+          height: 28px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        .chist-popup .maplibregl-popup-close-button:hover {
+          color: #FF4D94 !important;
+          background: transparent !important;
+        }
+        .maplibregl-ctrl-attrib {
+          background: rgba(15, 23, 42, 0.7) !important;
+          color: rgba(255,255,255,0.3) !important;
+          font-size: 10px !important;
+        }
+        .maplibregl-ctrl-attrib a {
+          color: rgba(255,255,255,0.4) !important;
+        }
+        .maplibregl-ctrl-group {
+          background: rgba(15, 23, 42, 0.85) !important;
+          border: 1px solid rgba(255,255,255,0.1) !important;
+          border-radius: 12px !important;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+        }
+        .maplibregl-ctrl-group button {
+          width: 42px !important;
+          height: 42px !important;
+        }
+        .maplibregl-ctrl-group button + button {
+          border-top: 1px solid rgba(255,255,255,0.08) !important;
+        }
+        .maplibregl-ctrl-group button span {
+          filter: invert(1) !important;
+        }
+      `}</style>
+    </>
+  );
 }
