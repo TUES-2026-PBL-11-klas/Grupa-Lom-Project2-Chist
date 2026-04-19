@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useReducer, useCallback, useRef } from "react";
 import { CURRENT_USER, REPORTS, ACTIVITY_FEED } from "../data/mockData.ts";
 
 interface Report {
@@ -71,8 +71,6 @@ const initialState: AppState = {
   notifications: [],
   selectedReportId: null,
 };
-
-const POINTS_BY_SEVERITY: Record<string, number> = { critical: 200, high: 120, medium: 80, low: 40 };
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -204,6 +202,8 @@ const AppContext = createContext<any>(null);
 
 export function AppProvider({ children, onLogout }: { children: React.ReactNode; onLogout: () => void }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const reportsRef = useRef(state.reports);
+  reportsRef.current = state.reports;
 
   const addReport = useCallback((data: Record<string, unknown>) => {
     dispatch({ type: "ADD_REPORT", payload: data });
