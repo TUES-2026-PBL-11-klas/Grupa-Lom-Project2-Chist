@@ -1,17 +1,18 @@
 package com.chist.verificationmodule.service;
 
 import com.azure.ai.vision.imageanalysis.ImageAnalysisClientBuilder;
+import com.azure.ai.vision.imageanalysis.ImageAnalysisAsyncClient;
 import com.azure.ai.vision.imageanalysis.models.ImageAnalysisResult;
 import com.azure.ai.vision.imageanalysis.models.VisualFeatures;
 import com.azure.core.credential.KeyCredential;
+import com.azure.core.util.BinaryData;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.azure.ai.vision.imageanalysis.ImageAnalysisAsyncClient;
-import com.azure.core.util.BinaryData;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class AiVerificationService {
@@ -21,6 +22,13 @@ public class AiVerificationService {
 
     @Value("${COMPUTER_VISION_KEY}")
     private String key;
+
+    private static final Set<String> TRASH_TAGS = Set.of(
+            "trash", "garbage", "waste", "litter", "pollution", "debris",
+            "junk", "bottle", "plastic", "rubbish", "dumpster", "recycling",
+            "mess", "filth", "dump", "scrap", "rubble", "dirty"
+    );
+    private static final double CONFIDENCE_THRESHOLD = 0.50;
 
     @PostConstruct
     public void init() {
@@ -37,88 +45,47 @@ public class AiVerificationService {
                 .buildAsyncClient();
     }
 
-    public Mono<Boolean> verifyClean(String beforePhotoUrl, String afterPhotoUrl) {
-        ImageAnalysisAsyncClient client = getClient();
+    public Mono<Boolean> verifyHasTrashFromBytes(byte[] imageBytes) {
+        return getClient().analyze(
+                BinaryData.fromBytes(imageBytes),
+                List.of(VisualFeatures.TAGS),
+                null
+        )
+        .map(this::containsTrashTags)
+        .doOnError(e -> System.err.println("Azure CV error: " + e.getMessage()))
+        .onErrorReturn(false);
+    }
 
-        Mono<ImageAnalysisResult> beforeMono = client.analyzeFromUrl(
-                beforePhotoUrl,
-                Arrays.asList(VisualFeatures.TAGS, VisualFeatures.CAPTION),
+    public Mono<Boolean> verifyCleanFromBytes(byte[] beforeBytes, byte[] afterBytes) {
+        Mono<ImageAnalysisResult> beforeMono = getClient().analyze(
+                BinaryData.fromBytes(beforeBytes),
+                List.of(VisualFeatures.TAGS),
                 null
         );
-
-        Mono<ImageAnalysisResult> afterMono = client.analyzeFromUrl(
-                afterPhotoUrl,
-                Arrays.asList(VisualFeatures.TAGS, VisualFeatures.CAPTION),
+        Mono<ImageAnalysisResult> afterMono = getClient().analyze(
+                BinaryData.fromBytes(afterBytes),
+                List.of(VisualFeatures.TAGS),
                 null
         );
-
         return Mono.zip(beforeMono, afterMono)
                 .map(tuple -> {
                     boolean beforeHasTrash = containsTrashTags(tuple.getT1());
                     boolean afterHasTrash = containsTrashTags(tuple.getT2());
+                    System.out.println("Before has trash: " + beforeHasTrash);
+                    System.out.println("After has trash: " + afterHasTrash);
                     return beforeHasTrash && !afterHasTrash;
                 })
                 .doOnError(e -> System.err.println("Azure CV verifyClean error: " + e.getMessage()))
                 .onErrorReturn(false);
     }
 
-    public Mono<Boolean> verifyHasTrash(String photoUrl) {
-        ImageAnalysisAsyncClient client = getClient();
-
-        return client.analyzeFromUrl(
-                photoUrl,
-                Arrays.asList(VisualFeatures.TAGS, VisualFeatures.CAPTION),
-                null
-        )
-        .map(this::containsTrashTags)
-        .doOnError(e -> System.err.println("Azure CV verifyHasTrash error: " + e.getMessage()))
-        .onErrorReturn(false);
-    }
-
-    public Mono<Boolean> verifyHasTrashFromBytes(byte[] imageBytes) {
-        ImageAnalysisAsyncClient client = getClient();
-
-        return client.analyze(
-                BinaryData.fromBytes(imageBytes),
-                Arrays.asList(VisualFeatures.TAGS, VisualFeatures.CAPTION),
-                null
-        )
-        .map(this::containsTrashTags)
-        .doOnError(e -> System.err.println("Azure CV verifyHasTrashFromBytes error: " + e.getMessage()))
-        .onErrorReturn(false);
-    }
-
     private boolean containsTrashTags(ImageAnalysisResult result) {
         if (result.getTags() == null) return false;
-
         result.getTags().getValues().forEach(tag ->
                 System.out.println("AZURE TAG: " + tag.getName() + " | confidence: " + tag.getConfidence())
         );
-
         return result.getTags().getValues().stream()
-                .filter(tag -> tag.getConfidence() > 0.5)
-                .anyMatch(tag -> {
-                    String name = tag.getName().toLowerCase();
-                    return name.contains("trash") ||
-                            name.contains("garbage") ||
-                            name.contains("waste") ||
-                            name.contains("litter") ||
-                            name.contains("dirty") ||
-                            name.contains("pollution") ||
-                            name.contains("debris") ||
-                            name.contains("junk") ||
-                            name.contains("bottle") ||
-                            name.contains("plastic") ||
-                            name.contains("rubbish") ||
-                            name.contains("dumpster") ||
-                            name.contains("recycling") ||
-                            name.contains("mess") ||
-                            name.contains("filth") ||
-                            name.contains("container") ||
-                            name.contains("bag") ||
-                            name.contains("dump") ||
-                            name.contains("scrap") ||
-                            name.contains("litter");
-                });
+                .filter(tag -> tag.getConfidence() >= CONFIDENCE_THRESHOLD)
+                .anyMatch(tag -> TRASH_TAGS.contains(tag.getName().toLowerCase()));
     }
 }
