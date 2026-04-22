@@ -32,17 +32,18 @@ public class VerificationService {
 
         boolean aiResult;
 
-        // STEP 1 — само before снимка (проверява дали има боклук)
-        if (request.getAfterPhotoUrl() == null || request.getAfterPhotoUrl().isBlank()) {
-            aiResult = aiVerificationService.verifyHasTrash(
-                    request.getBeforePhotoUrl()
-            ).block();
-        } else {
-            // STEP 3 — before + after (проверява дали е почистено)
-            aiResult = aiVerificationService.verifyClean(
-                    request.getBeforePhotoUrl(),
-                    request.getAfterPhotoUrl()
-            ).block();
+        try {
+            if (request.getAfterPhotoUrl() == null || request.getAfterPhotoUrl().isBlank()) {
+                byte[] beforeBytes = new java.net.URL(request.getBeforePhotoUrl()).openStream().readAllBytes();
+                aiResult = Boolean.TRUE.equals(aiVerificationService.verifyHasTrashFromBytes(beforeBytes).block());
+            } else {
+                byte[] beforeBytes = new java.net.URL(request.getBeforePhotoUrl()).openStream().readAllBytes();
+                byte[] afterBytes  = new java.net.URL(request.getAfterPhotoUrl()).openStream().readAllBytes();
+                aiResult = Boolean.TRUE.equals(aiVerificationService.verifyCleanFromBytes(beforeBytes, afterBytes).block());
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to fetch photo bytes: " + e.getMessage());
+            aiResult = false;
         }
 
         VerificationStatus verificationStatus;

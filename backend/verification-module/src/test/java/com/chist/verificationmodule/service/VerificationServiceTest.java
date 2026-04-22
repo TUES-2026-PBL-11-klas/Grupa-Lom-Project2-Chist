@@ -61,7 +61,7 @@ class VerificationServiceTest {
     @Test
     void verify_bothPass_returnsApproved() {
         when(gpsVerificationService.verify(any(), any(), any(), any())).thenReturn(true);
-        when(aiVerificationService.verifyClean(any(), any())).thenReturn(Mono.just(true));
+        when(aiVerificationService.verifyCleanFromBytes(any(), any())).thenReturn(Mono.just(true));
         when(verificationRepository.save(any())).thenReturn(verification);
 
         VerificationResponse response = verificationService.verify(request);
@@ -73,7 +73,7 @@ class VerificationServiceTest {
     @Test
     void verify_bothFail_returnsRejected() {
         when(gpsVerificationService.verify(any(), any(), any(), any())).thenReturn(false);
-        when(aiVerificationService.verifyClean(any(), any())).thenReturn(Mono.just(false));
+        when(aiVerificationService.verifyCleanFromBytes(any(), any())).thenReturn(Mono.just(false));
         verification.setStatus(VerificationStatus.REJECTED);
         when(verificationRepository.save(any())).thenReturn(verification);
 
@@ -85,7 +85,7 @@ class VerificationServiceTest {
     @Test
     void verify_onePass_returnsPending() {
         when(gpsVerificationService.verify(any(), any(), any(), any())).thenReturn(true);
-        when(aiVerificationService.verifyClean(any(), any())).thenReturn(Mono.just(false));
+        when(aiVerificationService.verifyCleanFromBytes(any(), any())).thenReturn(Mono.just(false));
         verification.setStatus(VerificationStatus.PENDING);
         when(verificationRepository.save(any())).thenReturn(verification);
 
